@@ -1,4 +1,4 @@
-// src/pages/Dashboard.tsx
+// src/pages/Dashboard.tsx (updated)
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
@@ -11,37 +11,9 @@ import {
   FiCalendar,
   FiFileText,
   FiArrowRight,
+  FiUserPlus,
 } from "react-icons/fi";
-
-const EvalMark: React.FC<{ className?: string }> = ({ className }) => (
-  <svg
-    viewBox="0 0 48 48"
-    fill="none"
-    className={className}
-    xmlns="http://www.w3.org/2000/svg">
-    <circle
-      cx="24"
-      cy="24"
-      r="19"
-      stroke="#E8A23D"
-      strokeWidth="2.5"
-      strokeOpacity="0.35"
-    />
-    <path
-      d="M24 5a19 19 0 0 1 16.45 28.4"
-      stroke="#E8A23D"
-      strokeWidth="2.5"
-      strokeLinecap="round"
-    />
-    <path
-      d="M15.5 24.5l5.5 5.5L32.5 18"
-      stroke="#E8A23D"
-      strokeWidth="3"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-  </svg>
-);
+import { EvalMark } from "../components/icons/EvalMark";
 
 const Dashboard: React.FC = () => {
   const navigate = useNavigate();
@@ -239,9 +211,12 @@ const Dashboard: React.FC = () => {
               Quick Actions
             </h2>
             <div className="space-y-3">
-              <button className="w-full flex items-center px-4 py-3 text-sm text-[#101826] bg-[#FAFAF6] hover:bg-[#101826] hover:text-white rounded-lg transition-colors group">
-                <FiUsers className="h-5 w-5 mr-3 text-[#B8791F] group-hover:text-[#E8A23D] flex-shrink-0" />
-                Manage Users
+              {/* Updated Manage Users button to navigate to Teachers page */}
+              <button
+                onClick={() => navigate("/teachers")}
+                className="w-full flex items-center px-4 py-3 text-sm text-[#101826] bg-[#FAFAF6] hover:bg-[#101826] hover:text-white rounded-lg transition-colors group">
+                <FiUserPlus className="h-5 w-5 mr-3 text-[#B8791F] group-hover:text-[#E8A23D] flex-shrink-0" />
+                Manage Teachers
               </button>
               <button className="w-full flex items-center px-4 py-3 text-sm text-[#101826] bg-[#FAFAF6] hover:bg-[#101826] hover:text-white rounded-lg transition-colors group">
                 <FiFileText className="h-5 w-5 mr-3 text-[#B8791F] group-hover:text-[#E8A23D] flex-shrink-0" />
