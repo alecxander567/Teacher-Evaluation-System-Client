@@ -5,18 +5,26 @@ import { useAuth } from "../hooks/useAuth";
 import { useTeacher } from "../hooks/useTeacher";
 import { TeacherList } from "../components/teachers/TeacherList";
 import { TeacherForm } from "../components/teachers/TeacherForm";
+import { DeleteConfirmationModal } from "../components/DeleteConfirmationModal";
 import { FiArrowLeft, FiLogOut, FiBell, FiUser } from "react-icons/fi";
-import type { Teacher, TeacherRequest } from "../types/teacher";
+import type { Teacher } from "../types/department.types";
+import type { TeacherRequest } from "../types/department.types";
 import { EvalMark } from "../components/icons/EvalMark";
 import { AlertModal } from "../components/AlertModal";
 
 export const Teachers: React.FC = () => {
   const navigate = useNavigate();
   const { logout } = useAuth();
-  const [user, setUser] = useState<{
+
+  // Initialize user from localStorage directly
+  const [user] = useState<{
     firstName: string;
     lastName: string;
-  } | null>(null);
+  } | null>(() => {
+    const userData = localStorage.getItem("user");
+    return userData ? JSON.parse(userData) : null;
+  });
+
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingTeacher, setEditingTeacher] = useState<Teacher | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
@@ -26,10 +34,18 @@ export const Teachers: React.FC = () => {
     message: string;
   } | null>(null);
 
+  // Delete confirmation state
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [teacherToDelete, setTeacherToDelete] = useState<{
+    id: number;
+    name: string;
+  } | null>(null);
+
   const {
     teachers,
     loading,
     error,
+    departmentNames,
     fetchTeachers,
     searchTeachers,
     createTeacher,
@@ -38,21 +54,18 @@ export const Teachers: React.FC = () => {
     clearError,
   } = useTeacher();
 
+  // Check authentication
   useEffect(() => {
     const token = localStorage.getItem("accessToken");
-    const userData = localStorage.getItem("user");
-
     if (!token) {
       navigate("/login");
-      return;
     }
+  }, [navigate]);
 
-    if (userData) {
-      setUser(JSON.parse(userData));
-    }
-
+  // Fetch teachers on mount
+  useEffect(() => {
     fetchTeachers();
-  }, [navigate, fetchTeachers]);
+  }, [fetchTeachers]);
 
   const handleSearch = (term: string) => {
     setSearchTerm(term);
@@ -73,17 +86,42 @@ export const Teachers: React.FC = () => {
     setIsFormOpen(true);
   };
 
-  const handleDeleteTeacher = async (id: number) => {
-    if (window.confirm("Are you sure you want to delete this teacher?")) {
-      const success = await deleteTeacher(id);
-      if (success) {
-        // Refresh list
-        if (searchTerm.trim()) {
-          searchTeachers(searchTerm);
-        } else {
-          fetchTeachers();
-        }
+  const handleDeleteClick = (id: number) => {
+    const teacher = teachers.find((t) => t.id === id);
+    if (teacher) {
+      setTeacherToDelete({
+        id: teacher.id,
+        name: teacher.fullName,
+      });
+      setDeleteModalOpen(true);
+    }
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!teacherToDelete) return;
+
+    const success = await deleteTeacher(teacherToDelete.id);
+    setDeleteModalOpen(false);
+    setTeacherToDelete(null);
+
+    if (success) {
+      setAlert({
+        type: "success",
+        title: "Teacher Deleted",
+        message: `${teacherToDelete.name} has been deleted successfully.`,
+      });
+      // Refresh list
+      if (searchTerm.trim()) {
+        searchTeachers(searchTerm);
+      } else {
+        fetchTeachers();
       }
+    } else if (error) {
+      setAlert({
+        type: "error",
+        title: "Delete Failed",
+        message: error || "Failed to delete teacher. Please try again.",
+      });
     }
   };
 
@@ -192,9 +230,10 @@ export const Teachers: React.FC = () => {
           loading={loading}
           onAdd={handleAddTeacher}
           onEdit={handleEditTeacher}
-          onDelete={handleDeleteTeacher}
+          onDelete={handleDeleteClick}
           onSearch={handleSearch}
           searchTerm={searchTerm}
+          departmentNames={departmentNames}
         />
       </div>
 
@@ -208,6 +247,21 @@ export const Teachers: React.FC = () => {
         }}
         onSubmit={handleFormSubmit}
         loading={loading}
+      />
+
+      {/* Delete Confirmation Modal */}
+      <DeleteConfirmationModal
+        isOpen={deleteModalOpen}
+        onClose={() => {
+          setDeleteModalOpen(false);
+          setTeacherToDelete(null);
+        }}
+        onConfirm={handleConfirmDelete}
+        title="Delete Teacher"
+        itemName={teacherToDelete?.name}
+        confirmText="Delete Teacher"
+        loading={loading}
+        message={`Are you sure you want to delete the teacher "${teacherToDelete?.name}"? This action cannot be undone.`}
       />
 
       {/* Alert Modal */}

@@ -1,7 +1,10 @@
 // src/components/teachers/TeacherForm.tsx
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { FiX } from "react-icons/fi";
-import type { Teacher, TeacherRequest } from "../../types/teacher";
+import type { Teacher } from "../../types/teacher";
+import type { TeacherRequest } from "../../types/department.types";
+import type { Department } from "../../types/department.types";
+import { departmentApi } from "../../api/departmentApi";
 
 interface TeacherFormProps {
   isOpen: boolean;
@@ -11,6 +14,22 @@ interface TeacherFormProps {
   loading: boolean;
 }
 
+const emptyFormData: TeacherRequest = {
+  firstName: "",
+  lastName: "",
+  email: "",
+  position: "",
+  departmentId: null,
+};
+
+const teacherToFormData = (teacher: Teacher): TeacherRequest => ({
+  firstName: teacher.firstName || "",
+  lastName: teacher.lastName || "",
+  email: teacher.email || "",
+  position: teacher.position || "",
+  departmentId: teacher.departmentId || null,
+});
+
 export const TeacherForm: React.FC<TeacherFormProps> = ({
   isOpen,
   teacher,
@@ -18,30 +37,52 @@ export const TeacherForm: React.FC<TeacherFormProps> = ({
   onSubmit,
   loading,
 }) => {
-  const initialData: TeacherRequest =
-    teacher ?
-      {
-        firstName: teacher.firstName,
-        lastName: teacher.lastName,
-        email: teacher.email,
-        position: teacher.position,
-        departmentId: teacher.departmentId,
-      }
-    : {
-        firstName: "",
-        lastName: "",
-        email: "",
-        position: "",
-        departmentId: null,
+  const [departments, setDepartments] = useState<Department[]>([]);
+  const [loadingDepartments, setLoadingDepartments] = useState(false);
+
+  const [formData, setFormData] = useState<TeacherRequest>(() =>
+    teacher ? teacherToFormData(teacher) : emptyFormData,
+  );
+
+  // "Adjust state during render" pattern: replaces the old useEffect + useRef
+  // that reset formData whenever `teacher` changed. Runs synchronously in the
+  // same render/commit instead of in a separate post-render effect pass.
+  const [prevTeacher, setPrevTeacher] = useState(teacher);
+  if (teacher !== prevTeacher) {
+    setPrevTeacher(teacher);
+    setFormData(teacher ? teacherToFormData(teacher) : emptyFormData);
+  }
+
+  // Load departments when form opens — this one IS a legitimate effect,
+  // since it's synchronizing with an external system (the API).
+  useEffect(() => {
+    if (isOpen) {
+      const fetchDepartments = async () => {
+        setLoadingDepartments(true);
+        try {
+          const data = await departmentApi.getAll();
+          setDepartments(data);
+        } catch (error) {
+          console.error("Failed to fetch departments:", error);
+        } finally {
+          setLoadingDepartments(false);
+        }
       };
+      fetchDepartments();
+    }
+  }, [isOpen]);
 
-  const [formData, setFormData] = useState<TeacherRequest>(initialData);
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
+  ) => {
     const { id, value } = e.target;
     setFormData((prev) => ({
       ...prev,
-      [id]: value,
+      [id]:
+        id === "departmentId" ?
+          value ? parseInt(value)
+          : null
+        : value,
     }));
   };
 
@@ -58,7 +99,7 @@ export const TeacherForm: React.FC<TeacherFormProps> = ({
         className="absolute inset-0 bg-black/40 backdrop-blur-sm"
         onClick={onClose}
       />
-      <div className="relative bg-white rounded-xl shadow-xl w-full max-w-md mx-4 p-6">
+      <div className="relative bg-white rounded-xl shadow-xl w-full max-w-md mx-4 p-6 max-h-[90vh] overflow-y-auto">
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-lg font-semibold text-[#101826]">
             {teacher ? "Edit Teacher" : "Add Teacher"}
@@ -75,7 +116,7 @@ export const TeacherForm: React.FC<TeacherFormProps> = ({
             <label
               htmlFor="firstName"
               className="block text-sm font-medium text-[#101826] mb-1">
-              First Name
+              First Name *
             </label>
             <input
               id="firstName"
@@ -91,7 +132,7 @@ export const TeacherForm: React.FC<TeacherFormProps> = ({
             <label
               htmlFor="lastName"
               className="block text-sm font-medium text-[#101826] mb-1">
-              Last Name
+              Last Name *
             </label>
             <input
               id="lastName"
@@ -107,7 +148,7 @@ export const TeacherForm: React.FC<TeacherFormProps> = ({
             <label
               htmlFor="email"
               className="block text-sm font-medium text-[#101826] mb-1">
-              Email
+              Email *
             </label>
             <input
               id="email"
@@ -130,9 +171,34 @@ export const TeacherForm: React.FC<TeacherFormProps> = ({
               type="text"
               value={formData.position}
               onChange={handleChange}
-              required
               className="w-full px-3 py-2 border border-[#E4E1D9] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#E8A23D] focus:border-transparent"
             />
+          </div>
+
+          <div>
+            <label
+              htmlFor="departmentId"
+              className="block text-sm font-medium text-[#101826] mb-1">
+              Department
+            </label>
+            <select
+              id="departmentId"
+              value={formData.departmentId ?? ""}
+              onChange={handleChange}
+              className="w-full px-3 py-2 border border-[#E4E1D9] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#E8A23D] focus:border-transparent bg-white">
+              <option value="">No Department</option>
+              {loadingDepartments ?
+                <option disabled>Loading departments...</option>
+              : departments.map((dept) => (
+                  <option key={dept.id} value={dept.id}>
+                    {dept.name}
+                  </option>
+                ))
+              }
+            </select>
+            <p className="text-xs text-[#5B6472] mt-1">
+              Select a department for this teacher
+            </p>
           </div>
 
           <div className="flex gap-3 pt-2">

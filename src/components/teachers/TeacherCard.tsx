@@ -1,18 +1,20 @@
 // src/components/teachers/TeacherCard.tsx
 import React from "react";
-import { FiMail, FiUser, FiEdit2, FiTrash2 } from "react-icons/fi";
+import { FiMail, FiUser, FiEdit2, FiTrash2, FiBriefcase } from "react-icons/fi";
 import type { Teacher } from "../../types/teacher";
 
 interface TeacherCardProps {
   teacher: Teacher;
   onEdit: (teacher: Teacher) => void;
   onDelete: (id: number) => void;
+  departmentName?: string;
 }
 
 export const TeacherCard: React.FC<TeacherCardProps> = ({
   teacher,
   onEdit,
   onDelete,
+  departmentName,
 }) => {
   return (
     <div className="bg-white rounded-lg border border-[#E4E1D9] p-4 hover:shadow-md transition-shadow">
@@ -26,7 +28,7 @@ export const TeacherCard: React.FC<TeacherCardProps> = ({
               {teacher.fullName}
             </h3>
             <p className="text-xs text-[#5B6472] truncate">
-              {teacher.position}
+              {teacher.position || "No position"}
             </p>
           </div>
         </div>
@@ -45,14 +47,16 @@ export const TeacherCard: React.FC<TeacherCardProps> = ({
           </button>
         </div>
       </div>
-      <div className="mt-3 pt-3 border-t border-[#E4E1D9]">
+      <div className="mt-3 pt-3 border-t border-[#E4E1D9] space-y-1">
         <div className="flex items-center space-x-2 text-xs text-[#5B6472]">
           <FiMail className="h-3.5 w-3.5 flex-shrink-0" />
           <span className="truncate">{teacher.email}</span>
         </div>
-        <div className="mt-1 flex items-center space-x-2 text-xs text-[#5B6472]">
-          <span className="bg-[#FAFAF6] px-2 py-0.5 rounded-full">
-            Dept ID: {teacher.departmentId}
+        <div className="flex items-center space-x-2 text-xs text-[#5B6472]">
+          <FiBriefcase className="h-3.5 w-3.5 flex-shrink-0" />
+          <span>
+            {departmentName ||
+              `Department ID: ${teacher.departmentId || "None"}`}
           </span>
         </div>
       </div>

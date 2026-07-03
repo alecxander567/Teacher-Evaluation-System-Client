@@ -10,14 +10,21 @@ import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import Dashboard from "./pages/Dashboard";
 import { Teachers } from "./pages/Teachers";
+import Departments from "./pages/Departments";
+import DepartmentCreate from "./pages/DepartmentCreate";
+import DepartmentEdit from "./pages/DepartmentEdit";
+import DepartmentDetailPage from "./pages/DepartmentDetailPage";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 
 const App: React.FC = () => {
   return (
     <Router>
       <Routes>
+        {/* Public Routes */}
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
+
+        {/* Protected Routes */}
         <Route
           path="/dashboard"
           element={
@@ -26,6 +33,8 @@ const App: React.FC = () => {
             </ProtectedRoute>
           }
         />
+
+        {/* Teacher Routes */}
         <Route
           path="/teachers"
           element={
@@ -34,7 +43,46 @@ const App: React.FC = () => {
             </ProtectedRoute>
           }
         />
+
+        {/* Department Routes */}
+        <Route
+          path="/departments"
+          element={
+            <ProtectedRoute>
+              <Departments />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/departments/create"
+          element={
+            <ProtectedRoute>
+              <DepartmentCreate />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/departments/edit/:id"
+          element={
+            <ProtectedRoute>
+              <DepartmentEdit />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/departments/:id"
+          element={
+            <ProtectedRoute>
+              <DepartmentDetailPage />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Default Route - Redirect to login */}
         <Route path="/" element={<Navigate to="/login" replace />} />
+
+        {/* Catch all - Redirect to login for any undefined routes */}
+        <Route path="*" element={<Navigate to="/login" replace />} />
       </Routes>
     </Router>
   );

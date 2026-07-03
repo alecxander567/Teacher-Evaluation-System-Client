@@ -3,7 +3,7 @@ import axios from "axios";
 import type {
   TeacherRequest,
   TeacherResponse,
-} from "../types/teacher";
+} from "../types/department.types";
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || "/api";
 

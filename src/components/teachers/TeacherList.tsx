@@ -12,6 +12,7 @@ interface TeacherListProps {
   onDelete: (id: number) => void;
   onSearch: (term: string) => void;
   searchTerm: string;
+  departmentNames?: Map<number, string>; // Added optional prop
 }
 
 export const TeacherList: React.FC<TeacherListProps> = ({
@@ -22,6 +23,7 @@ export const TeacherList: React.FC<TeacherListProps> = ({
   onDelete,
   onSearch,
   searchTerm,
+  departmentNames = new Map(), // Default to empty Map
 }) => {
   return (
     <div>
@@ -33,7 +35,7 @@ export const TeacherList: React.FC<TeacherListProps> = ({
             Teachers
           </h1>
           <p className="text-sm text-[#5B6472] mt-1">
-            Manage your teachers and their information
+            Manage your teachers and their department assignments
           </p>
         </div>
         <button
@@ -84,6 +86,11 @@ export const TeacherList: React.FC<TeacherListProps> = ({
               teacher={teacher}
               onEdit={onEdit}
               onDelete={onDelete}
+              departmentName={
+                teacher.departmentId ?
+                  departmentNames.get(teacher.departmentId)
+                : undefined
+              }
             />
           ))}
         </div>

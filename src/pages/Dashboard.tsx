@@ -18,24 +18,22 @@ import { EvalMark } from "../components/icons/EvalMark";
 const Dashboard: React.FC = () => {
   const navigate = useNavigate();
   const { logout } = useAuth();
-  const [user, setUser] = useState<{
+
+  // Initialize user from localStorage directly
+  const [user] = useState<{
     firstName: string;
     lastName: string;
     email: string;
     role: string;
-  } | null>(null);
+  } | null>(() => {
+    const userData = localStorage.getItem("user");
+    return userData ? JSON.parse(userData) : null;
+  });
 
   useEffect(() => {
     const token = localStorage.getItem("accessToken");
-    const userData = localStorage.getItem("user");
-
     if (!token) {
       navigate("/login");
-      return;
-    }
-
-    if (userData) {
-      setUser(JSON.parse(userData));
     }
   }, [navigate]);
 
@@ -202,7 +200,6 @@ const Dashboard: React.FC = () => {
               <FiArrowRight className="h-3.5 w-3.5" />
             </button>
           </div>
-
           {/* Quick Actions */}
           <div className="bg-white rounded-xl border border-[#E4E1D9] p-5 sm:p-6">
             <h2
@@ -211,24 +208,38 @@ const Dashboard: React.FC = () => {
               Quick Actions
             </h2>
             <div className="space-y-3">
-              {/* Updated Manage Users button to navigate to Teachers page */}
+              {/* Manage Teachers */}
               <button
                 onClick={() => navigate("/teachers")}
                 className="w-full flex items-center px-4 py-3 text-sm text-[#101826] bg-[#FAFAF6] hover:bg-[#101826] hover:text-white rounded-lg transition-colors group">
                 <FiUserPlus className="h-5 w-5 mr-3 text-[#B8791F] group-hover:text-[#E8A23D] flex-shrink-0" />
                 Manage Teachers
               </button>
+
+              {/* Manage Departments - Now right after Manage Teachers */}
+              <button
+                onClick={() => navigate("/departments")}
+                className="w-full flex items-center px-4 py-3 text-sm text-[#101826] bg-[#FAFAF6] hover:bg-[#101826] hover:text-white rounded-lg transition-colors group">
+                <FiUsers className="h-5 w-5 mr-3 text-[#B8791F] group-hover:text-[#E8A23D] flex-shrink-0" />
+                Manage Departments
+              </button>
+
+              {/* View Evaluations */}
               <button className="w-full flex items-center px-4 py-3 text-sm text-[#101826] bg-[#FAFAF6] hover:bg-[#101826] hover:text-white rounded-lg transition-colors group">
                 <FiFileText className="h-5 w-5 mr-3 text-[#B8791F] group-hover:text-[#E8A23D] flex-shrink-0" />
                 View Evaluations
               </button>
-              <button className="w-full flex items-center px-4 py-3 text-sm text-[#101826] bg-[#FAFAF6] hover:bg-[#101826] hover:text-white rounded-lg transition-colors group">
-                <FiSettings className="h-5 w-5 mr-3 text-[#B8791F] group-hover:text-[#E8A23D] flex-shrink-0" />
-                System Settings
-              </button>
+
+              {/* Schedule Review */}
               <button className="w-full flex items-center px-4 py-3 text-sm text-[#101826] bg-[#FAFAF6] hover:bg-[#101826] hover:text-white rounded-lg transition-colors group">
                 <FiCalendar className="h-5 w-5 mr-3 text-[#B8791F] group-hover:text-[#E8A23D] flex-shrink-0" />
                 Schedule Review
+              </button>
+
+              {/* System Settings */}
+              <button className="w-full flex items-center px-4 py-3 text-sm text-[#101826] bg-[#FAFAF6] hover:bg-[#101826] hover:text-white rounded-lg transition-colors group">
+                <FiSettings className="h-5 w-5 mr-3 text-[#B8791F] group-hover:text-[#E8A23D] flex-shrink-0" />
+                System Settings
               </button>
             </div>
           </div>
