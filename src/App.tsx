@@ -1,4 +1,4 @@
-// src/App.tsx (updated with subject routes)
+// src/App.tsx (add assignment route)
 import React from "react";
 import {
   BrowserRouter as Router,
@@ -16,6 +16,7 @@ import DepartmentEdit from "./pages/DepartmentEdit";
 import DepartmentDetailPage from "./pages/DepartmentDetailPage";
 import { Subjects } from "./pages/Subjects";
 import { SubjectDetailPage } from "./pages/SubjectDetailPage";
+import { Assignments } from "./pages/Assignments"; // Add this
 import { ProtectedRoute } from "./components/ProtectedRoute";
 
 const App: React.FC = () => {
@@ -94,6 +95,16 @@ const App: React.FC = () => {
           element={
             <ProtectedRoute>
               <SubjectDetailPage />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Assignment Routes */}
+        <Route
+          path="/assignments"
+          element={
+            <ProtectedRoute>
+              <Assignments />
             </ProtectedRoute>
           }
         />
