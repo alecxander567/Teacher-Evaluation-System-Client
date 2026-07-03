@@ -1,4 +1,4 @@
-// src/App.tsx
+// src/App.tsx (updated with subject routes)
 import React from "react";
 import {
   BrowserRouter as Router,
@@ -14,6 +14,8 @@ import Departments from "./pages/Departments";
 import DepartmentCreate from "./pages/DepartmentCreate";
 import DepartmentEdit from "./pages/DepartmentEdit";
 import DepartmentDetailPage from "./pages/DepartmentDetailPage";
+import { Subjects } from "./pages/Subjects";
+import { SubjectDetailPage } from "./pages/SubjectDetailPage";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 
 const App: React.FC = () => {
@@ -74,6 +76,24 @@ const App: React.FC = () => {
           element={
             <ProtectedRoute>
               <DepartmentDetailPage />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Subject Routes */}
+        <Route
+          path="/subjects"
+          element={
+            <ProtectedRoute>
+              <Subjects />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/subjects/:id"
+          element={
+            <ProtectedRoute>
+              <SubjectDetailPage />
             </ProtectedRoute>
           }
         />

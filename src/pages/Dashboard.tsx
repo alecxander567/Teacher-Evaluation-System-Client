@@ -12,6 +12,7 @@ import {
   FiFileText,
   FiArrowRight,
   FiUserPlus,
+  FiBookOpen,
 } from "react-icons/fi";
 import { EvalMark } from "../components/icons/EvalMark";
 
@@ -215,7 +216,6 @@ const Dashboard: React.FC = () => {
                 <FiUserPlus className="h-5 w-5 mr-3 text-[#B8791F] group-hover:text-[#E8A23D] flex-shrink-0" />
                 Manage Teachers
               </button>
-
               {/* Manage Departments - Now right after Manage Teachers */}
               <button
                 onClick={() => navigate("/departments")}
@@ -224,18 +224,23 @@ const Dashboard: React.FC = () => {
                 Manage Departments
               </button>
 
+              <button
+                onClick={() => navigate("/subjects")}
+                className="w-full flex items-center px-4 py-3 text-sm text-[#101826] bg-[#FAFAF6] hover:bg-[#101826] hover:text-white rounded-lg transition-colors group">
+                <FiBookOpen className="h-5 w-5 mr-3 text-[#B8791F] group-hover:text-[#E8A23D] flex-shrink-0" />
+                Manage Subjects
+              </button>
+
               {/* View Evaluations */}
               <button className="w-full flex items-center px-4 py-3 text-sm text-[#101826] bg-[#FAFAF6] hover:bg-[#101826] hover:text-white rounded-lg transition-colors group">
                 <FiFileText className="h-5 w-5 mr-3 text-[#B8791F] group-hover:text-[#E8A23D] flex-shrink-0" />
                 View Evaluations
               </button>
-
               {/* Schedule Review */}
               <button className="w-full flex items-center px-4 py-3 text-sm text-[#101826] bg-[#FAFAF6] hover:bg-[#101826] hover:text-white rounded-lg transition-colors group">
                 <FiCalendar className="h-5 w-5 mr-3 text-[#B8791F] group-hover:text-[#E8A23D] flex-shrink-0" />
                 Schedule Review
               </button>
-
               {/* System Settings */}
               <button className="w-full flex items-center px-4 py-3 text-sm text-[#101826] bg-[#FAFAF6] hover:bg-[#101826] hover:text-white rounded-lg transition-colors group">
                 <FiSettings className="h-5 w-5 mr-3 text-[#B8791F] group-hover:text-[#E8A23D] flex-shrink-0" />
