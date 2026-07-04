@@ -14,6 +14,7 @@ import {
   FiUserPlus,
   FiBookOpen,
   FiLink,
+  FiClock,
 } from "react-icons/fi";
 import { EvalMark } from "../components/icons/EvalMark";
 
@@ -246,6 +247,13 @@ const Dashboard: React.FC = () => {
               <button className="w-full flex items-center px-4 py-3 text-sm text-[#101826] bg-[#FAFAF6] hover:bg-[#101826] hover:text-white rounded-lg transition-colors group">
                 <FiFileText className="h-5 w-5 mr-3 text-[#B8791F] group-hover:text-[#E8A23D] flex-shrink-0" />
                 View Evaluations
+              </button>
+
+              <button
+                onClick={() => navigate("/evaluation-periods")}
+                className="w-full flex items-center px-4 py-3 text-sm text-[#101826] bg-[#FAFAF6] hover:bg-[#101826] hover:text-white rounded-lg transition-colors group">
+                <FiClock className="h-5 w-5 mr-3 text-[#B8791F] group-hover:text-[#E8A23D] flex-shrink-0" />
+                Manage Evaluation Periods
               </button>
 
               {/* Schedule Review */}

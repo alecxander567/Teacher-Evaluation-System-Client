@@ -1,4 +1,4 @@
-// src/App.tsx (add assignment route)
+// src/App.tsx
 import React from "react";
 import {
   BrowserRouter as Router,
@@ -16,7 +16,8 @@ import DepartmentEdit from "./pages/DepartmentEdit";
 import DepartmentDetailPage from "./pages/DepartmentDetailPage";
 import { Subjects } from "./pages/Subjects";
 import { SubjectDetailPage } from "./pages/SubjectDetailPage";
-import { Assignments } from "./pages/Assignments"; // Add this
+import { Assignments } from "./pages/Assignments";
+import { EvaluationPeriods } from "./pages/EvaluationPeriods"; 
 import { ProtectedRoute } from "./components/ProtectedRoute";
 
 const App: React.FC = () => {
@@ -105,6 +106,16 @@ const App: React.FC = () => {
           element={
             <ProtectedRoute>
               <Assignments />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Evaluation Period Routes */}
+        <Route
+          path="/evaluation-periods"
+          element={
+            <ProtectedRoute>
+              <EvaluationPeriods />
             </ProtectedRoute>
           }
         />
