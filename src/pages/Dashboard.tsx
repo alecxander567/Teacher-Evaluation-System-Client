@@ -1,4 +1,4 @@
-// src/pages/Dashboard.tsx (updated)
+// src/pages/Dashboard.tsx (updated - with Teacher Assignments)
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
@@ -15,6 +15,7 @@ import {
   FiBookOpen,
   FiLink,
   FiClock,
+  FiUserCheck, // Added for Teacher Assignments
 } from "react-icons/fi";
 import { EvalMark } from "../components/icons/EvalMark";
 
@@ -203,6 +204,7 @@ const Dashboard: React.FC = () => {
               <FiArrowRight className="h-3.5 w-3.5" />
             </button>
           </div>
+
           {/* Quick Actions */}
           <div className="bg-white rounded-xl border border-[#E4E1D9] p-5 sm:p-6">
             <h2
@@ -211,12 +213,28 @@ const Dashboard: React.FC = () => {
               Quick Actions
             </h2>
             <div className="space-y-3">
+              {/* Manage Evaluation Forms */}
+              <button
+                onClick={() => navigate("/evaluation-forms")}
+                className="w-full flex items-center px-4 py-3 text-sm text-[#101826] bg-[#FAFAF6] hover:bg-[#101826] hover:text-white rounded-lg transition-colors group">
+                <FiFileText className="h-5 w-5 mr-3 text-[#B8791F] group-hover:text-[#E8A23D] flex-shrink-0" />
+                Manage Evaluation Forms
+              </button>
+
               {/* Manage Teachers */}
               <button
                 onClick={() => navigate("/teachers")}
                 className="w-full flex items-center px-4 py-3 text-sm text-[#101826] bg-[#FAFAF6] hover:bg-[#101826] hover:text-white rounded-lg transition-colors group">
                 <FiUserPlus className="h-5 w-5 mr-3 text-[#B8791F] group-hover:text-[#E8A23D] flex-shrink-0" />
                 Manage Teachers
+              </button>
+
+              {/* Manage Teacher Assignments - NEW */}
+              <button
+                onClick={() => navigate("/teacher-assignments")}
+                className="w-full flex items-center px-4 py-3 text-sm text-[#101826] bg-[#FAFAF6] hover:bg-[#101826] hover:text-white rounded-lg transition-colors group">
+                <FiUserCheck className="h-5 w-5 mr-3 text-[#B8791F] group-hover:text-[#E8A23D] flex-shrink-0" />
+                Manage Teacher Assignments
               </button>
 
               {/* Manage Departments */}
@@ -235,7 +253,7 @@ const Dashboard: React.FC = () => {
                 Manage Subjects
               </button>
 
-              {/* Manage Assignments - NEW */}
+              {/* Manage Assignments */}
               <button
                 onClick={() => navigate("/assignments")}
                 className="w-full flex items-center px-4 py-3 text-sm text-[#101826] bg-[#FAFAF6] hover:bg-[#101826] hover:text-white rounded-lg transition-colors group">
@@ -243,12 +261,7 @@ const Dashboard: React.FC = () => {
                 Manage Assignments
               </button>
 
-              {/* View Evaluations */}
-              <button className="w-full flex items-center px-4 py-3 text-sm text-[#101826] bg-[#FAFAF6] hover:bg-[#101826] hover:text-white rounded-lg transition-colors group">
-                <FiFileText className="h-5 w-5 mr-3 text-[#B8791F] group-hover:text-[#E8A23D] flex-shrink-0" />
-                View Evaluations
-              </button>
-
+              {/* Manage Evaluation Periods */}
               <button
                 onClick={() => navigate("/evaluation-periods")}
                 className="w-full flex items-center px-4 py-3 text-sm text-[#101826] bg-[#FAFAF6] hover:bg-[#101826] hover:text-white rounded-lg transition-colors group">

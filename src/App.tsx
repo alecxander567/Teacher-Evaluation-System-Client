@@ -17,7 +17,11 @@ import DepartmentDetailPage from "./pages/DepartmentDetailPage";
 import { Subjects } from "./pages/Subjects";
 import { SubjectDetailPage } from "./pages/SubjectDetailPage";
 import { Assignments } from "./pages/Assignments";
-import { EvaluationPeriods } from "./pages/EvaluationPeriods"; 
+import { EvaluationPeriods } from "./pages/EvaluationPeriods";
+import { EvaluationForms } from "./pages/EvaluationForms";
+import EvaluationFormDetail from "./pages/EvaluationFormDetail";
+import TeacherAssignments from "./pages/TeacherAssignment"; // Default import (no curly braces)
+import { EvaluationSubmissionPage } from "./pages/EvaluationSubmissionPage";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 
 const App: React.FC = () => {
@@ -27,6 +31,7 @@ const App: React.FC = () => {
         {/* Public Routes */}
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
+        <Route path="/evaluate/:token" element={<EvaluationSubmissionPage />} />
 
         {/* Protected Routes */}
         <Route
@@ -116,6 +121,34 @@ const App: React.FC = () => {
           element={
             <ProtectedRoute>
               <EvaluationPeriods />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Evaluation Form Routes */}
+        <Route
+          path="/evaluation-forms"
+          element={
+            <ProtectedRoute>
+              <EvaluationForms />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/evaluation-forms/:id"
+          element={
+            <ProtectedRoute>
+              <EvaluationFormDetail />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Teacher Assignment Routes */}
+        <Route
+          path="/teacher-assignments"
+          element={
+            <ProtectedRoute>
+              <TeacherAssignments />
             </ProtectedRoute>
           }
         />

@@ -1,7 +1,7 @@
 // src/pages/SubjectDetailPage.tsx
 import React, { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { useSubject, useDeleteSubject } from "../hooks/useSubject";
+import { useSubject, useDeleteSubject } from "../hooks/useSubjects";
 import {
   FiAlertCircle,
   FiArrowLeft,

@@ -7,7 +7,7 @@ import {
   useDeleteSubject,
   useSearchSubjects,
   useCreateSubject,
-} from "../hooks/useSubject";
+} from "../hooks/useSubjects";
 import { subjectApi } from "../api/subjectApi";
 import { SubjectList } from "../components/subjects/SubjectList";
 import { SubjectForm } from "../components/subjects/SubjectForm";

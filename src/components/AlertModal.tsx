@@ -5,7 +5,7 @@ import { FiCheckCircle, FiAlertCircle, FiX } from "react-icons/fi";
 export interface AlertModalProps {
   type: "success" | "error";
   title: string;
-  message: string;
+  message: React.ReactNode; 
   isOpen: boolean;
   onClose: () => void;
   autoClose?: number;
@@ -45,9 +45,9 @@ export const AlertModal: React.FC<AlertModalProps> = ({
         <div className="flex flex-col items-center text-center">
           <div
             className={`h-14 w-14 rounded-full flex items-center justify-center mb-4 ${
-              isSuccess
-                ? "bg-[#F3F8F1] text-[#4C9A4C]"
-                : "bg-[#FCF1EE] text-[#C4553D]"
+              isSuccess ?
+                "bg-[#F3F8F1] text-[#4C9A4C]"
+              : "bg-[#FCF1EE] text-[#C4553D]"
             }`}>
             {isSuccess ?
               <FiCheckCircle className="h-7 w-7" />
@@ -65,9 +65,9 @@ export const AlertModal: React.FC<AlertModalProps> = ({
           <button
             onClick={onClose}
             className={`mt-6 px-6 py-2 rounded-lg text-sm font-medium transition-colors ${
-              isSuccess
-                ? "bg-[#101826] text-white hover:bg-[#1a2438]"
-                : "bg-[#C4553D] text-white hover:bg-[#9A3D2B]"
+              isSuccess ?
+                "bg-[#101826] text-white hover:bg-[#1a2438]"
+              : "bg-[#C4553D] text-white hover:bg-[#9A3D2B]"
             }`}>
             {isSuccess ? "Continue" : "Dismiss"}
           </button>
