@@ -10,6 +10,18 @@ interface TeacherCardProps {
   departmentName?: string;
 }
 
+const employmentTypeLabels: Record<string, string> = {
+  FULL_TIME: "Full Time",
+  PART_TIME: "Part Time",
+  CONTRACTUAL: "Contractual",
+};
+
+const employmentTypeBadgeClasses: Record<string, string> = {
+  FULL_TIME: "bg-green-50 text-green-600",
+  PART_TIME: "bg-amber-50 text-amber-600",
+  CONTRACTUAL: "bg-blue-50 text-blue-600",
+};
+
 export const TeacherCard: React.FC<TeacherCardProps> = ({
   teacher,
   onEdit,
@@ -47,6 +59,20 @@ export const TeacherCard: React.FC<TeacherCardProps> = ({
           </button>
         </div>
       </div>
+
+      {teacher.employmentType && (
+        <div className="mt-2">
+          <span
+            className={`text-xs px-2 py-0.5 rounded-full ${
+              employmentTypeBadgeClasses[teacher.employmentType] ||
+              "bg-gray-50 text-gray-600"
+            }`}>
+            {employmentTypeLabels[teacher.employmentType] ||
+              teacher.employmentType}
+          </span>
+        </div>
+      )}
+
       <div className="mt-3 pt-3 border-t border-[#E4E1D9] space-y-1">
         <div className="flex items-center space-x-2 text-xs text-[#5B6472]">
           <FiMail className="h-3.5 w-3.5 flex-shrink-0" />

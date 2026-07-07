@@ -1,31 +1,6 @@
 // src/api/teacherApi.ts
-import axios from "axios";
-import type {
-  TeacherRequest,
-  TeacherResponse,
-} from "../types/department.types";
-
-const API_BASE_URL =
-  import.meta.env.VITE_API_URL || "http://localhost:8080/api";
-
-const api = axios.create({
-  baseURL: API_BASE_URL,
-  headers: {
-    "Content-Type": "application/json",
-  },
-});
-
-// Add token interceptor
-api.interceptors.request.use(
-  (config) => {
-    const token = localStorage.getItem("accessToken");
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
-    return config;
-  },
-  (error) => Promise.reject(error),
-);
+import { api } from "./client";
+import type { TeacherRequest, TeacherResponse } from "../types/teacher";
 
 export const teacherApi = {
   // Get all teachers

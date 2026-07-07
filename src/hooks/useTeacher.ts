@@ -2,8 +2,7 @@
 import { useState, useCallback } from "react";
 import { teacherApi } from "../api/teacherApi";
 import { departmentApi } from "../api/departmentApi";
-import type { Teacher } from "../types/teacher";
-import type { TeacherRequest } from "../types/department.types";
+import type { Teacher, TeacherRequest } from "../types/teacher";
 import type { Department } from "../types/department.types";
 
 interface UseTeacherReturn {

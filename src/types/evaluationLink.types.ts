@@ -1,17 +1,25 @@
-// src/types/evaluationLink.types.ts
-export interface EvaluationLink {
+export interface EvaluationSubmission {
   id: number;
-  token: string;
-  fullLink: string;
-  evaluationFormId: number;
-  evaluationFormTitle?: string;
+  evaluationPeriodId: number;
+  teacherAssignmentId: number;
+  evaluationLinkId?: number;
+  studentEmail: string;
+  overallComment?: string;
+  submittedAt: string;
   evaluationPeriodTitle?: string;
-  status: string;
-  createdAt: string;
-  updatedAt: string;
-  submissionCount: number;
+  teacherName?: string;
+  subjectName?: string;
+  totalQuestions?: number;
+  answeredQuestions?: number;
+  averageRating?: number;
+  responses?: EvaluationResponse[];
 }
 
-export interface EvaluationLinkRequest {
-  evaluationFormId: number;
+export interface EvaluationSubmissionRequest {
+  evaluationPeriodId: number;
+  teacherAssignmentId: number;
+  evaluationLinkId?: number;
+  studentEmail: string;
+  overallComment?: string;
+  responses: EvaluationResponseRequest[];
 }

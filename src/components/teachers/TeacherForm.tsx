@@ -20,6 +20,7 @@ const emptyFormData: TeacherRequest = {
   email: "",
   position: "",
   departmentId: null,
+  employmentType: null,
 };
 
 const teacherToFormData = (teacher: Teacher): TeacherRequest => ({
@@ -28,6 +29,7 @@ const teacherToFormData = (teacher: Teacher): TeacherRequest => ({
   email: teacher.email || "",
   position: teacher.position || "",
   departmentId: teacher.departmentId || null,
+  employmentType: teacher.employmentType || null,
 });
 
 export const TeacherForm: React.FC<TeacherFormProps> = ({
@@ -44,17 +46,12 @@ export const TeacherForm: React.FC<TeacherFormProps> = ({
     teacher ? teacherToFormData(teacher) : emptyFormData,
   );
 
-  // "Adjust state during render" pattern: replaces the old useEffect + useRef
-  // that reset formData whenever `teacher` changed. Runs synchronously in the
-  // same render/commit instead of in a separate post-render effect pass.
   const [prevTeacher, setPrevTeacher] = useState(teacher);
   if (teacher !== prevTeacher) {
     setPrevTeacher(teacher);
     setFormData(teacher ? teacherToFormData(teacher) : emptyFormData);
   }
 
-  // Load departments when form opens — this one IS a legitimate effect,
-  // since it's synchronizing with an external system (the API).
   useEffect(() => {
     if (isOpen) {
       const fetchDepartments = async () => {
@@ -81,6 +78,9 @@ export const TeacherForm: React.FC<TeacherFormProps> = ({
       [id]:
         id === "departmentId" ?
           value ? parseInt(value)
+          : null
+        : id === "employmentType" ?
+          value ? value
           : null
         : value,
     }));
@@ -173,6 +173,24 @@ export const TeacherForm: React.FC<TeacherFormProps> = ({
               onChange={handleChange}
               className="w-full px-3 py-2 border border-[#E4E1D9] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#E8A23D] focus:border-transparent"
             />
+          </div>
+
+          <div>
+            <label
+              htmlFor="employmentType"
+              className="block text-sm font-medium text-[#101826] mb-1">
+              Employment Type
+            </label>
+            <select
+              id="employmentType"
+              value={formData.employmentType ?? ""}
+              onChange={handleChange}
+              className="w-full px-3 py-2 border border-[#E4E1D9] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#E8A23D] focus:border-transparent bg-white">
+              <option value="">Select employment type</option>
+              <option value="FULL_TIME">Full Time</option>
+              <option value="PART_TIME">Part Time</option>
+              <option value="CONTRACTUAL">Contractual</option>
+            </select>
           </div>
 
           <div>

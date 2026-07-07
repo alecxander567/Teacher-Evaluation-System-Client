@@ -27,6 +27,8 @@ export interface DepartmentResponse {
   updatedAt: string;
 }
 
+export type EmploymentType = "FULL_TIME" | "PART_TIME" | "CONTRACTUAL";
+
 export interface Teacher {
   id: number;
   departmentId: number | null;
@@ -35,6 +37,7 @@ export interface Teacher {
   fullName: string;
   email: string;
   position: string;
+  employmentType: EmploymentType | null;
   createdAt: string;
   updatedAt: string;
 }
@@ -45,9 +48,9 @@ export interface TeacherRequest {
   lastName: string;
   email: string;
   position: string;
+  employmentType: EmploymentType | null;
 }
 
-// Add this missing export
 export interface TeacherResponse {
   id: number;
   departmentId: number | null;
@@ -56,6 +59,7 @@ export interface TeacherResponse {
   fullName: string;
   email: string;
   position: string;
+  employmentType: EmploymentType | null;
   createdAt: string;
   updatedAt: string;
 }

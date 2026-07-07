@@ -1,18 +1,26 @@
+// src/pages/EvaluationSubmissionPage.tsx
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { FiAlertCircle, FiCheckCircle } from "react-icons/fi";
 import { evaluationLinkApi } from "../api/evaluationLinkApi";
-import { teacherAssignmentApi } from "../api/teacherAssignmentApi";
 import { evaluationSubmissionApi } from "../api/evaluationSubmissionApi";
+import { teacherSelectionApi } from "../api/teacherSelectionApi";
 import { useEvaluationForms } from "../hooks/useEvaluationForms";
 import { useEvaluationPeriod } from "../hooks/useEvaluationPeriod";
 import { EvaluationSubmissionForm } from "../components/evaluations/EvaluationSubmissionForm";
-import type { TeacherAssignment } from "../types/teacherAssignment.types";
+import { TeacherSelectionStep } from "../components/evaluations/TeacherSelectionStep";
+import type { TeacherSelection } from "../types/teacherSelection.types";
 import type { EvaluationSubmissionRequest } from "../types/evaluationSubmission.types";
 import type { EvaluationFormDetail } from "../types/evaluationCategory.types";
 import { getErrorMessage } from "../utils/getErrorMessage";
 
-type PageState = "loading" | "invalid" | "ready" | "success";
+type PageState =
+  | "loading"
+  | "invalid"
+  | "email"
+  | "selecting"
+  | "evaluating"
+  | "success";
 
 export const EvaluationSubmissionPage: React.FC = () => {
   const { token } = useParams<{ token: string }>();
@@ -23,10 +31,16 @@ export const EvaluationSubmissionPage: React.FC = () => {
   const [formDetail, setFormDetail] = useState<EvaluationFormDetail | null>(
     null,
   );
-  const [assignments, setAssignments] = useState<TeacherAssignment[]>([]);
-  const [selectedAssignmentId, setSelectedAssignmentId] = useState(0);
+  const [periodId, setPeriodId] = useState<number>(0);
+  const [linkId, setLinkId] = useState<number>(0);
   const [studentEmail, setStudentEmail] = useState("");
-  const [startError, setStartError] = useState<string | null>(null);
+  const [emailError, setEmailError] = useState<string | null>(null);
+
+  const [allTeachers, setAllTeachers] = useState<TeacherSelection[]>([]);
+  const [teachersLoading, setTeachersLoading] = useState(false);
+
+  const [queue, setQueue] = useState<TeacherSelection[]>([]);
+  const [currentIndex, setCurrentIndex] = useState(0);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 
@@ -38,7 +52,6 @@ export const EvaluationSubmissionPage: React.FC = () => {
         setPageState("invalid");
         return;
       }
-
       try {
         const isValid = await evaluationLinkApi.validateToken(token);
         if (!isValid) {
@@ -47,7 +60,6 @@ export const EvaluationSubmissionPage: React.FC = () => {
         }
 
         const link = await evaluationLinkApi.getLinkByToken(token);
-
         const detail = await getFormDetails(link.evaluationFormId);
         if (!detail) {
           if (!cancelled) setPageState("invalid");
@@ -60,16 +72,11 @@ export const EvaluationSubmissionPage: React.FC = () => {
           return;
         }
 
-        const assignmentList =
-          await teacherAssignmentApi.getAssignmentsByAcademicYearAndSemester(
-            period.academicYear,
-            period.semester,
-          );
-
         if (!cancelled) {
           setFormDetail(detail);
-          setAssignments(assignmentList);
-          setPageState("ready");
+          setPeriodId(period.id);
+          setLinkId(link.id);
+          setPageState("email");
         }
       } catch {
         if (!cancelled) setPageState("invalid");
@@ -83,14 +90,67 @@ export const EvaluationSubmissionPage: React.FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [token]);
 
-  const handleStart = (e: React.FormEvent) => {
+  const handleEmailSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!selectedAssignmentId || !studentEmail.trim()) {
-      setStartError("Please select a teacher/subject and enter your email.");
+    if (!studentEmail.trim()) {
+      setEmailError("Please enter your email.");
       return;
     }
-    setStartError(null);
-    setIsFormOpen(true);
+    setEmailError(null);
+    setTeachersLoading(true);
+    setPageState("selecting");
+
+    try {
+      const period = await fetchPeriodById(formDetail!.evaluationPeriodId);
+      if (!period) {
+        setPageState("invalid");
+        return;
+      }
+      const teachers = await teacherSelectionApi.getSelectionList(
+        period.academicYear,
+        period.semester,
+      );
+      setAllTeachers(teachers);
+    } catch {
+      setPageState("invalid");
+    } finally {
+      setTeachersLoading(false);
+    }
+  };
+
+  const handleTeacherSelectionContinue = async (
+    selected: TeacherSelection[],
+  ) => {
+    try {
+      const statuses = await evaluationSubmissionApi.checkBatchStatus({
+        evaluationPeriodId: periodId,
+        studentEmail,
+        teacherAssignmentIds: selected.map((t) => t.teacherAssignmentId),
+      });
+
+      const alreadyEvaluated = new Set(
+        statuses.filter((s) => s.evaluated).map((s) => s.teacherAssignmentId),
+      );
+
+      const remaining = selected.filter(
+        (t) => !alreadyEvaluated.has(t.teacherAssignmentId),
+      );
+
+      if (remaining.length === 0) {
+        setPageState("success");
+        return;
+      }
+
+      setQueue(remaining);
+      setCurrentIndex(0);
+      setPageState("evaluating");
+      setIsFormOpen(true);
+    } catch {
+      setQueue(selected);
+      setCurrentIndex(0);
+      setPageState("evaluating");
+      setIsFormOpen(true);
+    }
   };
 
   const handleSubmit = async (data: EvaluationSubmissionRequest) => {
@@ -98,7 +158,14 @@ export const EvaluationSubmissionPage: React.FC = () => {
     try {
       await evaluationSubmissionApi.createSubmission(data);
       setIsFormOpen(false);
-      setPageState("success");
+
+      const nextIndex = currentIndex + 1;
+      if (nextIndex >= queue.length) {
+        setPageState("success");
+      } else {
+        setCurrentIndex(nextIndex);
+        setIsFormOpen(true);
+      }
     } catch (err) {
       throw new Error(getErrorMessage(err, "Failed to submit evaluation"), {
         cause: err,
@@ -146,20 +213,18 @@ export const EvaluationSubmissionPage: React.FC = () => {
             Thank You!
           </h1>
           <p className="text-sm text-[#5B6472]">
-            Your evaluation has been submitted successfully.
+            All of your evaluations have been submitted successfully.
           </p>
         </div>
       </div>
     );
   }
 
-  const selectedAssignment = assignments.find(
-    (a) => a.id === selectedAssignmentId,
-  );
+  const currentTeacher = queue[currentIndex];
 
   return (
     <div className="min-h-screen bg-[#FAFAF6] flex items-center justify-center px-4 py-8">
-      <div className="bg-white rounded-xl border border-[#E4E1D9] shadow-sm w-full max-w-md p-6">
+      <div className="bg-white rounded-xl border border-[#E4E1D9] shadow-sm w-full max-w-2xl p-6">
         <h1
           className="text-xl font-semibold text-[#101826] mb-1"
           style={{ fontFamily: "'Space Grotesk', system-ui, sans-serif" }}>
@@ -171,64 +236,72 @@ export const EvaluationSubmissionPage: React.FC = () => {
           </p>
         )}
 
-        <form onSubmit={handleStart} className="space-y-4">
-          {startError && (
-            <div className="p-3 bg-red-50 border border-red-200 rounded-lg flex items-start gap-2">
-              <FiAlertCircle className="h-4 w-4 text-red-500 flex-shrink-0 mt-0.5" />
-              <p className="text-sm text-red-700">{startError}</p>
+        {pageState === "email" && (
+          <form onSubmit={handleEmailSubmit} className="space-y-4 max-w-sm">
+            {emailError && (
+              <div className="p-3 bg-red-50 border border-red-200 rounded-lg flex items-start gap-2">
+                <FiAlertCircle className="h-4 w-4 text-red-500 flex-shrink-0 mt-0.5" />
+                <p className="text-sm text-red-700">{emailError}</p>
+              </div>
+            )}
+            <div>
+              <label className="block text-sm font-medium text-[#101826] mb-1.5">
+                Your Email *
+              </label>
+              <input
+                type="email"
+                value={studentEmail}
+                onChange={(e) => setStudentEmail(e.target.value)}
+                required
+                placeholder="you@student.edu"
+                className="w-full px-4 py-2.5 border border-[#E4E1D9] rounded-lg focus:ring-2 focus:ring-[#E8A23D] focus:border-[#E8A23D] outline-none transition-colors bg-white text-[#101826]"
+              />
             </div>
-          )}
+            <button
+              type="submit"
+              className="w-full px-6 py-2.5 bg-[#101826] text-white rounded-lg hover:bg-[#1a2438] transition-colors text-sm font-medium">
+              Continue
+            </button>
+          </form>
+        )}
 
+        {pageState === "selecting" && (
+          <TeacherSelectionStep
+            teachers={allTeachers}
+            loading={teachersLoading}
+            onContinue={handleTeacherSelectionContinue}
+          />
+        )}
+
+        {pageState === "evaluating" && currentTeacher && (
           <div>
-            <label className="block text-sm font-medium text-[#101826] mb-1.5">
-              Teacher / Subject *
-            </label>
-            <select
-              value={selectedAssignmentId}
-              onChange={(e) =>
-                setSelectedAssignmentId(parseInt(e.target.value))
-              }
-              required
-              className="w-full px-4 py-2.5 border border-[#E4E1D9] rounded-lg focus:ring-2 focus:ring-[#E8A23D] focus:border-[#E8A23D] outline-none transition-colors bg-white text-[#101826]">
-              <option value={0}>Select teacher and subject</option>
-              {assignments.map((a) => (
-                <option key={a.id} value={a.id}>
-                  {a.teacherName} — {a.subjectName}
-                </option>
-              ))}
-            </select>
-          </div>
+            <p className="text-sm text-[#5B6472] mb-4">
+              Evaluating {currentIndex + 1} of {queue.length}:{" "}
+              <span className="font-medium text-[#101826]">
+                {currentTeacher.fullName}
+              </span>
+            </p>
 
-          <div>
-            <label className="block text-sm font-medium text-[#101826] mb-1.5">
-              Your Email *
-            </label>
-            <input
-              type="email"
-              value={studentEmail}
-              onChange={(e) => setStudentEmail(e.target.value)}
-              required
-              placeholder="you@student.edu"
-              className="w-full px-4 py-2.5 border border-[#E4E1D9] rounded-lg focus:ring-2 focus:ring-[#E8A23D] focus:border-[#E8A23D] outline-none transition-colors bg-white text-[#101826]"
-            />
+            {!isFormOpen && (
+              <button
+                onClick={() => setIsFormOpen(true)}
+                className="w-full px-6 py-2.5 bg-[#101826] text-white rounded-lg hover:bg-[#1a2438] transition-colors text-sm font-medium">
+                Continue to {currentTeacher.fullName}
+              </button>
+            )}
           </div>
-
-          <button
-            type="submit"
-            className="w-full px-6 py-2.5 bg-[#101826] text-white rounded-lg hover:bg-[#1a2438] transition-colors text-sm font-medium">
-            Start Evaluation
-          </button>
-        </form>
+        )}
       </div>
 
-      {formDetail && selectedAssignment && (
+      {formDetail && currentTeacher && (
         <EvaluationSubmissionForm
           isOpen={isFormOpen}
           onClose={() => setIsFormOpen(false)}
           onSubmit={handleSubmit}
           form={formDetail}
           categories={formDetail.categories}
-          teacherAssignmentId={selectedAssignment.id}
+          teacherAssignmentId={currentTeacher.teacherAssignmentId}
+          evaluationLinkId={linkId}
           studentEmail={studentEmail}
           loading={submitting}
         />

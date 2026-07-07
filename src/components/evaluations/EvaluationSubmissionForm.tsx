@@ -13,6 +13,7 @@ interface EvaluationSubmissionFormProps {
   form: EvaluationForm | null;
   categories: EvaluationCategory[];
   teacherAssignmentId: number;
+  evaluationLinkId?: number;
   studentEmail: string;
   loading?: boolean;
 }
@@ -26,6 +27,7 @@ export const EvaluationSubmissionForm: React.FC<
   form,
   categories = [],
   teacherAssignmentId,
+  evaluationLinkId,
   studentEmail,
   loading = false,
 }) => {
@@ -100,6 +102,7 @@ export const EvaluationSubmissionForm: React.FC<
     const submissionData: EvaluationSubmissionRequest = {
       evaluationPeriodId: form?.evaluationPeriodId || 0,
       teacherAssignmentId,
+      evaluationLinkId,
       studentEmail,
       overallComment: overallComment.trim() || undefined,
       responses: Object.entries(responses)
@@ -114,7 +117,6 @@ export const EvaluationSubmissionForm: React.FC<
       await onSubmit(submissionData);
       onClose();
     } catch (err) {
-      // Fix: Pass both the error and a fallback message
       setError(getErrorMessage(err, "Failed to submit evaluation"));
     } finally {
       setIsSubmitting(false);

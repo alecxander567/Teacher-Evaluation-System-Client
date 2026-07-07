@@ -1,27 +1,13 @@
 // src/api/evaluationSubmissionApi.ts
-import axios from "axios";
+import { api } from "./client";
 import type {
   EvaluationSubmission,
   EvaluationSubmissionRequest,
 } from "../types/evaluationSubmission.types";
-
-const API_BASE_URL =
-  import.meta.env.VITE_API_URL || "http://localhost:8080/api";
-
-const api = axios.create({
-  baseURL: API_BASE_URL,
-  headers: {
-    "Content-Type": "application/json",
-  },
-});
-
-api.interceptors.request.use((config) => {
-  const token = localStorage.getItem("accessToken");
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
-  }
-  return config;
-});
+import type {
+  BatchStatusRequest,
+  TeacherEvaluationStatus,
+} from "../types/teacherSelection.types";
 
 export const evaluationSubmissionApi = {
   createSubmission: async (
@@ -99,5 +85,15 @@ export const evaluationSubmissionApi = {
 
   deleteSubmission: async (id: number): Promise<void> => {
     await api.delete(`/evaluation-submissions/${id}`);
+  },
+
+  checkBatchStatus: async (
+    data: BatchStatusRequest,
+  ): Promise<TeacherEvaluationStatus[]> => {
+    const response = await api.post(
+      "/evaluation-submissions/check-batch-status",
+      data,
+    );
+    return response.data;
   },
 };

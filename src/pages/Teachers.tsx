@@ -7,8 +7,7 @@ import { TeacherList } from "../components/teachers/TeacherList";
 import { TeacherForm } from "../components/teachers/TeacherForm";
 import { DeleteConfirmationModal } from "../components/DeleteConfirmationModal";
 import { FiArrowLeft, FiLogOut, FiBell, FiUser } from "react-icons/fi";
-import type { Teacher } from "../types/department.types";
-import type { TeacherRequest } from "../types/department.types";
+import type { Teacher, TeacherRequest } from "../types/teacher";
 import { EvalMark } from "../components/icons/EvalMark";
 import { AlertModal } from "../components/AlertModal";
 
