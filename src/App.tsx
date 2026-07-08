@@ -9,6 +9,7 @@ import {
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import Dashboard from "./pages/Dashboard";
+import Analytics from "./pages/Analytics"; // ADD THIS IMPORT
 import { Teachers } from "./pages/Teachers";
 import Departments from "./pages/Departments";
 import DepartmentCreate from "./pages/DepartmentCreate";
@@ -22,7 +23,7 @@ import { EvaluationForms } from "./pages/EvaluationForms";
 import EvaluationFormDetail from "./pages/EvaluationFormDetail";
 import TeacherAssignments from "./pages/TeacherAssignment";
 import { EvaluationSubmissionPage } from "./pages/EvaluationSubmissionPage";
-import { StudentEvaluationPage } from "./pages/StudentEvaluationPage"; // ADD THIS IMPORT
+import { StudentEvaluationPage } from "./pages/StudentEvaluationPage";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 
 const App: React.FC = () => {
@@ -32,13 +33,14 @@ const App: React.FC = () => {
         {/* Public Routes */}
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
+
         {/* Student Evaluation Routes - Public (accessed via token) */}
         <Route path="/evaluate/:token" element={<EvaluationSubmissionPage />} />
         <Route
           path="/student/evaluate/:token"
           element={<StudentEvaluationPage />}
-        />{" "}
-        {/* ADD THIS ROUTE */}
+        />
+
         {/* Protected Routes */}
         <Route
           path="/dashboard"
@@ -48,6 +50,17 @@ const App: React.FC = () => {
             </ProtectedRoute>
           }
         />
+
+        {/* Analytics Route */}
+        <Route
+          path="/analytics"
+          element={
+            <ProtectedRoute>
+              <Analytics />
+            </ProtectedRoute>
+          }
+        />
+
         {/* Teacher Routes */}
         <Route
           path="/teachers"
@@ -57,6 +70,7 @@ const App: React.FC = () => {
             </ProtectedRoute>
           }
         />
+
         {/* Department Routes */}
         <Route
           path="/departments"
@@ -90,6 +104,7 @@ const App: React.FC = () => {
             </ProtectedRoute>
           }
         />
+
         {/* Subject Routes */}
         <Route
           path="/subjects"
@@ -107,6 +122,7 @@ const App: React.FC = () => {
             </ProtectedRoute>
           }
         />
+
         {/* Assignment Routes */}
         <Route
           path="/assignments"
@@ -116,6 +132,7 @@ const App: React.FC = () => {
             </ProtectedRoute>
           }
         />
+
         {/* Evaluation Period Routes */}
         <Route
           path="/evaluation-periods"
@@ -125,6 +142,7 @@ const App: React.FC = () => {
             </ProtectedRoute>
           }
         />
+
         {/* Evaluation Form Routes */}
         <Route
           path="/evaluation-forms"
@@ -142,6 +160,7 @@ const App: React.FC = () => {
             </ProtectedRoute>
           }
         />
+
         {/* Teacher Assignment Routes */}
         <Route
           path="/teacher-assignments"
@@ -151,8 +170,10 @@ const App: React.FC = () => {
             </ProtectedRoute>
           }
         />
+
         {/* Default Route - Redirect to login */}
         <Route path="/" element={<Navigate to="/login" replace />} />
+
         {/* Catch all - Redirect to login for any undefined routes */}
         <Route path="*" element={<Navigate to="/login" replace />} />
       </Routes>

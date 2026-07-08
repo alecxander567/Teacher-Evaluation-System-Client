@@ -8,7 +8,7 @@ import {
   FiUsers,
   FiSettings,
   FiBell,
-  FiCalendar,
+  FiTrendingUp,
   FiFileText,
   FiArrowRight,
   FiUserPlus,
@@ -61,7 +61,7 @@ const Dashboard: React.FC = () => {
       try {
         setLoading(true);
         const response = await fetch(
-          "https://every-drinks-notice.loca.lt/api/dashboard-summary",
+          "https://rich-pots-wait.loca.lt/api/dashboard-summary",
           {
             headers: {
               "Content-Type": "application/json",
@@ -306,54 +306,48 @@ const Dashboard: React.FC = () => {
                 <FiFileText className="h-5 w-5 mr-3 text-[#B8791F] group-hover:text-[#E8A23D] flex-shrink-0" />
                 Manage Evaluation Forms
               </button>
-
               <button
                 onClick={() => navigate("/teachers")}
                 className="w-full flex items-center px-4 py-3 text-sm text-[#101826] bg-[#FAFAF6] hover:bg-[#101826] hover:text-white rounded-lg transition-colors group">
                 <FiUserPlus className="h-5 w-5 mr-3 text-[#B8791F] group-hover:text-[#E8A23D] flex-shrink-0" />
                 Manage Teachers
               </button>
-
               <button
                 onClick={() => navigate("/teacher-assignments")}
                 className="w-full flex items-center px-4 py-3 text-sm text-[#101826] bg-[#FAFAF6] hover:bg-[#101826] hover:text-white rounded-lg transition-colors group">
                 <FiUserCheck className="h-5 w-5 mr-3 text-[#B8791F] group-hover:text-[#E8A23D] flex-shrink-0" />
                 Manage Teacher Assignments
               </button>
-
               <button
                 onClick={() => navigate("/departments")}
                 className="w-full flex items-center px-4 py-3 text-sm text-[#101826] bg-[#FAFAF6] hover:bg-[#101826] hover:text-white rounded-lg transition-colors group">
                 <FiUsers className="h-5 w-5 mr-3 text-[#B8791F] group-hover:text-[#E8A23D] flex-shrink-0" />
                 Manage Departments
               </button>
-
               <button
                 onClick={() => navigate("/subjects")}
                 className="w-full flex items-center px-4 py-3 text-sm text-[#101826] bg-[#FAFAF6] hover:bg-[#101826] hover:text-white rounded-lg transition-colors group">
                 <FiBookOpen className="h-5 w-5 mr-3 text-[#B8791F] group-hover:text-[#E8A23D] flex-shrink-0" />
                 Manage Subjects
               </button>
-
               <button
                 onClick={() => navigate("/assignments")}
                 className="w-full flex items-center px-4 py-3 text-sm text-[#101826] bg-[#FAFAF6] hover:bg-[#101826] hover:text-white rounded-lg transition-colors group">
                 <FiLink className="h-5 w-5 mr-3 text-[#B8791F] group-hover:text-[#E8A23D] flex-shrink-0" />
                 Manage Assignments
               </button>
-
               <button
                 onClick={() => navigate("/evaluation-periods")}
                 className="w-full flex items-center px-4 py-3 text-sm text-[#101826] bg-[#FAFAF6] hover:bg-[#101826] hover:text-white rounded-lg transition-colors group">
                 <FiClock className="h-5 w-5 mr-3 text-[#B8791F] group-hover:text-[#E8A23D] flex-shrink-0" />
                 Manage Evaluation Periods
               </button>
-
-              <button className="w-full flex items-center px-4 py-3 text-sm text-[#101826] bg-[#FAFAF6] hover:bg-[#101826] hover:text-white rounded-lg transition-colors group">
-                <FiCalendar className="h-5 w-5 mr-3 text-[#B8791F] group-hover:text-[#E8A23D] flex-shrink-0" />
-                Schedule Review
+              <button
+                onClick={() => navigate("/analytics")}
+                className="w-full flex items-center px-4 py-3 text-sm text-[#101826] bg-[#FAFAF6] hover:bg-[#101826] hover:text-white rounded-lg transition-colors group">
+                <FiTrendingUp className="h-5 w-5 mr-3 text-[#B8791F] group-hover:text-[#E8A23D] flex-shrink-0" />
+                View Analytics Dashboard
               </button>
-
               <button className="w-full flex items-center px-4 py-3 text-sm text-[#101826] bg-[#FAFAF6] hover:bg-[#101826] hover:text-white rounded-lg transition-colors group">
                 <FiSettings className="h-5 w-5 mr-3 text-[#B8791F] group-hover:text-[#E8A23D] flex-shrink-0" />
                 System Settings
