@@ -1,5 +1,5 @@
 // src/components/student/TeacherSelectionForm.tsx
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   FiCheck,
   FiAlertCircle,
@@ -32,9 +32,12 @@ export const TeacherSelectionForm: React.FC<TeacherSelectionFormProps> = ({
   const [emailError, setEmailError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Reset selections when teacher groups change
-  useEffect(() => {
-    // Auto-select teachers that are marked as selected in the data
+  // Render-time adjustment: recompute auto-selected teachers whenever
+  // teacherGroups changes, instead of syncing via useEffect.
+  const [prevTeacherGroups, setPrevTeacherGroups] = useState(teacherGroups);
+  if (teacherGroups !== prevTeacherGroups) {
+    setPrevTeacherGroups(teacherGroups);
+
     const autoSelected = new Set<number>();
     teacherGroups.forEach((group) => {
       group.teachers.forEach((teacher) => {
@@ -44,7 +47,7 @@ export const TeacherSelectionForm: React.FC<TeacherSelectionFormProps> = ({
       });
     });
     setSelectedTeachers(autoSelected);
-  }, [teacherGroups]);
+  }
 
   const handleToggleTeacher = (teacherAssignmentId: number) => {
     setSelectedTeachers((prev) => {

@@ -58,6 +58,69 @@ export const StudentEvaluationPage: React.FC = () => {
     message: string;
   } | null>(null);
 
+  // Declared before the effect that uses them, and memoized so the
+  // effect's dependency array can safely reference them.
+  const loadTeachers = useCallback(
+    async (periodId: number, formId: number) => {
+      setLoadingTeachers(true);
+      try {
+        const groups = await studentEvaluationApi.getAvailableTeachers(
+          periodId,
+          formId,
+          studentEmail || "pending@student.edu",
+        );
+        setTeacherGroups(groups);
+      } catch (err) {
+        setError(getErrorMessage(err, "Failed to load teachers"));
+        setPageState("error");
+      } finally {
+        setLoadingTeachers(false);
+      }
+    },
+    [studentEmail],
+  );
+
+  const resumeSession = useCallback(
+    async (sessionId: string, detail: EvaluationFormDetail) => {
+      try {
+        const sessionData = await studentEvaluationApi.getSession(sessionId);
+        if (!sessionData || sessionData.status === "COMPLETED") {
+          setPageState("completed");
+          return;
+        }
+
+        setSession(sessionData);
+        setFormDetail(detail);
+
+        // Get progress
+        const progressData =
+          await studentEvaluationApi.getSessionProgress(sessionId);
+        setProgress(progressData);
+
+        // Get current teacher
+        const nextTeacher =
+          await studentEvaluationApi.getNextTeacher(sessionId);
+        setCurrentProgress(nextTeacher);
+
+        if (nextTeacher.teacherAssignmentId) {
+          setPageState("evaluating");
+          // Load form for current teacher
+          const form = await studentEvaluationApi.getTeacherEvaluationForm(
+            sessionId,
+            nextTeacher.teacherAssignmentId,
+          );
+          setFormDetail(form);
+        } else {
+          setPageState("completed");
+        }
+      } catch (err) {
+        setError(getErrorMessage(err, "Failed to resume evaluation"));
+        setPageState("error");
+      }
+    },
+    [],
+  );
+
   // Load initial data
   useEffect(() => {
     const init = async () => {
@@ -123,64 +186,7 @@ export const StudentEvaluationPage: React.FC = () => {
     };
 
     init();
-  }, [token]);
-
-  const loadTeachers = async (periodId: number, formId: number) => {
-    setLoadingTeachers(true);
-    try {
-      const groups = await studentEvaluationApi.getAvailableTeachers(
-        periodId,
-        formId,
-        studentEmail || "pending@student.edu",
-      );
-      setTeacherGroups(groups);
-    } catch (err) {
-      setError(getErrorMessage(err, "Failed to load teachers"));
-      setPageState("error");
-    } finally {
-      setLoadingTeachers(false);
-    }
-  };
-
-  const resumeSession = async (
-    sessionId: string,
-    detail: EvaluationFormDetail,
-  ) => {
-    try {
-      const sessionData = await studentEvaluationApi.getSession(sessionId);
-      if (!sessionData || sessionData.status === "COMPLETED") {
-        setPageState("completed");
-        return;
-      }
-
-      setSession(sessionData);
-      setFormDetail(detail);
-
-      // Get progress
-      const progressData =
-        await studentEvaluationApi.getSessionProgress(sessionId);
-      setProgress(progressData);
-
-      // Get current teacher
-      const nextTeacher = await studentEvaluationApi.getNextTeacher(sessionId);
-      setCurrentProgress(nextTeacher);
-
-      if (nextTeacher.teacherAssignmentId) {
-        setPageState("evaluating");
-        // Load form for current teacher
-        const form = await studentEvaluationApi.getTeacherEvaluationForm(
-          sessionId,
-          nextTeacher.teacherAssignmentId,
-        );
-        setFormDetail(form);
-      } else {
-        setPageState("completed");
-      }
-    } catch (err) {
-      setError(getErrorMessage(err, "Failed to resume evaluation"));
-      setPageState("error");
-    }
-  };
+  }, [token, getFormDetails, resumeSession, loadTeachers]);
 
   const handleStartEvaluation = async (selectedIds: number[]) => {
     if (!formDetail) return;

@@ -111,10 +111,14 @@ const Dashboard: React.FC = () => {
   ];
 
   // Parse completion rate (remove % sign and convert to number)
-  const completionRate =
+  const rawCompletionRate =
     kpiData?.evaluation_completion_rate ?
       parseFloat(kpiData.evaluation_completion_rate.replace("%", ""))
     : 0;
+
+  // Clamp to a sane 0-100 range in case the upstream API returns
+  // an out-of-bounds value (e.g. >100% due to a bug on their end)
+  const completionRate = Math.min(Math.max(rawCompletionRate, 0), 100);
 
   if (!user || loading) {
     return (
@@ -245,10 +249,10 @@ const Dashboard: React.FC = () => {
             {/* Evaluation Completion Rate with Progress Bar */}
             <KPICard
               title="Evaluation Completion Rate"
-              value={kpiData?.evaluation_completion_rate ?? "0%"}
+              value={`${completionRate.toFixed(1)}%`}
               icon={<FiCheckCircle className="h-5 w-5 text-[#E8A23D]" />}
               subtitle="Target: 90%"
-              progress={Math.min(completionRate, 100)}
+              progress={completionRate}
               showProgress={true}
             />
           </div>

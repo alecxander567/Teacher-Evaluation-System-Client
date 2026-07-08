@@ -1,6 +1,6 @@
 // src/components/student/EvaluationProgress.tsx
 import React from "react";
-import { FiCheckCircle, FiCircle, FiUser, FiBookOpen } from "react-icons/fi";
+import { FiCheckCircle, FiCircle, FiBookOpen } from "react-icons/fi";
 import type { TeacherEvaluationProgress } from "../../types/studentEvaluation.types";
 
 interface EvaluationProgressProps {
@@ -30,7 +30,6 @@ export const EvaluationProgress: React.FC<EvaluationProgressProps> = ({
         {progress.map((item, index) => {
           const isCurrent = index === currentIndex;
           const isCompleted = item.evaluated;
-          const isPending = !isCompleted && !isCurrent;
 
           return (
             <div

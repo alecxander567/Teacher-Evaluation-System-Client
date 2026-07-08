@@ -17,6 +17,7 @@ export interface EvaluationSubmission {
   id: number;
   evaluationPeriodId: number;
   teacherAssignmentId: number;
+  evaluationLinkId?: number;
   studentEmail: string;
   overallComment?: string;
   submittedAt: string;
@@ -32,6 +33,7 @@ export interface EvaluationSubmission {
 export interface EvaluationSubmissionRequest {
   evaluationPeriodId: number;
   teacherAssignmentId: number;
+  evaluationLinkId?: number;
   studentEmail: string;
   overallComment?: string;
   responses: EvaluationResponseRequest[];

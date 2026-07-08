@@ -1,6 +1,5 @@
 // src/components/dashboard/KPICard.tsx
 import React from "react";
-import { FiStar, FiUsers, FiClipboard, FiCheckCircle } from "react-icons/fi";
 
 interface KPICardProps {
   title: string;
@@ -11,7 +10,7 @@ interface KPICardProps {
     value: number;
     isPositive: boolean;
   };
-  progress?: number; // 0-100
+  progress?: number; 
   showProgress?: boolean;
 }
 
