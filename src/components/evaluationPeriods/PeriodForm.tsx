@@ -121,9 +121,9 @@ export const PeriodForm: React.FC<PeriodFormProps> = ({
         {/* Modal */}
         <div className="relative bg-white rounded-xl shadow-xl max-w-2xl w-full">
           {/* Header */}
-          <div className="flex items-center justify-between p-4 sm:p-6 border-b border-[#E4E1D9]">
+          <div className="flex items-center justify-between p-4 sm:p-6 border-b border-[#E4E8F0]">
             <h3
-              className="text-lg font-semibold text-[#101826]"
+              className="text-lg font-semibold text-[#101625]"
               style={{ fontFamily: "'Space Grotesk', system-ui, sans-serif" }}>
               {period ?
                 "Edit Evaluation Period"
@@ -131,8 +131,8 @@ export const PeriodForm: React.FC<PeriodFormProps> = ({
             </h3>
             <button
               onClick={onClose}
-              className="p-1 hover:bg-[#FAFAF6] rounded-lg transition-colors">
-              <FiX className="h-5 w-5 text-[#5B6472]" />
+              className="p-1 hover:bg-[#F4F6FA] rounded-lg transition-colors">
+              <FiX className="h-5 w-5 text-[#5A6478]" />
             </button>
           </div>
 
@@ -141,7 +141,7 @@ export const PeriodForm: React.FC<PeriodFormProps> = ({
             <div className="space-y-4">
               {/* Title */}
               <div>
-                <label className="block text-sm font-medium text-[#101826] mb-1">
+                <label className="block text-sm font-medium text-[#101625] mb-1">
                   Title *
                 </label>
                 <input
@@ -150,8 +150,8 @@ export const PeriodForm: React.FC<PeriodFormProps> = ({
                   value={formData.title}
                   onChange={handleChange}
                   placeholder="e.g., Faculty Evaluation 2024-2025"
-                  className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#E8A23D] focus:border-transparent ${
-                    errors.title ? "border-red-500" : "border-[#E4E1D9]"
+                  className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#3D6BFF] focus:border-transparent ${
+                    errors.title ? "border-red-500" : "border-[#E4E8F0]"
                   }`}
                 />
                 {errors.title && (
@@ -165,7 +165,7 @@ export const PeriodForm: React.FC<PeriodFormProps> = ({
               {/* Academic Year and Semester */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-[#101826] mb-1">
+                  <label className="block text-sm font-medium text-[#101625] mb-1">
                     Academic Year *
                   </label>
                   <input
@@ -174,9 +174,9 @@ export const PeriodForm: React.FC<PeriodFormProps> = ({
                     value={formData.academicYear}
                     onChange={handleChange}
                     placeholder="e.g., 2024-2025"
-                    className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#E8A23D] focus:border-transparent ${
+                    className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#3D6BFF] focus:border-transparent ${
                       errors.academicYear ? "border-red-500" : (
-                        "border-[#E4E1D9]"
+                        "border-[#E4E8F0]"
                       )
                     }`}
                   />
@@ -188,14 +188,14 @@ export const PeriodForm: React.FC<PeriodFormProps> = ({
                   )}
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-[#101826] mb-1">
+                  <label className="block text-sm font-medium text-[#101625] mb-1">
                     Semester *
                   </label>
                   <select
                     name="semester"
                     value={formData.semester}
                     onChange={handleChange}
-                    className="w-full px-3 py-2 border border-[#E4E1D9] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#E8A23D] focus:border-transparent bg-white">
+                    className="w-full px-3 py-2 border border-[#E4E8F0] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#3D6BFF] focus:border-transparent bg-white">
                     {semesterOptions.map((sem) => (
                       <option key={sem} value={sem}>
                         {sem}
@@ -208,7 +208,7 @@ export const PeriodForm: React.FC<PeriodFormProps> = ({
               {/* Start and End Dates */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-[#101826] mb-1">
+                  <label className="block text-sm font-medium text-[#101625] mb-1">
                     Start Date *
                   </label>
                   <input
@@ -216,8 +216,8 @@ export const PeriodForm: React.FC<PeriodFormProps> = ({
                     name="startDate"
                     value={formData.startDate}
                     onChange={handleChange}
-                    className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#E8A23D] focus:border-transparent ${
-                      errors.startDate ? "border-red-500" : "border-[#E4E1D9]"
+                    className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#3D6BFF] focus:border-transparent ${
+                      errors.startDate ? "border-red-500" : "border-[#E4E8F0]"
                     }`}
                   />
                   {errors.startDate && (
@@ -228,7 +228,7 @@ export const PeriodForm: React.FC<PeriodFormProps> = ({
                   )}
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-[#101826] mb-1">
+                  <label className="block text-sm font-medium text-[#101625] mb-1">
                     End Date *
                   </label>
                   <input
@@ -236,8 +236,8 @@ export const PeriodForm: React.FC<PeriodFormProps> = ({
                     name="endDate"
                     value={formData.endDate}
                     onChange={handleChange}
-                    className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#E8A23D] focus:border-transparent ${
-                      errors.endDate ? "border-red-500" : "border-[#E4E1D9]"
+                    className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#3D6BFF] focus:border-transparent ${
+                      errors.endDate ? "border-red-500" : "border-[#E4E8F0]"
                     }`}
                   />
                   {errors.endDate && (
@@ -251,20 +251,20 @@ export const PeriodForm: React.FC<PeriodFormProps> = ({
 
               {/* Status */}
               <div>
-                <label className="block text-sm font-medium text-[#101826] mb-1">
+                <label className="block text-sm font-medium text-[#101625] mb-1">
                   Status
                 </label>
                 <select
                   name="status"
                   value={formData.status}
                   onChange={handleChange}
-                  className="w-full px-3 py-2 border border-[#E4E1D9] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#E8A23D] focus:border-transparent bg-white">
+                  className="w-full px-3 py-2 border border-[#E4E8F0] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#3D6BFF] focus:border-transparent bg-white">
                   <option value="draft">Draft</option>
                   <option value="active">Active</option>
                   <option value="closed">Closed</option>
                   <option value="archived">Archived</option>
                 </select>
-                <p className="mt-1 text-xs text-[#5B6472]">
+                <p className="mt-1 text-xs text-[#5A6478]">
                   {formData.status === "active" ?
                     "Only one active period is allowed per academic year and semester"
                   : "Set to active when ready to start evaluations"}
@@ -273,17 +273,17 @@ export const PeriodForm: React.FC<PeriodFormProps> = ({
             </div>
 
             {/* Actions */}
-            <div className="flex justify-end gap-3 mt-6 pt-4 border-t border-[#E4E1D9]">
+            <div className="flex justify-end gap-3 mt-6 pt-4 border-t border-[#E4E8F0]">
               <button
                 type="button"
                 onClick={onClose}
-                className="px-4 py-2 text-sm font-medium text-[#5B6472] hover:text-[#101826] transition-colors">
+                className="px-4 py-2 text-sm font-medium text-[#5A6478] hover:text-[#101625] transition-colors">
                 Cancel
               </button>
               <button
                 type="submit"
                 disabled={loading}
-                className="px-4 py-2 bg-[#101826] text-white rounded-lg hover:bg-[#1a2438] transition-colors text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2">
+                className="px-4 py-2 bg-[#101625] text-white rounded-lg hover:bg-[#0A0E1A] transition-colors text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2">
                 {loading ?
                   <>
                     <div className="inline-block animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></div>

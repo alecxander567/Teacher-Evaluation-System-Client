@@ -86,16 +86,16 @@ const DepartmentForm: React.FC<DepartmentFormProps> = ({
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
       <div className="bg-white rounded-xl max-w-md w-full shadow-xl">
         {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-[#E4E1D9]">
+        <div className="flex items-center justify-between p-6 border-b border-[#E4E8F0]">
           <h2
-            className="text-xl font-semibold text-[#101826]"
+            className="text-xl font-semibold text-[#101625]"
             style={{ fontFamily: "'Space Grotesk', system-ui, sans-serif" }}>
             {initialData ? "Edit Department" : "New Department"}
           </h2>
           <button
             onClick={onCancel}
-            className="p-1 hover:bg-[#FAFAF6] rounded-lg transition-colors">
-            <FiX className="h-5 w-5 text-[#5B6472]" />
+            className="p-1 hover:bg-[#F4F6FA] rounded-lg transition-colors">
+            <FiX className="h-5 w-5 text-[#5A6478]" />
           </button>
         </div>
 
@@ -108,7 +108,7 @@ const DepartmentForm: React.FC<DepartmentFormProps> = ({
           )}
 
           <div className="mb-4">
-            <label className="block text-sm font-medium text-[#101826] mb-1">
+            <label className="block text-sm font-medium text-[#101625] mb-1">
               Department Name *
             </label>
             <input
@@ -117,8 +117,8 @@ const DepartmentForm: React.FC<DepartmentFormProps> = ({
               value={formData.name}
               onChange={handleChange}
               className={`w-full px-3 py-2 border ${
-                validationErrors.name ? "border-red-300" : "border-[#E4E1D9]"
-              } rounded-lg focus:outline-none focus:border-[#E8A23D] focus:ring-2 focus:ring-[#E8A23D]/20 transition-colors`}
+                validationErrors.name ? "border-red-300" : "border-[#E4E8F0]"
+              } rounded-lg focus:outline-none focus:border-[#3D6BFF] focus:ring-2 focus:ring-[#3D6BFF]/20 transition-colors`}
               placeholder="e.g., Computer Science"
               disabled={loading}
             />
@@ -130,7 +130,7 @@ const DepartmentForm: React.FC<DepartmentFormProps> = ({
           </div>
 
           <div className="mb-6">
-            <label className="block text-sm font-medium text-[#101826] mb-1">
+            <label className="block text-sm font-medium text-[#101625] mb-1">
               Description
             </label>
             <textarea
@@ -140,9 +140,9 @@ const DepartmentForm: React.FC<DepartmentFormProps> = ({
               rows={4}
               className={`w-full px-3 py-2 border ${
                 validationErrors.description ? "border-red-300" : (
-                  "border-[#E4E1D9]"
+                  "border-[#E4E8F0]"
                 )
-              } rounded-lg focus:outline-none focus:border-[#E8A23D] focus:ring-2 focus:ring-[#E8A23D]/20 transition-colors resize-none`}
+              } rounded-lg focus:outline-none focus:border-[#3D6BFF] focus:ring-2 focus:ring-[#3D6BFF]/20 transition-colors resize-none`}
               placeholder="Brief description of the department..."
               disabled={loading}
             />
@@ -158,13 +158,13 @@ const DepartmentForm: React.FC<DepartmentFormProps> = ({
             <button
               type="button"
               onClick={onCancel}
-              className="flex-1 px-4 py-2 border border-[#E4E1D9] text-[#5B6472] rounded-lg hover:bg-[#FAFAF6] transition-colors"
+              className="flex-1 px-4 py-2 border border-[#E4E8F0] text-[#5A6478] rounded-lg hover:bg-[#F4F6FA] transition-colors"
               disabled={loading}>
               Cancel
             </button>
             <button
               type="submit"
-              className="flex-1 px-4 py-2 bg-[#101826] text-white rounded-lg hover:bg-[#1a2538] transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+              className="flex-1 px-4 py-2 bg-[#3D6BFF] text-white rounded-lg hover:bg-[#2A5AF0] transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
               disabled={loading}>
               {loading ?
                 <div className="inline-block animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></div>

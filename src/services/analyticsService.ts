@@ -9,7 +9,7 @@ import type {
   TeacherRequiringImprovement,
 } from "../types/analytics";
 
-const API_BASE_URL = "https://rich-pots-wait.loca.lt/api";
+const API_BASE_URL = "https://loud-terms-pick.loca.lt/api";
 
 const getAuthHeaders = () => ({
   "Content-Type": "application/json",

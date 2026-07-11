@@ -1,5 +1,4 @@
 // src/components/analytics/DonutChart.tsx
-
 import React from "react";
 import {
   PieChart,
@@ -20,12 +19,12 @@ interface Props<T extends object> {
 }
 
 const DEFAULT_COLORS = [
-  "#E8A23D",
-  "#4A90E2",
-  "#2ECC71",
-  "#E74C3C",
-  "#9B59B6",
-  "#F39C12",
+  "#3D6BFF",
+  "#6E8CFF",
+  "#9BAEFF",
+  "#1A3A8A",
+  "#4A7AFF",
+  "#2A5AF0",
 ];
 
 interface LabelProps {
@@ -43,8 +42,16 @@ export function DonutChart<T extends object>({
 }: Props<T>) {
   if (loading) {
     return (
-      <div className="h-72 flex items-center justify-center bg-white rounded-xl border border-[#E4E1D9]">
-        <div className="text-[#5B6472]">Loading chart data...</div>
+      <div className="h-72 flex items-center justify-center bg-[#FBFCFE] rounded-xl border border-[#E4E8F0]">
+        <div className="text-[#5A6478]">Loading chart data...</div>
+      </div>
+    );
+  }
+
+  if (data.length === 0) {
+    return (
+      <div className="h-72 flex items-center justify-center bg-[#FBFCFE] rounded-xl border border-[#E4E8F0]">
+        <div className="text-[#5A6478]">No data available</div>
       </div>
     );
   }
@@ -52,7 +59,7 @@ export function DonutChart<T extends object>({
   const renderCustomLabel = (props: LabelProps) => {
     const { name, percent } = props;
     if (percent === undefined || name === undefined) return null;
-    return `${name}: ${(percent * 100).toFixed(0)}%`;
+    return `${(percent * 100).toFixed(0)}%`;
   };
 
   const formatTooltip = (
@@ -65,9 +72,9 @@ export function DonutChart<T extends object>({
   };
 
   return (
-    <div className="bg-white rounded-xl border border-[#E4E1D9] p-6">
+    <div>
       <h3
-        className="text-lg font-semibold text-[#101826] mb-4"
+        className="text-lg font-semibold text-[#101625] mb-4"
         style={{ fontFamily: "'Space Grotesk', system-ui, sans-serif" }}>
         {title}
       </h3>
@@ -93,14 +100,20 @@ export function DonutChart<T extends object>({
             </Pie>
             <Tooltip
               contentStyle={{
-                backgroundColor: "#101826",
+                backgroundColor: "#121A2E",
                 border: "none",
                 borderRadius: "8px",
-                color: "#FAFAF6",
+                color: "#F4F6FA",
+                padding: "12px 16px",
               }}
+              labelStyle={{ color: "#8E97AE", fontSize: "12px" }}
+              itemStyle={{ color: "#F4F6FA", fontSize: "13px" }}
               formatter={formatTooltip}
             />
-            <Legend />
+            <Legend
+              wrapperStyle={{ fontSize: "12px", color: "#5A6478" }}
+              iconType="circle"
+            />
           </PieChart>
         </ResponsiveContainer>
       </div>

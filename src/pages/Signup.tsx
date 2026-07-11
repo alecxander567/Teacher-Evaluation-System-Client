@@ -24,19 +24,19 @@ const EvalMark: React.FC<{ className?: string }> = ({ className }) => (
       cx="24"
       cy="24"
       r="19"
-      stroke="#E8A23D"
+      stroke="#3D6BFF"
       strokeWidth="2.5"
       strokeOpacity="0.35"
     />
     <path
       d="M24 5a19 19 0 0 1 16.45 28.4"
-      stroke="#E8A23D"
+      stroke="#3D6BFF"
       strokeWidth="2.5"
       strokeLinecap="round"
     />
     <path
       d="M15.5 24.5l5.5 5.5L32.5 18"
-      stroke="#E8A23D"
+      stroke="#3D6BFF"
       strokeWidth="3"
       strokeLinecap="round"
       strokeLinejoin="round"
@@ -89,16 +89,23 @@ const Signup: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col md:flex-row bg-[#FAFAF6]">
+    <div className="min-h-screen flex flex-col md:flex-row bg-[#F4F6FA]">
       {/* Left — identity panel */}
-      <div className="relative overflow-hidden bg-[#101826] text-[#FAFAF6] flex flex-col justify-between md:w-[44%] px-10 py-12 md:px-16 md:py-16">
-        <EvalMark className="pointer-events-none absolute -right-24 -bottom-24 w-[420px] h-[420px] opacity-[0.06]" />
+      <div className="relative overflow-hidden bg-gradient-to-b from-[#0A0E1A] to-[#121A2E] text-[#F4F6FA] flex flex-col justify-between md:w-[44%] px-10 py-12 md:px-16 md:py-16">
+        {/* Sapphire glow — a quiet light in the nightfall field */}
+        <div
+          className="pointer-events-none absolute -top-32 -right-24 w-[420px] h-[420px] rounded-full opacity-25 blur-3xl"
+          style={{ background: "#3D6BFF" }}
+        />
+        <EvalMark className="pointer-events-none absolute -right-20 -bottom-20 w-[380px] h-[380px] opacity-[0.06]" />
 
-        <div>
+        <div className="relative">
           <div className="flex items-center gap-3 mb-16">
-            <EvalMark className="w-9 h-9" />
+            <div className="w-9 h-9 rounded-full bg-[#121A2E] ring-1 ring-[#3D6BFF]/30 flex items-center justify-center">
+              <EvalMark className="w-6 h-6" />
+            </div>
             <span
-              className="text-[11px] font-medium tracking-[0.2em] text-[#E8A23D] uppercase"
+              className="text-[11px] font-medium tracking-[0.2em] text-[#6E8CFF] uppercase"
               style={{
                 fontFamily: "'IBM Plex Mono', ui-monospace, monospace",
               }}>
@@ -113,14 +120,14 @@ const Signup: React.FC = () => {
             <br />
             System
           </h1>
-          <p className="mt-5 text-[#AEB6C2] text-base leading-relaxed max-w-sm">
+          <p className="mt-5 text-[#8E97AE] text-base leading-relaxed max-w-sm">
             Administrator accounts get full visibility into every submission and
             its score.
           </p>
         </div>
 
         <p
-          className="relative text-[11px] text-[#5B6472] tracking-[0.15em] uppercase"
+          className="relative text-[11px] text-[#4C5468] tracking-[0.15em] uppercase"
           style={{ fontFamily: "'IBM Plex Mono', ui-monospace, monospace" }}>
           Authorized personnel only
         </p>
@@ -128,26 +135,26 @@ const Signup: React.FC = () => {
 
       {/* Right — form */}
       <div className="flex-1 flex items-center justify-center px-6 py-12 md:px-16">
-        <div className="w-full max-w-sm">
+        <div className="w-full max-w-sm bg-[#FBFCFE] rounded-3xl px-8 py-9 md:px-10 md:py-10">
           <div className="mb-8">
             <h2
-              className="text-2xl font-semibold text-[#101826] tracking-tight"
+              className="text-2xl font-semibold text-[#101625] tracking-tight"
               style={{ fontFamily: "'Space Grotesk', system-ui, sans-serif" }}>
               Create account
             </h2>
-            <p className="text-[#5B6472] mt-1.5 text-sm">
+            <p className="text-[#5A6478] mt-1.5 text-sm">
               Set up administrator access to the system.
             </p>
           </div>
 
           {error && (
-            <div className="mb-5 p-4 bg-[#FCF1EE] border border-[#F0CFC5] rounded-lg flex items-start gap-3">
-              <FiAlertCircle className="h-5 w-5 text-[#C4553D] mt-0.5 flex-shrink-0" />
+            <div className="mb-5 p-4 bg-[#FBEEF0] border border-[#F0CBD1] rounded-lg flex items-start gap-3">
+              <FiAlertCircle className="h-5 w-5 text-[#C4536A] mt-0.5 flex-shrink-0" />
               <div>
-                <p className="text-sm font-medium text-[#9A3D2B]">
+                <p className="text-sm font-medium text-[#9A3A50]">
                   {error.error}
                 </p>
-                <p className="text-sm text-[#B65240]">{error.message}</p>
+                <p className="text-sm text-[#B65A70]">{error.message}</p>
               </div>
             </div>
           )}
@@ -213,11 +220,11 @@ const Signup: React.FC = () => {
           </form>
 
           <div className="mt-8 text-center">
-            <p className="text-sm text-[#5B6472]">
+            <p className="text-sm text-[#5A6478]">
               Already have an account?{" "}
               <Link
                 to="/login"
-                className="font-medium text-[#101826] hover:text-[#E8A23D] transition-colors">
+                className="font-medium text-[#101625] hover:text-[#3D6BFF] transition-colors">
                 Sign in
               </Link>
             </p>

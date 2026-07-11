@@ -1,4 +1,4 @@
-// src/hooks/useSubject.ts
+// src/hooks/useSubjects.ts
 import { useState, useEffect, useCallback, useRef } from "react";
 import { subjectApi } from "../api/subjectApi";
 import { departmentApi } from "../api/departmentApi";
@@ -71,23 +71,29 @@ export const useSubjects = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchSubjects = useCallback(async () => {
-    setLoading(true);
-    setError(null);
-    try {
-      const [data, deptMap] = await Promise.all([
-        subjectApi.getAll(),
-        fetchDepartmentNames(),
-      ]);
-      setDepartmentNames(deptMap);
-      const enriched = await enrichSubjectsWithDepartmentNames(data);
-      setSubjects(enriched);
-    } catch (err) {
-      const apiError = err as ApiError;
-      setError(apiError.response?.data?.message || "Failed to fetch subjects");
-    } finally {
-      setLoading(false);
-    }
+  const fetchSubjects = useCallback(() => {
+    return Promise.resolve()
+      .then(() => {
+        setLoading(true);
+        setError(null);
+      })
+      .then(() => Promise.all([subjectApi.getAll(), fetchDepartmentNames()]))
+      .then(([data, deptMap]) => {
+        setDepartmentNames(deptMap);
+        return enrichSubjectsWithDepartmentNames(data);
+      })
+      .then((enriched) => {
+        setSubjects(enriched);
+      })
+      .catch((err) => {
+        const apiError = err as ApiError;
+        setError(
+          apiError.response?.data?.message || "Failed to fetch subjects",
+        );
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   }, []);
 
   // Track first render to avoid cascading renders
@@ -108,14 +114,17 @@ export const useSubject = (id: number) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    const fetchSubject = async () => {
-      if (!id) return;
-      setLoading(true);
-      setError(null);
-      try {
-        const data = await subjectApi.getDetail(id);
-        const deptMap = await fetchDepartmentNames();
+  const fetchSubject = useCallback(() => {
+    if (!id) return Promise.resolve();
+    return Promise.resolve()
+      .then(() => {
+        setLoading(true);
+        setError(null);
+      })
+      .then(() =>
+        Promise.all([subjectApi.getDetail(id), fetchDepartmentNames()]),
+      )
+      .then(([data, deptMap]) => {
         // Ensure all required fields are present for SubjectDetail
         const subjectDetail: SubjectDetail = {
           ...data,
@@ -126,18 +135,21 @@ export const useSubject = (id: number) => {
             : undefined,
         };
         setSubject(subjectDetail);
-      } catch (err) {
+      })
+      .catch((err) => {
         const apiError = err as ApiError;
         setError(apiError.response?.data?.message || "Failed to fetch subject");
-      } finally {
+      })
+      .finally(() => {
         setLoading(false);
-      }
-    };
-
-    fetchSubject();
+      });
   }, [id]);
 
-  return { subject, loading, error };
+  useEffect(() => {
+    fetchSubject();
+  }, [fetchSubject]);
+
+  return { subject, loading, error, refetch: fetchSubject };
 };
 
 export const useCreateSubject = () => {

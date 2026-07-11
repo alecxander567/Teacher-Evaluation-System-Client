@@ -13,6 +13,7 @@ import {
 import { EvalMark } from "../components/icons/EvalMark";
 import { CategoryBuilder } from "../components/forms/CategoryBuilder";
 import { AlertModal } from "../components/AlertModal";
+import { LoadingSpinner } from "../components/LoadingSpinner";
 import { useEvaluationForms } from "../hooks/useEvaluationForms";
 import { useEvaluationCategories } from "../hooks/useEvaluationCategories";
 import { useEvaluationQuestions } from "../hooks/useEvaluationQuestions";
@@ -191,24 +192,20 @@ const EvaluationFormDetail: React.FC = () => {
   };
 
   if (!user || loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-[#FAFAF6]">
-        <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-[#E8A23D] border-t-transparent"></div>
-      </div>
-    );
+    return <LoadingSpinner fullScreen />;
   }
 
   if (!form) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#FAFAF6]">
+      <div className="min-h-screen flex items-center justify-center bg-[#F4F6FA]">
         <div className="text-center">
-          <FiFileText className="h-12 w-12 text-[#5B6472] mx-auto mb-4" />
-          <h2 className="text-xl font-semibold text-[#101826]">
+          <FiFileText className="h-12 w-12 text-[#5A6478] mx-auto mb-4" />
+          <h2 className="text-xl font-semibold text-[#101625]">
             Form not found
           </h2>
           <button
             onClick={() => navigate("/evaluation-forms")}
-            className="mt-4 text-[#B8791F] hover:text-[#101826] transition-colors">
+            className="mt-4 text-[#3D6BFF] hover:text-[#101625] transition-colors">
             Back to forms
           </button>
         </div>
@@ -217,15 +214,15 @@ const EvaluationFormDetail: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-[#FAFAF6]">
+    <div className="min-h-screen bg-[#F4F6FA]">
       {/* Navbar */}
-      <nav className="bg-[#101826]">
+      <nav className="bg-gradient-to-b from-[#0A0E1A] to-[#121A2E]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16 items-center">
             <div className="flex items-center gap-2 min-w-0">
               <EvalMark className="h-7 w-7 flex-shrink-0" />
               <span
-                className="text-base sm:text-lg font-semibold text-[#FAFAF6] tracking-tight truncate"
+                className="text-base sm:text-lg font-semibold text-[#F4F6FA] tracking-tight truncate"
                 style={{
                   fontFamily: "'Space Grotesk', system-ui, sans-serif",
                 }}>
@@ -235,21 +232,21 @@ const EvaluationFormDetail: React.FC = () => {
             </div>
             <div className="flex items-center gap-1 sm:gap-4 flex-shrink-0">
               <button className="p-2 rounded-full hover:bg-white/5 transition-colors relative">
-                <FiBell className="h-5 w-5 text-[#AEB6C2]" />
-                <span className="absolute top-1 right-1 h-2 w-2 bg-[#E8A23D] rounded-full"></span>
+                <FiBell className="h-5 w-5 text-[#8E97AE]" />
+                <span className="absolute top-1 right-1 h-2 w-2 bg-[#3D6BFF] rounded-full"></span>
               </button>
               <div className="flex items-center gap-1 sm:gap-3">
                 <div className="flex items-center gap-2">
-                  <div className="h-8 w-8 rounded-full bg-[#E8A23D] flex items-center justify-center flex-shrink-0">
-                    <FiUser className="h-4 w-4 text-[#101826]" />
+                  <div className="h-8 w-8 rounded-full bg-[#3D6BFF] flex items-center justify-center flex-shrink-0">
+                    <FiUser className="h-4 w-4 text-[#0A0E1A]" />
                   </div>
-                  <span className="hidden md:inline text-sm font-medium text-[#FAFAF6] whitespace-nowrap">
+                  <span className="hidden md:inline text-sm font-medium text-[#F4F6FA] whitespace-nowrap">
                     {user.firstName} {user.lastName}
                   </span>
                 </div>
                 <button
                   onClick={handleLogout}
-                  className="flex items-center px-2 sm:px-3 py-2 text-sm text-[#AEB6C2] hover:text-white hover:bg-white/5 rounded-lg transition-colors">
+                  className="flex items-center px-2 sm:px-3 py-2 text-sm text-[#8E97AE] hover:text-white hover:bg-white/5 rounded-lg transition-colors">
                   <FiLogOut className="h-4 w-4 sm:mr-2" />
                   <span className="hidden sm:inline">Logout</span>
                 </button>
@@ -264,27 +261,27 @@ const EvaluationFormDetail: React.FC = () => {
         {/* Back Button */}
         <button
           onClick={() => navigate("/evaluation-forms")}
-          className="flex items-center gap-2 text-sm text-[#5B6472] hover:text-[#101826] transition-colors mb-6">
+          className="flex items-center gap-2 text-sm text-[#5A6478] hover:text-[#101625] transition-colors mb-6">
           <FiArrowLeft className="h-4 w-4" />
           Back to Forms
         </button>
 
         {/* Form Header */}
-        <div className="bg-white rounded-xl border border-[#E4E1D9] p-6 mb-6">
+        <div className="bg-[#FBFCFE] rounded-xl border border-[#E4E8F0] p-6 mb-6">
           <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
             <div>
               <h1
-                className="text-2xl font-semibold text-[#101826]"
+                className="text-2xl font-semibold text-[#101625]"
                 style={{
                   fontFamily: "'Space Grotesk', system-ui, sans-serif",
                 }}>
                 {form.title}
               </h1>
               {form.description && (
-                <p className="text-[#5B6472] mt-1">{form.description}</p>
+                <p className="text-[#5A6478] mt-1">{form.description}</p>
               )}
               <div className="flex flex-wrap items-center gap-4 mt-3">
-                <span className="text-sm text-[#5B6472] flex items-center gap-1">
+                <span className="text-sm text-[#5A6478] flex items-center gap-1">
                   <FiCalendar className="h-4 w-4" />
                   Period: {form.evaluationPeriodTitle}
                 </span>
@@ -296,7 +293,7 @@ const EvaluationFormDetail: React.FC = () => {
                   }`}>
                   {form.isPeriodActive ? "Active" : "Inactive"}
                 </span>
-                <span className="text-sm text-[#5B6472] flex items-center gap-1">
+                <span className="text-sm text-[#5A6478] flex items-center gap-1">
                   <FiFileText className="h-4 w-4" />
                   Total Questions: {form.totalQuestions || 0}
                 </span>
@@ -316,9 +313,9 @@ const EvaluationFormDetail: React.FC = () => {
         </div>
 
         {/* Category Builder */}
-        <div className="bg-white rounded-xl border border-[#E4E1D9] p-6">
+        <div className="bg-[#FBFCFE] rounded-xl border border-[#E4E8F0] p-6">
           <h2
-            className="text-lg font-semibold text-[#101826] mb-4"
+            className="text-lg font-semibold text-[#101625] mb-4"
             style={{ fontFamily: "'Space Grotesk', system-ui, sans-serif" }}>
             Question Builder
           </h2>

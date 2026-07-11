@@ -1,4 +1,4 @@
-// src/pages/Dashboard.tsx (with API integration)
+// src/pages/Dashboard.tsx
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
@@ -10,7 +10,6 @@ import {
   FiBell,
   FiTrendingUp,
   FiFileText,
-  FiArrowRight,
   FiUserPlus,
   FiBookOpen,
   FiLink,
@@ -19,9 +18,19 @@ import {
   FiStar,
   FiClipboard,
   FiCheckCircle,
+  FiChevronDown,
+  FiHelpCircle,
+  FiAlertCircle,
 } from "react-icons/fi";
 import { EvalMark } from "../components/icons/EvalMark";
 import KPICard from "../components/dashboard/KPICard";
+import { LoadingSpinner } from "../components/LoadingSpinner";
+import { teacherApi } from "../api/teacherApi";
+import { departmentApi } from "../api/departmentApi";
+import { evaluationFormApi } from "../api/evaluationFormApi";
+import type { TeacherResponse } from "../types/teacher";
+import type { Department } from "../types/department.types";
+import type { EvaluationForm } from "../types/evaluationForm";
 
 // Define the API response type
 interface DashboardSummary {
@@ -37,6 +46,19 @@ const Dashboard: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [kpiData, setKpiData] = useState<DashboardSummary | null>(null);
+  const [teachers, setTeachers] = useState<TeacherResponse[]>([]);
+  const [departments, setDepartments] = useState<Department[]>([]);
+  const [evaluationForms, setEvaluationForms] = useState<EvaluationForm[]>([]);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState<
+    "forms" | "teachers" | "departments"
+  >("forms");
+  const [dataErrors, setDataErrors] = useState<{
+    kpi?: string;
+    teachers?: string;
+    departments?: string;
+    forms?: string;
+  }>({});
 
   const [user] = useState<{
     firstName: string;
@@ -60,33 +82,85 @@ const Dashboard: React.FC = () => {
     const fetchDashboardData = async () => {
       try {
         setLoading(true);
-        const response = await fetch(
-          "https://rich-pots-wait.loca.lt/api/dashboard-summary",
-          {
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-            },
-          },
-        );
+        setError(null);
+        setDataErrors({});
 
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
+        // Fetch KPI data
+        try {
+          const response = await fetch(
+            "https://loud-terms-pick.loca.lt/api/dashboard-summary",
+            {
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+              },
+            },
+          );
+
+          if (!response.ok) {
+            throw new Error(`Failed to fetch KPI data: ${response.status}`);
+          }
+
+          const data: DashboardSummary = await response.json();
+          setKpiData(data);
+        } catch (err) {
+          console.error("Failed to fetch KPI data:", err);
+          setDataErrors((prev) => ({
+            ...prev,
+            kpi: "Failed to load evaluation overview data",
+          }));
         }
 
-        const data: DashboardSummary = await response.json();
-        setKpiData(data);
-        setError(null);
+        // Fetch teachers
+        try {
+          const teachersData = await teacherApi.getAll();
+          setTeachers(teachersData || []);
+        } catch (err) {
+          console.error("Failed to fetch teachers:", err);
+          setDataErrors((prev) => ({
+            ...prev,
+            teachers: "Failed to load teachers data",
+          }));
+        }
+
+        // Fetch departments
+        try {
+          const departmentsData = await departmentApi.getAll();
+          setDepartments(departmentsData || []);
+        } catch (err) {
+          console.error("Failed to fetch departments:", err);
+          setDataErrors((prev) => ({
+            ...prev,
+            departments: "Failed to load departments data",
+          }));
+        }
+
+        // Fetch evaluation forms
+        try {
+          const formsData = await evaluationFormApi.getAllForms();
+          setEvaluationForms(formsData || []);
+        } catch (err) {
+          console.error("Failed to fetch evaluation forms:", err);
+          setDataErrors((prev) => ({
+            ...prev,
+            forms: "Failed to load evaluation forms data",
+          }));
+        }
+
+        // Check if all data failed
+        const hasErrors = Object.values(dataErrors).some((err) => err);
+        if (
+          !kpiData &&
+          !teachers.length &&
+          !departments.length &&
+          !evaluationForms.length &&
+          hasErrors
+        ) {
+          setError("Unable to load dashboard data. Please try again later.");
+        }
       } catch (err) {
         console.error("Failed to fetch dashboard data:", err);
         setError("Failed to load dashboard data");
-        // Fallback mock data for development
-        setKpiData({
-          evaluation_completion_rate: "87.0%",
-          overall_evaluation_score: 3.67,
-          total_evaluations_submitted: 10,
-          total_teachers_evaluated: 3,
-        });
       } finally {
         setLoading(false);
       }
@@ -97,18 +171,26 @@ const Dashboard: React.FC = () => {
 
   const handleLogout = () => {
     logout();
+    setIsDropdownOpen(false);
   };
 
-  const recentActivities = [
-    { id: 1, action: "User John Doe signed up", time: "2 minutes ago" },
-    { id: 2, action: "New evaluation submitted", time: "15 minutes ago" },
-    { id: 3, action: "System update completed", time: "1 hour ago" },
-    {
-      id: 4,
-      action: "Password changed for admin@example.com",
-      time: "3 hours ago",
-    },
-  ];
+  const handleSettings = () => {
+    navigate("/admin-settings");
+    setIsDropdownOpen(false);
+  };
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as HTMLElement;
+      if (!target.closest(".profile-dropdown")) {
+        setIsDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener("click", handleClickOutside);
+    return () => document.removeEventListener("click", handleClickOutside);
+  }, []);
 
   // Parse completion rate (remove % sign and convert to number)
   const rawCompletionRate =
@@ -116,33 +198,34 @@ const Dashboard: React.FC = () => {
       parseFloat(kpiData.evaluation_completion_rate.replace("%", ""))
     : 0;
 
-  // Clamp to a sane 0-100 range in case the upstream API returns
-  // an out-of-bounds value (e.g. >100% due to a bug on their end)
   const completionRate = Math.min(Math.max(rawCompletionRate, 0), 100);
+
+  // Look up a department's display name from its id
+  const getDepartmentName = (departmentId?: number | string | null) => {
+    if (departmentId == null) return null;
+    const dept = departments.find((d) => d.id === departmentId);
+    return dept?.name ?? null;
+  };
 
   if (!user || loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#FAFAF6]">
-        <div className="text-center">
-          <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-[#E8A23D] border-t-transparent"></div>
-          <p className="mt-4 text-[#5B6472]">
-            {loading ? "Loading..." : "Loading user data..."}
-          </p>
-        </div>
-      </div>
+      <LoadingSpinner
+        fullScreen
+        label={loading ? "Loading..." : "Loading user data..."}
+      />
     );
   }
 
   return (
-    <div className="min-h-screen bg-[#FAFAF6]">
+    <div className="min-h-screen bg-[#F4F6FA]">
       {/* Navbar */}
-      <nav className="bg-[#101826]">
+      <nav className="bg-gradient-to-b from-[#0A0E1A] to-[#121A2E] sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16 items-center">
             <div className="flex items-center gap-2 min-w-0">
               <EvalMark className="h-7 w-7 flex-shrink-0" />
               <span
-                className="text-base sm:text-lg font-semibold text-[#FAFAF6] tracking-tight truncate"
+                className="text-base sm:text-lg font-semibold text-[#F4F6FA] tracking-tight truncate"
                 style={{
                   fontFamily: "'Space Grotesk', system-ui, sans-serif",
                 }}>
@@ -152,24 +235,64 @@ const Dashboard: React.FC = () => {
             </div>
             <div className="flex items-center gap-1 sm:gap-4 flex-shrink-0">
               <button className="p-2 rounded-full hover:bg-white/5 transition-colors relative">
-                <FiBell className="h-5 w-5 text-[#AEB6C2]" />
-                <span className="absolute top-1 right-1 h-2 w-2 bg-[#E8A23D] rounded-full"></span>
+                <FiBell className="h-5 w-5 text-[#8E97AE]" />
+                <span className="absolute top-1 right-1 h-2 w-2 bg-[#3D6BFF] rounded-full"></span>
               </button>
-              <div className="flex items-center gap-1 sm:gap-3">
-                <div className="flex items-center gap-2">
-                  <div className="h-8 w-8 rounded-full bg-[#E8A23D] flex items-center justify-center flex-shrink-0">
-                    <FiUser className="h-4 w-4 text-[#101826]" />
+
+              {/* Help Link */}
+              <button
+                onClick={() => navigate("/help")}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm text-[#8E97AE] hover:text-white hover:bg-white/5 transition-colors">
+                <FiHelpCircle className="h-4 w-4" />
+                <span className="hidden sm:inline">Help</span>
+              </button>
+
+              {/* Profile Dropdown */}
+              <div className="relative profile-dropdown">
+                <button
+                  onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                  className="flex items-center gap-2 px-2 py-1.5 rounded-lg hover:bg-white/5 transition-colors">
+                  <div className="h-8 w-8 rounded-full bg-[#3D6BFF] flex items-center justify-center flex-shrink-0">
+                    <FiUser className="h-4 w-4 text-[#0A0E1A]" />
                   </div>
-                  <span className="hidden md:inline text-sm font-medium text-[#FAFAF6] whitespace-nowrap">
+                  <span className="hidden md:inline text-sm font-medium text-[#F4F6FA] whitespace-nowrap">
                     {user.firstName} {user.lastName}
                   </span>
-                </div>
-                <button
-                  onClick={handleLogout}
-                  className="flex items-center px-2 sm:px-3 py-2 text-sm text-[#AEB6C2] hover:text-white hover:bg-white/5 rounded-lg transition-colors">
-                  <FiLogOut className="h-4 w-4 sm:mr-2" />
-                  <span className="hidden sm:inline">Logout</span>
+                  <FiChevronDown
+                    className={`h-4 w-4 text-[#8E97AE] transition-transform duration-200 ${isDropdownOpen ? "rotate-180" : ""}`}
+                  />
                 </button>
+
+                {/* Dropdown Menu */}
+                {isDropdownOpen && (
+                  <div className="absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-lg border border-[#E4E8F0] py-1 z-50">
+                    <div className="px-4 py-3 border-b border-[#E4E8F0]">
+                      <p className="text-sm font-medium text-[#101625]">
+                        {user.firstName} {user.lastName}
+                      </p>
+                      <p className="text-xs text-[#5A6478] truncate">
+                        {user.email}
+                      </p>
+                      <span className="inline-block mt-1 px-2 py-0.5 bg-[#EBF0FE] text-[#3D6BFF] text-xs rounded-full">
+                        {user.role}
+                      </span>
+                    </div>
+
+                    <button
+                      onClick={handleSettings}
+                      className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-[#101625] hover:bg-[#F4F6FA] transition-colors">
+                      <FiSettings className="h-4 w-4 text-[#5A6478]" />
+                      Settings
+                    </button>
+
+                    <button
+                      onClick={handleLogout}
+                      className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-red-600 hover:bg-[#FBEEF0] transition-colors border-t border-[#E4E8F0]">
+                      <FiLogOut className="h-4 w-4" />
+                      Logout
+                    </button>
+                  </div>
+                )}
               </div>
             </div>
           </div>
@@ -179,20 +302,24 @@ const Dashboard: React.FC = () => {
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
         {/* Welcome banner */}
-        <div className="relative overflow-hidden bg-[#101826] rounded-xl p-5 sm:p-6 mb-6 sm:mb-8">
-          <EvalMark className="pointer-events-none absolute -right-10 -bottom-14 w-44 h-44 sm:w-56 sm:h-56 opacity-[0.08]" />
+        <div className="relative overflow-hidden bg-gradient-to-b from-[#0A0E1A] to-[#121A2E] rounded-xl p-5 sm:p-6 mb-6 sm:mb-8">
+          <div
+            className="pointer-events-none absolute -top-20 -right-16 w-64 h-64 rounded-full opacity-25 blur-3xl"
+            style={{ background: "#3D6BFF" }}
+          />
+          <EvalMark className="pointer-events-none absolute -right-10 -bottom-14 w-44 h-44 sm:w-56 sm:h-56 opacity-[0.06]" />
           <div className="relative">
             <h1
-              className="text-xl sm:text-2xl font-semibold text-[#FAFAF6] tracking-tight"
+              className="text-xl sm:text-2xl font-semibold text-[#F4F6FA] tracking-tight"
               style={{ fontFamily: "'Space Grotesk', system-ui, sans-serif" }}>
               Welcome back, {user.firstName}
             </h1>
-            <p className="text-[#AEB6C2] mt-1 text-sm sm:text-base">
+            <p className="text-[#8E97AE] mt-1 text-sm sm:text-base">
               Here's what's happening with your evaluation system today.
             </p>
             <div className="mt-3">
               <span
-                className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium tracking-wide uppercase bg-white/10 text-[#E8A23D]"
+                className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium tracking-wide uppercase bg-white/10 text-[#6E8CFF]"
                 style={{
                   fontFamily: "'IBM Plex Mono', ui-monospace, monospace",
                 }}>
@@ -202,160 +329,348 @@ const Dashboard: React.FC = () => {
           </div>
         </div>
 
-        {/* Error message if API fails */}
+        {/* Global Error message */}
         {error && (
-          <div className="mb-4 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
-            <p className="text-sm">{error} - Using fallback data</p>
+          <div className="mb-4 bg-[#FBEEF0] border border-[#F0CBD1] text-[#9A3A50] px-4 py-3 rounded-lg flex items-start gap-3">
+            <FiAlertCircle className="h-5 w-5 flex-shrink-0 mt-0.5" />
+            <p className="text-sm">{error}</p>
           </div>
         )}
 
         {/* Evaluation KPI Cards */}
         <div className="mb-6 sm:mb-8">
           <h2
-            className="text-lg font-semibold text-[#101826] mb-4"
+            className="text-lg font-semibold text-[#101625] mb-4"
             style={{ fontFamily: "'Space Grotesk', system-ui, sans-serif" }}>
             Evaluation Overview
           </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-            {/* Overall Score */}
-            <KPICard
-              title="Overall Evaluation Score"
-              value={`${kpiData?.overall_evaluation_score?.toFixed(2) ?? "0.00"} / 5.0`}
-              icon={<FiStar className="h-5 w-5 text-[#E8A23D]" />}
-              subtitle="Average of all evaluations"
-              trend={
-                kpiData?.overall_evaluation_score ?
-                  { value: 5, isPositive: true }
-                : undefined
-              }
-            />
+          {dataErrors.kpi ?
+            <div className="bg-[#FBEEF0] border border-[#F0CBD1] text-[#9A3A50] px-4 py-3 rounded-lg flex items-start gap-3">
+              <FiAlertCircle className="h-5 w-5 flex-shrink-0 mt-0.5" />
+              <p className="text-sm">{dataErrors.kpi}</p>
+            </div>
+          : <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+              {/* Overall Score */}
+              <KPICard
+                title="Overall Evaluation Score"
+                value={
+                  kpiData ?
+                    `${kpiData.overall_evaluation_score?.toFixed(2) ?? "0.00"} / 5.0`
+                  : "No data"
+                }
+                icon={<FiStar className="h-5 w-5 text-[#3D6BFF]" />}
+                subtitle="Average of all evaluations"
+                trend={
+                  kpiData?.overall_evaluation_score ?
+                    { value: 5, isPositive: true }
+                  : undefined
+                }
+              />
 
-            {/* Total Teachers Evaluated */}
-            <KPICard
-              title="Total Teachers Evaluated"
-              value={kpiData?.total_teachers_evaluated ?? 0}
-              icon={<FiUsers className="h-5 w-5 text-[#E8A23D]" />}
-              subtitle="Teachers with completed evaluations"
-            />
+              {/* Total Teachers Evaluated */}
+              <KPICard
+                title="Total Teachers Evaluated"
+                value={kpiData?.total_teachers_evaluated ?? "No data"}
+                icon={<FiUsers className="h-5 w-5 text-[#3D6BFF]" />}
+                subtitle="Teachers with completed evaluations"
+              />
 
-            {/* Total Evaluations Submitted */}
-            <KPICard
-              title="Total Evaluations Submitted"
-              value={kpiData?.total_evaluations_submitted ?? 0}
-              icon={<FiClipboard className="h-5 w-5 text-[#E8A23D]" />}
-              subtitle="Across all evaluation periods"
-            />
+              {/* Total Evaluations Submitted */}
+              <KPICard
+                title="Total Evaluations Submitted"
+                value={kpiData?.total_evaluations_submitted ?? "No data"}
+                icon={<FiClipboard className="h-5 w-5 text-[#3D6BFF]" />}
+                subtitle="Across all evaluation periods"
+              />
 
-            {/* Evaluation Completion Rate with Progress Bar */}
-            <KPICard
-              title="Evaluation Completion Rate"
-              value={`${completionRate.toFixed(1)}%`}
-              icon={<FiCheckCircle className="h-5 w-5 text-[#E8A23D]" />}
-              subtitle="Target: 90%"
-              progress={completionRate}
-              showProgress={true}
-            />
-          </div>
+              {/* Evaluation Completion Rate with Progress Bar */}
+              <KPICard
+                title="Evaluation Completion Rate"
+                value={kpiData ? `${completionRate.toFixed(1)}%` : "No data"}
+                icon={<FiCheckCircle className="h-5 w-5 text-[#3D6BFF]" />}
+                subtitle="Target: 90%"
+                progress={kpiData ? completionRate : 0}
+                showProgress={!!kpiData}
+              />
+            </div>
+          }
         </div>
 
         {/* Two Column Layout */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
-          {/* Recent Activity */}
-          <div className="lg:col-span-2 bg-white rounded-xl border border-[#E4E1D9] p-5 sm:p-6">
-            <h2
-              className="text-lg font-semibold text-[#101826] mb-4"
-              style={{ fontFamily: "'Space Grotesk', system-ui, sans-serif" }}>
-              Recent Activity
-            </h2>
-            <div className="space-y-3">
-              {recentActivities.map((activity) => (
-                <div
-                  key={activity.id}
-                  className="flex items-center justify-between py-3 border-b border-[#E4E1D9] last:border-0">
-                  <div className="flex items-center gap-3 min-w-0">
-                    <div className="h-8 w-8 rounded-full bg-[#FBEEDC] flex items-center justify-center flex-shrink-0">
-                      <FiFileText className="h-4 w-4 text-[#B8791F]" />
-                    </div>
-                    <div className="min-w-0">
-                      <p className="text-sm text-[#101826] truncate">
-                        {activity.action}
-                      </p>
-                      <p className="text-xs text-[#5B6472]">{activity.time}</p>
-                    </div>
-                  </div>
-                </div>
-              ))}
+          {/* Recent Activity - Now with tabs for forms, teachers, departments */}
+          <div className="lg:col-span-2 bg-[#FBFCFE] rounded-xl border border-[#E4E8F0] p-5 sm:p-6 flex flex-col h-[450px]">
+            <div className="flex items-center justify-between mb-4 flex-shrink-0">
+              <h2
+                className="text-lg font-semibold text-[#101625]"
+                style={{
+                  fontFamily: "'Space Grotesk', system-ui, sans-serif",
+                }}>
+                Recent Items
+              </h2>
+              <div className="flex gap-1 bg-[#F4F6FA] rounded-lg p-1">
+                <button
+                  onClick={() => setActiveTab("forms")}
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-all ${
+                    activeTab === "forms" ?
+                      "bg-white text-[#3D6BFF] shadow-sm"
+                    : "text-[#5A6478] hover:text-[#101625]"
+                  }`}>
+                  <FiFileText className="h-3.5 w-3.5" />
+                  Forms
+                </button>
+                <button
+                  onClick={() => setActiveTab("teachers")}
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-all ${
+                    activeTab === "teachers" ?
+                      "bg-white text-[#3D6BFF] shadow-sm"
+                    : "text-[#5A6478] hover:text-[#101625]"
+                  }`}>
+                  <FiUsers className="h-3.5 w-3.5" />
+                  Teachers
+                </button>
+                <button
+                  onClick={() => setActiveTab("departments")}
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-all ${
+                    activeTab === "departments" ?
+                      "bg-white text-[#3D6BFF] shadow-sm"
+                    : "text-[#5A6478] hover:text-[#101625]"
+                  }`}>
+                  <FiBookOpen className="h-3.5 w-3.5" />
+                  Departments
+                </button>
+              </div>
             </div>
-            <button className="mt-4 flex items-center gap-1.5 text-sm font-medium text-[#B8791F] hover:text-[#101826] transition-colors">
-              View all activity
-              <FiArrowRight className="h-3.5 w-3.5" />
-            </button>
+
+            {/* Scrollable content */}
+            <div className="flex-1 overflow-y-auto custom-scrollbar">
+              {activeTab === "forms" && (
+                <div className="space-y-3">
+                  {dataErrors.forms ?
+                    <div className="bg-[#FBEEF0] border border-[#F0CBD1] text-[#9A3A50] px-4 py-3 rounded-lg flex items-start gap-3">
+                      <FiAlertCircle className="h-5 w-5 flex-shrink-0 mt-0.5" />
+                      <p className="text-sm">{dataErrors.forms}</p>
+                    </div>
+                  : evaluationForms.length === 0 ?
+                    <div className="text-center py-8">
+                      <FiFileText className="h-10 w-10 text-[#8E97AE] mx-auto mb-2" />
+                      <p className="text-sm text-[#5A6478]">
+                        No evaluation forms found
+                      </p>
+                    </div>
+                  : evaluationForms.map((form) => (
+                      <div
+                        key={form.id}
+                        className="flex items-center justify-between py-3 px-3 hover:bg-[#F4F6FA] rounded-lg transition-colors border-b border-[#E4E8F0] last:border-0">
+                        <div className="flex items-center gap-3 min-w-0 flex-1">
+                          <div className="h-8 w-8 rounded-full bg-[#EBF0FE] flex items-center justify-center flex-shrink-0">
+                            <FiFileText className="h-4 w-4 text-[#3D6BFF]" />
+                          </div>
+                          <div className="min-w-0 flex-1">
+                            <p className="text-sm font-medium text-[#101625] truncate">
+                              {form.title || `Form ${form.id}`}
+                            </p>
+                            <div className="flex items-center gap-3 mt-0.5">
+                              {form.description && (
+                                <p className="text-xs text-[#5A6478] truncate max-w-[200px]">
+                                  {form.description}
+                                </p>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                        <button
+                          onClick={() =>
+                            navigate(`/evaluation-forms/${form.id}`)
+                          }
+                          className="text-xs font-medium text-[#3D6BFF] hover:text-[#101625] transition-colors flex-shrink-0 ml-2">
+                          View
+                        </button>
+                      </div>
+                    ))
+                  }
+                </div>
+              )}
+
+              {activeTab === "teachers" && (
+                <div className="space-y-3">
+                  {dataErrors.teachers ?
+                    <div className="bg-[#FBEEF0] border border-[#F0CBD1] text-[#9A3A50] px-4 py-3 rounded-lg flex items-start gap-3">
+                      <FiAlertCircle className="h-5 w-5 flex-shrink-0 mt-0.5" />
+                      <p className="text-sm">{dataErrors.teachers}</p>
+                    </div>
+                  : teachers.length === 0 ?
+                    <div className="text-center py-8">
+                      <FiUsers className="h-10 w-10 text-[#8E97AE] mx-auto mb-2" />
+                      <p className="text-sm text-[#5A6478]">
+                        No teachers found
+                      </p>
+                    </div>
+                  : teachers.map((teacher) => (
+                      <div
+                        key={teacher.id}
+                        className="flex items-center justify-between py-3 px-3 hover:bg-[#F4F6FA] rounded-lg transition-colors border-b border-[#E4E8F0] last:border-0">
+                        <div className="flex items-center gap-3 min-w-0 flex-1">
+                          <div className="h-8 w-8 rounded-full bg-[#EBF0FE] flex items-center justify-center flex-shrink-0">
+                            <FiUser className="h-4 w-4 text-[#3D6BFF]" />
+                          </div>
+                          <div className="min-w-0 flex-1">
+                            <p className="text-sm font-medium text-[#101625] truncate">
+                              {teacher.fullName}
+                            </p>
+                            <div className="flex items-center gap-3 mt-0.5">
+                              <p className="text-xs text-[#5A6478] truncate max-w-[180px]">
+                                {teacher.email}
+                              </p>
+                              {getDepartmentName(teacher.departmentId) && (
+                                <span className="text-xs px-2 py-0.5 bg-[#F4F6FA] rounded-full text-[#5A6478]">
+                                  {getDepartmentName(teacher.departmentId)}
+                                </span>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                        <button
+                          onClick={() => navigate(`/teachers/${teacher.id}`)}
+                          className="text-xs font-medium text-[#3D6BFF] hover:text-[#101625] transition-colors flex-shrink-0 ml-2">
+                          View
+                        </button>
+                      </div>
+                    ))
+                  }
+                </div>
+              )}
+
+              {activeTab === "departments" && (
+                <div className="space-y-3">
+                  {dataErrors.departments ?
+                    <div className="bg-[#FBEEF0] border border-[#F0CBD1] text-[#9A3A50] px-4 py-3 rounded-lg flex items-start gap-3">
+                      <FiAlertCircle className="h-5 w-5 flex-shrink-0 mt-0.5" />
+                      <p className="text-sm">{dataErrors.departments}</p>
+                    </div>
+                  : departments.length === 0 ?
+                    <div className="text-center py-8">
+                      <FiBookOpen className="h-10 w-10 text-[#8E97AE] mx-auto mb-2" />
+                      <p className="text-sm text-[#5A6478]">
+                        No departments found
+                      </p>
+                    </div>
+                  : departments.map((dept) => (
+                      <div
+                        key={dept.id}
+                        className="flex items-center justify-between py-3 px-3 hover:bg-[#F4F6FA] rounded-lg transition-colors border-b border-[#E4E8F0] last:border-0">
+                        <div className="flex items-center gap-3 min-w-0 flex-1">
+                          <div className="h-8 w-8 rounded-full bg-[#EBF0FE] flex items-center justify-center flex-shrink-0">
+                            <FiBookOpen className="h-4 w-4 text-[#3D6BFF]" />
+                          </div>
+                          <div className="min-w-0 flex-1">
+                            <p className="text-sm font-medium text-[#101625] truncate">
+                              {dept.name}
+                            </p>
+                            <div className="flex items-center gap-3 mt-0.5">
+                              {dept.description && (
+                                <p className="text-xs text-[#5A6478] truncate max-w-[150px]">
+                                  {dept.description}
+                                </p>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                        <button
+                          onClick={() => navigate(`/departments/${dept.id}`)}
+                          className="text-xs font-medium text-[#3D6BFF] hover:text-[#101625] transition-colors flex-shrink-0 ml-2">
+                          View
+                        </button>
+                      </div>
+                    ))
+                  }
+                </div>
+              )}
+            </div>
           </div>
 
           {/* Quick Actions */}
-          <div className="bg-white rounded-xl border border-[#E4E1D9] p-5 sm:p-6">
+          <div className="bg-[#FBFCFE] rounded-xl border border-[#E4E8F0] p-5 sm:p-6 h-[450px] flex flex-col">
             <h2
-              className="text-lg font-semibold text-[#101826] mb-4"
+              className="text-lg font-semibold text-[#101625] mb-4 flex-shrink-0"
               style={{ fontFamily: "'Space Grotesk', system-ui, sans-serif" }}>
               Quick Actions
             </h2>
-            <div className="space-y-3">
+            <div className="flex-1 overflow-y-auto custom-scrollbar space-y-2">
               <button
                 onClick={() => navigate("/evaluation-forms")}
-                className="w-full flex items-center px-4 py-3 text-sm text-[#101826] bg-[#FAFAF6] hover:bg-[#101826] hover:text-white rounded-lg transition-colors group">
-                <FiFileText className="h-5 w-5 mr-3 text-[#B8791F] group-hover:text-[#E8A23D] flex-shrink-0" />
-                Manage Evaluation Forms
+                className="w-full flex items-center px-4 py-3 text-sm text-[#101625] bg-[#F4F6FA] hover:bg-[#121A2E] hover:text-white rounded-lg transition-colors group">
+                <FiFileText className="h-5 w-5 mr-3 text-[#3D6BFF] group-hover:text-[#6E8CFF] flex-shrink-0" />
+                <span className="truncate">Manage Evaluation Forms</span>
               </button>
               <button
                 onClick={() => navigate("/teachers")}
-                className="w-full flex items-center px-4 py-3 text-sm text-[#101826] bg-[#FAFAF6] hover:bg-[#101826] hover:text-white rounded-lg transition-colors group">
-                <FiUserPlus className="h-5 w-5 mr-3 text-[#B8791F] group-hover:text-[#E8A23D] flex-shrink-0" />
-                Manage Teachers
+                className="w-full flex items-center px-4 py-3 text-sm text-[#101625] bg-[#F4F6FA] hover:bg-[#121A2E] hover:text-white rounded-lg transition-colors group">
+                <FiUserPlus className="h-5 w-5 mr-3 text-[#3D6BFF] group-hover:text-[#6E8CFF] flex-shrink-0" />
+                <span className="truncate">Manage Teachers</span>
               </button>
               <button
                 onClick={() => navigate("/teacher-assignments")}
-                className="w-full flex items-center px-4 py-3 text-sm text-[#101826] bg-[#FAFAF6] hover:bg-[#101826] hover:text-white rounded-lg transition-colors group">
-                <FiUserCheck className="h-5 w-5 mr-3 text-[#B8791F] group-hover:text-[#E8A23D] flex-shrink-0" />
-                Manage Teacher Assignments
+                className="w-full flex items-center px-4 py-3 text-sm text-[#101625] bg-[#F4F6FA] hover:bg-[#121A2E] hover:text-white rounded-lg transition-colors group">
+                <FiUserCheck className="h-5 w-5 mr-3 text-[#3D6BFF] group-hover:text-[#6E8CFF] flex-shrink-0" />
+                <span className="truncate">Manage Teacher Assignments</span>
               </button>
               <button
                 onClick={() => navigate("/departments")}
-                className="w-full flex items-center px-4 py-3 text-sm text-[#101826] bg-[#FAFAF6] hover:bg-[#101826] hover:text-white rounded-lg transition-colors group">
-                <FiUsers className="h-5 w-5 mr-3 text-[#B8791F] group-hover:text-[#E8A23D] flex-shrink-0" />
-                Manage Departments
+                className="w-full flex items-center px-4 py-3 text-sm text-[#101625] bg-[#F4F6FA] hover:bg-[#121A2E] hover:text-white rounded-lg transition-colors group">
+                <FiUsers className="h-5 w-5 mr-3 text-[#3D6BFF] group-hover:text-[#6E8CFF] flex-shrink-0" />
+                <span className="truncate">Manage Departments</span>
               </button>
               <button
                 onClick={() => navigate("/subjects")}
-                className="w-full flex items-center px-4 py-3 text-sm text-[#101826] bg-[#FAFAF6] hover:bg-[#101826] hover:text-white rounded-lg transition-colors group">
-                <FiBookOpen className="h-5 w-5 mr-3 text-[#B8791F] group-hover:text-[#E8A23D] flex-shrink-0" />
-                Manage Subjects
+                className="w-full flex items-center px-4 py-3 text-sm text-[#101625] bg-[#F4F6FA] hover:bg-[#121A2E] hover:text-white rounded-lg transition-colors group">
+                <FiBookOpen className="h-5 w-5 mr-3 text-[#3D6BFF] group-hover:text-[#6E8CFF] flex-shrink-0" />
+                <span className="truncate">Manage Subjects</span>
               </button>
               <button
                 onClick={() => navigate("/assignments")}
-                className="w-full flex items-center px-4 py-3 text-sm text-[#101826] bg-[#FAFAF6] hover:bg-[#101826] hover:text-white rounded-lg transition-colors group">
-                <FiLink className="h-5 w-5 mr-3 text-[#B8791F] group-hover:text-[#E8A23D] flex-shrink-0" />
-                Manage Assignments
+                className="w-full flex items-center px-4 py-3 text-sm text-[#101625] bg-[#F4F6FA] hover:bg-[#121A2E] hover:text-white rounded-lg transition-colors group">
+                <FiLink className="h-5 w-5 mr-3 text-[#3D6BFF] group-hover:text-[#6E8CFF] flex-shrink-0" />
+                <span className="truncate">Manage Assignments</span>
               </button>
               <button
                 onClick={() => navigate("/evaluation-periods")}
-                className="w-full flex items-center px-4 py-3 text-sm text-[#101826] bg-[#FAFAF6] hover:bg-[#101826] hover:text-white rounded-lg transition-colors group">
-                <FiClock className="h-5 w-5 mr-3 text-[#B8791F] group-hover:text-[#E8A23D] flex-shrink-0" />
-                Manage Evaluation Periods
+                className="w-full flex items-center px-4 py-3 text-sm text-[#101625] bg-[#F4F6FA] hover:bg-[#121A2E] hover:text-white rounded-lg transition-colors group">
+                <FiClock className="h-5 w-5 mr-3 text-[#3D6BFF] group-hover:text-[#6E8CFF] flex-shrink-0" />
+                <span className="truncate">Manage Evaluation Periods</span>
               </button>
               <button
                 onClick={() => navigate("/analytics")}
-                className="w-full flex items-center px-4 py-3 text-sm text-[#101826] bg-[#FAFAF6] hover:bg-[#101826] hover:text-white rounded-lg transition-colors group">
-                <FiTrendingUp className="h-5 w-5 mr-3 text-[#B8791F] group-hover:text-[#E8A23D] flex-shrink-0" />
-                View Analytics Dashboard
-              </button>
-              <button className="w-full flex items-center px-4 py-3 text-sm text-[#101826] bg-[#FAFAF6] hover:bg-[#101826] hover:text-white rounded-lg transition-colors group">
-                <FiSettings className="h-5 w-5 mr-3 text-[#B8791F] group-hover:text-[#E8A23D] flex-shrink-0" />
-                System Settings
+                className="w-full flex items-center px-4 py-3 text-sm text-[#101625] bg-[#F4F6FA] hover:bg-[#121A2E] hover:text-white rounded-lg transition-colors group">
+                <FiTrendingUp className="h-5 w-5 mr-3 text-[#3D6BFF] group-hover:text-[#6E8CFF] flex-shrink-0" />
+                <span className="truncate">View Analytics Dashboard</span>
               </button>
             </div>
           </div>
         </div>
       </div>
+
+      {/* Custom Scrollbar Styles */}
+      <style>{`
+        .custom-scrollbar::-webkit-scrollbar {
+          width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+          background: #F4F6FA;
+          border-radius: 3px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+          background: #D1D5DB;
+          border-radius: 3px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+          background: #9CA3AF;
+        }
+        .custom-scrollbar {
+          scrollbar-width: thin;
+          scrollbar-color: #D1D5DB #F4F6FA;
+        }
+      `}</style>
     </div>
   );
 };

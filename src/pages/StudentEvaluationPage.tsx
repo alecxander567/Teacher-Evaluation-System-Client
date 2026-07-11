@@ -319,18 +319,18 @@ export const StudentEvaluationPage: React.FC = () => {
   // Render error state
   if (pageState === "error") {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#FAFAF6] px-4">
+      <div className="min-h-screen flex items-center justify-center bg-[#F4F6FA] px-4">
         <div className="text-center max-w-sm">
           <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-red-50 mb-4 mx-auto">
             <FiAlertCircle className="h-8 w-8 text-red-500" />
           </div>
-          <h1 className="text-lg font-semibold text-[#101826] mb-2">
+          <h1 className="text-lg font-semibold text-[#101625] mb-2">
             Something Went Wrong
           </h1>
-          <p className="text-sm text-[#5B6472] mb-4">{error}</p>
+          <p className="text-sm text-[#5A6478] mb-4">{error}</p>
           <button
             onClick={() => window.location.reload()}
-            className="px-4 py-2 bg-[#101826] text-white rounded-lg hover:bg-[#1a2438] transition-colors text-sm">
+            className="px-4 py-2 bg-[#101625] text-white rounded-lg hover:bg-[#0A0E1A] transition-colors text-sm">
             Try Again
           </button>
         </div>
@@ -341,15 +341,15 @@ export const StudentEvaluationPage: React.FC = () => {
   // Render completed state
   if (pageState === "completed") {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#FAFAF6] px-4">
+      <div className="min-h-screen flex items-center justify-center bg-[#F4F6FA] px-4">
         <div className="text-center max-w-sm">
           <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-[#F3F8F1] mb-4 mx-auto">
             <FiCheckCircle className="h-8 w-8 text-[#4C9A4C]" />
           </div>
-          <h1 className="text-xl font-semibold text-[#101826] mb-2">
+          <h1 className="text-xl font-semibold text-[#101625] mb-2">
             Thank You!
           </h1>
-          <p className="text-sm text-[#5B6472]">
+          <p className="text-sm text-[#5A6478]">
             You have successfully completed all your evaluations. Your feedback
             is greatly appreciated.
           </p>
@@ -361,8 +361,8 @@ export const StudentEvaluationPage: React.FC = () => {
   // Render loading state
   if (pageState === "loading") {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#FAFAF6]">
-        <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-[#E8A23D] border-t-transparent"></div>
+      <div className="min-h-screen flex items-center justify-center bg-[#F4F6FA]">
+        <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-[#3D6BFF] border-t-transparent"></div>
       </div>
     );
   }
@@ -370,21 +370,21 @@ export const StudentEvaluationPage: React.FC = () => {
   // Render teacher selection
   if (pageState === "teacher-selection") {
     return (
-      <div className="min-h-screen bg-[#FAFAF6] py-8 px-4">
+      <div className="min-h-screen bg-[#F4F6FA] py-8 px-4">
         <div className="max-w-4xl mx-auto">
           <button
             onClick={() => navigate(-1)}
-            className="flex items-center gap-2 text-sm text-[#5B6472] hover:text-[#101826] transition-colors mb-6">
+            className="flex items-center gap-2 text-sm text-[#5A6478] hover:text-[#101625] transition-colors mb-6">
             <FiArrowLeft className="h-4 w-4" />
             Back
           </button>
 
-          <div className="bg-white rounded-xl border border-[#E4E1D9] shadow-sm p-6">
-            <h1 className="text-xl font-semibold text-[#101826] mb-1">
+          <div className="bg-[#FBFCFE] rounded-xl border border-[#E4E8F0] shadow-sm p-6">
+            <h1 className="text-xl font-semibold text-[#101625] mb-1">
               {formDetail?.title || "Teacher Evaluation"}
             </h1>
             {formDetail?.description && (
-              <p className="text-sm text-[#5B6472] mb-6">
+              <p className="text-sm text-[#5A6478] mb-6">
                 {formDetail.description}
               </p>
             )}
@@ -406,7 +406,7 @@ export const StudentEvaluationPage: React.FC = () => {
   // Render evaluation in progress
   if (pageState === "evaluating" && session && currentProgress && formDetail) {
     return (
-      <div className="min-h-screen bg-[#FAFAF6] py-8 px-4">
+      <div className="min-h-screen bg-[#F4F6FA] py-8 px-4">
         <div className="max-w-4xl mx-auto">
           {/* Back button */}
           <button
@@ -423,7 +423,7 @@ export const StudentEvaluationPage: React.FC = () => {
                 navigate(-1);
               }
             }}
-            className="flex items-center gap-2 text-sm text-[#5B6472] hover:text-[#101826] transition-colors mb-6">
+            className="flex items-center gap-2 text-sm text-[#5A6478] hover:text-[#101625] transition-colors mb-6">
             <FiArrowLeft className="h-4 w-4" />
             Cancel Evaluation
           </button>
@@ -431,28 +431,28 @@ export const StudentEvaluationPage: React.FC = () => {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             {/* Main content */}
             <div className="lg:col-span-2">
-              <div className="bg-white rounded-xl border border-[#E4E1D9] shadow-sm p-6">
-                <h1 className="text-xl font-semibold text-[#101826] mb-1">
+              <div className="bg-[#FBFCFE] rounded-xl border border-[#E4E8F0] shadow-sm p-6">
+                <h1 className="text-xl font-semibold text-[#101625] mb-1">
                   {formDetail?.title || "Evaluation Form"}
                 </h1>
-                <p className="text-sm text-[#5B6472] mb-4">
+                <p className="text-sm text-[#5A6478] mb-4">
                   Evaluating: {currentProgress?.teacherName} -{" "}
                   {currentProgress?.subjectName}
                 </p>
 
                 {/* Progress indicator */}
-                <div className="flex items-center gap-3 mb-6 p-3 bg-[#FAFAF6] rounded-lg">
+                <div className="flex items-center gap-3 mb-6 p-3 bg-[#F4F6FA] rounded-lg">
                   <div className="flex-1">
-                    <div className="h-2 bg-[#E4E1D9] rounded-full overflow-hidden">
+                    <div className="h-2 bg-[#E4E8F0] rounded-full overflow-hidden">
                       <div
-                        className="h-full bg-[#E8A23D] rounded-full transition-all duration-300"
+                        className="h-full bg-[#3D6BFF] rounded-full transition-all duration-300"
                         style={{
                           width: `${(session.completedCount / session.totalTeachers) * 100}%`,
                         }}
                       />
                     </div>
                   </div>
-                  <span className="text-xs text-[#5B6472] whitespace-nowrap">
+                  <span className="text-xs text-[#5A6478] whitespace-nowrap">
                     {session.completedCount} of {session.totalTeachers}{" "}
                     completed
                   </span>
@@ -460,7 +460,7 @@ export const StudentEvaluationPage: React.FC = () => {
 
                 <button
                   onClick={() => setIsFormOpen(true)}
-                  className="w-full px-6 py-3 bg-[#101826] text-white rounded-lg hover:bg-[#1a2438] transition-colors text-sm font-medium">
+                  className="w-full px-6 py-3 bg-[#101625] text-white rounded-lg hover:bg-[#0A0E1A] transition-colors text-sm font-medium">
                   Start Evaluation for {currentProgress?.teacherName}
                 </button>
               </div>

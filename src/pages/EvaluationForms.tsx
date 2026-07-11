@@ -20,6 +20,7 @@ import { GenerateLinkModal } from "../components/evaluations/GenerateLinkModal";
 import { AlertModal } from "../components/AlertModal";
 import { DeleteConfirmationModal } from "../components/DeleteConfirmationModal";
 import { EvalMark } from "../components/icons/EvalMark";
+import { LoadingSpinner } from "../components/LoadingSpinner";
 import type {
   EvaluationForm,
   EvaluationFormRequest,
@@ -244,8 +245,8 @@ export const EvaluationForms: React.FC = () => {
         message: (
           <div className="text-left">
             <p className="mb-2">Share this link with students:</p>
-            <div className="bg-[#FAFAF6] rounded-lg p-3 border border-[#E4E1D9] flex items-center justify-between gap-2">
-              <code className="text-xs text-[#101826] break-all font-mono">
+            <div className="bg-[#F4F6FA] rounded-lg p-3 border border-[#E4E8F0] flex items-center justify-between gap-2">
+              <code className="text-xs text-[#101625] break-all font-mono">
                 {result.fullLink}
               </code>
               <button
@@ -258,11 +259,11 @@ export const EvaluationForms: React.FC = () => {
                     message: "Link copied to clipboard",
                   });
                 }}
-                className="flex-shrink-0 px-3 py-1.5 bg-[#101826] text-white rounded-lg hover:bg-[#1a2438] transition-colors text-xs font-medium">
+                className="flex-shrink-0 px-3 py-1.5 bg-[#121A2E] text-white rounded-lg hover:bg-[#1B2740] transition-colors text-xs font-medium">
                 Copy
               </button>
             </div>
-            <p className="text-xs text-[#5B6472] mt-2">
+            <p className="text-xs text-[#5A6478] mt-2">
               Students can use this link to evaluate teachers assigned to this
               period.
             </p>
@@ -307,22 +308,18 @@ export const EvaluationForms: React.FC = () => {
   };
 
   if (!user) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-[#FAFAF6]">
-        <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-[#E8A23D] border-t-transparent"></div>
-      </div>
-    );
+    return <LoadingSpinner fullScreen />;
   }
 
   return (
-    <div className="min-h-screen bg-[#FAFAF6]">
-      <nav className="bg-[#101826]">
+    <div className="min-h-screen bg-[#F4F6FA]">
+      <nav className="bg-gradient-to-b from-[#0A0E1A] to-[#121A2E]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16 items-center">
             <div className="flex items-center gap-2 min-w-0">
               <EvalMark className="h-7 w-7 flex-shrink-0" />
               <span
-                className="text-base sm:text-lg font-semibold text-[#FAFAF6] tracking-tight truncate"
+                className="text-base sm:text-lg font-semibold text-[#F4F6FA] tracking-tight truncate"
                 style={{
                   fontFamily: "'Space Grotesk', system-ui, sans-serif",
                 }}>
@@ -332,21 +329,21 @@ export const EvaluationForms: React.FC = () => {
             </div>
             <div className="flex items-center gap-1 sm:gap-4 flex-shrink-0">
               <button className="p-2 rounded-full hover:bg-white/5 transition-colors relative">
-                <FiBell className="h-5 w-5 text-[#AEB6C2]" />
-                <span className="absolute top-1 right-1 h-2 w-2 bg-[#E8A23D] rounded-full"></span>
+                <FiBell className="h-5 w-5 text-[#8E97AE]" />
+                <span className="absolute top-1 right-1 h-2 w-2 bg-[#3D6BFF] rounded-full"></span>
               </button>
               <div className="flex items-center gap-1 sm:gap-3">
                 <div className="flex items-center gap-2">
-                  <div className="h-8 w-8 rounded-full bg-[#E8A23D] flex items-center justify-center flex-shrink-0">
-                    <FiUser className="h-4 w-4 text-[#101826]" />
+                  <div className="h-8 w-8 rounded-full bg-[#3D6BFF] flex items-center justify-center flex-shrink-0">
+                    <FiUser className="h-4 w-4 text-[#0A0E1A]" />
                   </div>
-                  <span className="hidden md:inline text-sm font-medium text-[#FAFAF6] whitespace-nowrap">
+                  <span className="hidden md:inline text-sm font-medium text-[#F4F6FA] whitespace-nowrap">
                     {user.firstName} {user.lastName}
                   </span>
                 </div>
                 <button
                   onClick={handleLogout}
-                  className="flex items-center px-2 sm:px-3 py-2 text-sm text-[#AEB6C2] hover:text-white hover:bg-white/5 rounded-lg transition-colors">
+                  className="flex items-center px-2 sm:px-3 py-2 text-sm text-[#8E97AE] hover:text-white hover:bg-white/5 rounded-lg transition-colors">
                   <FiLogOut className="h-4 w-4 sm:mr-2" />
                   <span className="hidden sm:inline">Logout</span>
                 </button>
@@ -359,7 +356,7 @@ export const EvaluationForms: React.FC = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
         <button
           onClick={() => navigate("/dashboard")}
-          className="flex items-center gap-2 text-sm text-[#5B6472] hover:text-[#101826] transition-colors mb-6">
+          className="flex items-center gap-2 text-sm text-[#5A6478] hover:text-[#101625] transition-colors mb-6">
           <FiArrowLeft className="h-4 w-4" />
           Back to Dashboard
         </button>
@@ -367,17 +364,17 @@ export const EvaluationForms: React.FC = () => {
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
           <div>
             <h1
-              className="text-2xl font-semibold text-[#101826]"
+              className="text-2xl font-semibold text-[#101625]"
               style={{ fontFamily: "'Space Grotesk', system-ui, sans-serif" }}>
               Evaluation Forms
             </h1>
-            <p className="text-sm text-[#5B6472] mt-1">
+            <p className="text-sm text-[#5A6478] mt-1">
               Manage evaluation forms for different periods
             </p>
           </div>
           <button
             onClick={handleCreate}
-            className="flex items-center gap-2 px-4 py-2.5 bg-[#101826] text-white rounded-lg hover:bg-[#1a2438] transition-colors text-sm font-medium whitespace-nowrap">
+            className="flex items-center gap-2 px-4 py-2.5 bg-[#121A2E] text-white rounded-lg hover:bg-[#1B2740] transition-colors text-sm font-medium whitespace-nowrap">
             <FiPlus className="h-4 w-4" />
             New Form
           </button>
@@ -391,9 +388,9 @@ export const EvaluationForms: React.FC = () => {
                 value={searchTerm}
                 onChange={handleSearch}
                 placeholder="Search forms..."
-                className="w-full pl-10 pr-4 py-2.5 border border-[#E4E1D9] rounded-lg focus:ring-2 focus:ring-[#E8A23D] focus:border-[#E8A23D] outline-none transition-colors bg-white text-[#101826] text-sm"
+                className="w-full pl-10 pr-4 py-2.5 border border-[#E4E8F0] rounded-lg focus:ring-2 focus:ring-[#3D6BFF]/30 focus:border-[#3D6BFF] outline-none transition-colors bg-[#FBFCFE] text-[#101625] text-sm"
               />
-              <FiSearch className="absolute left-3 top-3 h-5 w-5 text-[#5B6472]" />
+              <FiSearch className="absolute left-3 top-3 h-5 w-5 text-[#5A6478]" />
             </div>
           </form>
 
@@ -401,7 +398,7 @@ export const EvaluationForms: React.FC = () => {
             <select
               value={selectedPeriodId || ""}
               onChange={handlePeriodFilter}
-              className="w-full pl-10 pr-4 py-2.5 border border-[#E4E1D9] rounded-lg focus:ring-2 focus:ring-[#E8A23D] focus:border-[#E8A23D] outline-none transition-colors bg-white text-[#101826] text-sm appearance-none">
+              className="w-full pl-10 pr-4 py-2.5 border border-[#E4E8F0] rounded-lg focus:ring-2 focus:ring-[#3D6BFF]/30 focus:border-[#3D6BFF] outline-none transition-colors bg-[#FBFCFE] text-[#101625] text-sm appearance-none">
               <option value="">All Periods</option>
               {periods.map((period) => (
                 <option key={period.id} value={period.id}>
@@ -409,7 +406,7 @@ export const EvaluationForms: React.FC = () => {
                 </option>
               ))}
             </select>
-            <FiFilter className="absolute left-3 top-3 h-5 w-5 text-[#5B6472]" />
+            <FiFilter className="absolute left-3 top-3 h-5 w-5 text-[#5A6478]" />
           </div>
         </div>
 

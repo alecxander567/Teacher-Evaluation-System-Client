@@ -4,6 +4,7 @@ import type { EvaluationForm } from "../../types/evaluationForm";
 import type { EvaluationLink } from "../../types/evaluationLink.types";
 import { EvaluationFormCard } from "./EvaluationFormCard";
 import { FiFileText } from "react-icons/fi";
+import { LoadingSpinner } from "../LoadingSpinner";
 
 interface EvaluationFormListProps {
   forms: EvaluationForm[];
@@ -27,7 +28,7 @@ export const EvaluationFormList: React.FC<EvaluationFormListProps> = ({
   if (loading) {
     return (
       <div className="flex justify-center py-12">
-        <div className="inline-block animate-spin rounded-full h-8 w-8 border-4 border-[#E8A23D] border-t-transparent"></div>
+        <LoadingSpinner size="sm" />
       </div>
     );
   }
@@ -35,15 +36,15 @@ export const EvaluationFormList: React.FC<EvaluationFormListProps> = ({
   if (forms.length === 0) {
     return (
       <div className="text-center py-12">
-        <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-[#FBEEDC] mb-4">
-          <FiFileText className="h-8 w-8 text-[#B8791F]" />
+        <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-[#EBF0FE] mb-4">
+          <FiFileText className="h-8 w-8 text-[#3D6BFF]" />
         </div>
         <h3
-          className="text-lg font-semibold text-[#101826] mb-2"
+          className="text-lg font-semibold text-[#101625] mb-2"
           style={{ fontFamily: "'Space Grotesk', system-ui, sans-serif" }}>
           No Evaluation Forms
         </h3>
-        <p className="text-sm text-[#5B6472]">
+        <p className="text-sm text-[#5A6478]">
           Create your first evaluation form to get started.
         </p>
       </div>

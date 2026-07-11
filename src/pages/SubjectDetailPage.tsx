@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useSubject, useDeleteSubject } from "../hooks/useSubjects";
+import { subjectApi } from "../api/subjectApi";
 import {
   FiAlertCircle,
   FiArrowLeft,
@@ -10,6 +11,8 @@ import {
   FiBook,
 } from "react-icons/fi";
 import { DeleteConfirmationModal } from "../components/DeleteConfirmationModal";
+import { SubjectForm } from "../components/subjects/SubjectForm";
+import type { SubjectRequest } from "../types/subject.types";
 
 interface ApiError {
   message?: string;
@@ -25,13 +28,36 @@ export const SubjectDetailPage: React.FC = () => {
   const navigate = useNavigate();
   const subjectId = parseInt(id || "0");
 
-  const { subject, loading, error: fetchError } = useSubject(subjectId);
+  const {
+    subject,
+    loading,
+    error: fetchError,
+    refetch,
+  } = useSubject(subjectId);
   const { deleteSubject } = useDeleteSubject();
   const [error, setError] = useState<string | null>(null);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [isFormOpen, setIsFormOpen] = useState(false);
+  const [saving, setSaving] = useState(false);
 
   const handleEdit = () => {
-    navigate(`/subjects/edit/${subjectId}`);
+    setError(null);
+    setIsFormOpen(true);
+  };
+
+  const handleFormSubmit = async (data: SubjectRequest) => {
+    if (!subject) return;
+    setSaving(true);
+    try {
+      await subjectApi.update(subject.id, data);
+      setIsFormOpen(false);
+      await refetch();
+    } catch (err) {
+      const apiError = err as ApiError;
+      setError(apiError.message || "Failed to save subject");
+    } finally {
+      setSaving(false);
+    }
   };
 
   const handleDeleteClick = () => {
@@ -57,7 +83,7 @@ export const SubjectDetailPage: React.FC = () => {
   if (loading) {
     return (
       <div className="max-w-7xl mx-auto px-4 py-8 flex justify-center">
-        <div className="inline-block animate-spin rounded-full h-8 w-8 border-4 border-[#E8A23D] border-t-transparent"></div>
+        <div className="inline-block animate-spin rounded-full h-8 w-8 border-4 border-[#3D6BFF] border-t-transparent"></div>
       </div>
     );
   }
@@ -65,17 +91,17 @@ export const SubjectDetailPage: React.FC = () => {
   if (fetchError || !subject) {
     return (
       <div className="max-w-7xl mx-auto px-4 py-8">
-        <div className="text-center py-12 bg-white rounded-xl border border-[#E4E1D9]">
+        <div className="text-center py-12 bg-white rounded-xl border border-[#E4E8F0]">
           <FiAlertCircle className="h-12 w-12 text-red-600 mx-auto mb-4" />
-          <h3 className="text-lg font-medium text-[#101826] mb-2">
+          <h3 className="text-lg font-medium text-[#101625] mb-2">
             Subject not found
           </h3>
-          <p className="text-[#5B6472] text-sm mb-4">
+          <p className="text-[#5A6478] text-sm mb-4">
             {fetchError || "The subject you are looking for does not exist."}
           </p>
           <button
             onClick={() => navigate("/subjects")}
-            className="px-4 py-2 bg-[#101826] text-white rounded-lg hover:bg-[#1a2538] transition-colors">
+            className="px-4 py-2 bg-[#3D6BFF] text-white rounded-lg hover:bg-[#2A5AF0] transition-colors">
             Return to Subjects
           </button>
         </div>
@@ -88,7 +114,7 @@ export const SubjectDetailPage: React.FC = () => {
       {/* Back button */}
       <button
         onClick={handleBack}
-        className="flex items-center gap-2 text-sm text-[#5B6472] hover:text-[#101826] transition-colors mb-6">
+        className="flex items-center gap-2 text-sm text-[#5A6478] hover:text-[#101625] transition-colors mb-6">
         <FiArrowLeft className="h-4 w-4" />
         Back to Subjects
       </button>
@@ -108,29 +134,29 @@ export const SubjectDetailPage: React.FC = () => {
       )}
 
       {/* Subject Info */}
-      <div className="bg-white rounded-xl border border-[#E4E1D9] p-6">
+      <div className="bg-[#FBFCFE] rounded-xl border border-[#E4E8F0] p-6">
         <div className="flex items-start justify-between">
           <div className="flex items-start gap-4">
-            <div className="h-14 w-14 rounded-full bg-[#FBEEDC] flex items-center justify-center flex-shrink-0">
-              <FiBook className="h-7 w-7 text-[#B8791F]" />
+            <div className="h-14 w-14 rounded-full bg-[#EBF0FE] flex items-center justify-center flex-shrink-0">
+              <FiBook className="h-7 w-7 text-[#3D6BFF]" />
             </div>
             <div>
               <div className="flex items-center gap-3">
                 <h1
-                  className="text-2xl font-semibold text-[#101826]"
+                  className="text-2xl font-semibold text-[#101625]"
                   style={{
                     fontFamily: "'Space Grotesk', system-ui, sans-serif",
                   }}>
                   {subject.subjectName}
                 </h1>
-                <span className="px-3 py-1 bg-[#FBEEDC] text-[#B8791F] text-sm font-medium rounded-full">
+                <span className="px-3 py-1 bg-[#EBF0FE] text-[#3D6BFF] text-sm font-medium rounded-full">
                   {subject.subjectCode}
                 </span>
               </div>
               {subject.description && (
-                <p className="text-[#5B6472] mt-2">{subject.description}</p>
+                <p className="text-[#5A6478] mt-2">{subject.description}</p>
               )}
-              <div className="flex items-center gap-4 mt-3 text-sm text-[#5B6472]">
+              <div className="flex items-center gap-4 mt-3 text-sm text-[#5A6478]">
                 <div className="flex items-center gap-1">
                   <span className="font-medium">Department:</span>
                   <span>{subject.departmentName || "No Department"}</span>
@@ -148,7 +174,7 @@ export const SubjectDetailPage: React.FC = () => {
           <div className="flex items-center gap-2">
             <button
               onClick={handleEdit}
-              className="flex items-center px-3 py-2 border border-[#E4E1D9] text-[#5B6472] hover:text-[#101826] hover:bg-[#FAFAF6] rounded-lg transition-colors">
+              className="flex items-center px-4 py-2 bg-[#3D6BFF] text-white rounded-lg hover:bg-[#2A5AF0] transition-colors text-sm font-medium">
               <FiEdit2 className="h-4 w-4 mr-1" />
               Edit
             </button>
@@ -161,6 +187,16 @@ export const SubjectDetailPage: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {/* Edit Subject Modal */}
+      <SubjectForm
+        isOpen={isFormOpen}
+        subject={subject}
+        onClose={() => setIsFormOpen(false)}
+        onSubmit={handleFormSubmit}
+        loading={saving}
+        error={error}
+      />
 
       {/* Delete Confirmation Modal */}
       <DeleteConfirmationModal

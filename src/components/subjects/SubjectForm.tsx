@@ -131,12 +131,12 @@ export const SubjectForm: React.FC<SubjectFormProps> = ({
       />
       <div className="relative bg-white rounded-xl shadow-xl w-full max-w-md mx-4 p-6 max-h-[90vh] overflow-y-auto">
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-lg font-semibold text-[#101826]">
+          <h2 className="text-lg font-semibold text-[#101625]">
             {subject ? "Edit Subject" : "Add Subject"}
           </h2>
           <button
             onClick={onClose}
-            className="p-1.5 rounded-lg hover:bg-[#FAFAF6] text-[#5B6472] hover:text-[#101826] transition-colors">
+            className="p-1.5 rounded-lg hover:bg-[#F4F6FA] text-[#5A6478] hover:text-[#101625] transition-colors">
             <FiX className="h-5 w-5" />
           </button>
         </div>
@@ -151,7 +151,7 @@ export const SubjectForm: React.FC<SubjectFormProps> = ({
           <div>
             <label
               htmlFor="subjectCode"
-              className="block text-sm font-medium text-[#101826] mb-1">
+              className="block text-sm font-medium text-[#101625] mb-1">
               Subject Code *
             </label>
             <input
@@ -162,9 +162,9 @@ export const SubjectForm: React.FC<SubjectFormProps> = ({
               placeholder="e.g., CS101"
               className={`w-full px-3 py-2 border ${
                 validationErrors.subjectCode ? "border-red-300" : (
-                  "border-[#E4E1D9]"
+                  "border-[#E4E8F0]"
                 )
-              } rounded-lg focus:outline-none focus:ring-2 focus:ring-[#E8A23D] focus:border-transparent uppercase`}
+              } rounded-lg focus:outline-none focus:ring-2 focus:ring-[#3D6BFF]/20 focus:border-[#3D6BFF] uppercase`}
               disabled={loading}
             />
             {validationErrors.subjectCode && (
@@ -177,7 +177,7 @@ export const SubjectForm: React.FC<SubjectFormProps> = ({
           <div>
             <label
               htmlFor="subjectName"
-              className="block text-sm font-medium text-[#101826] mb-1">
+              className="block text-sm font-medium text-[#101625] mb-1">
               Subject Name *
             </label>
             <input
@@ -188,9 +188,9 @@ export const SubjectForm: React.FC<SubjectFormProps> = ({
               placeholder="e.g., Introduction to Computer Science"
               className={`w-full px-3 py-2 border ${
                 validationErrors.subjectName ? "border-red-300" : (
-                  "border-[#E4E1D9]"
+                  "border-[#E4E8F0]"
                 )
-              } rounded-lg focus:outline-none focus:ring-2 focus:ring-[#E8A23D] focus:border-transparent`}
+              } rounded-lg focus:outline-none focus:ring-2 focus:ring-[#3D6BFF]/20 focus:border-[#3D6BFF]`}
               disabled={loading}
             />
             {validationErrors.subjectName && (
@@ -203,7 +203,7 @@ export const SubjectForm: React.FC<SubjectFormProps> = ({
           <div>
             <label
               htmlFor="description"
-              className="block text-sm font-medium text-[#101826] mb-1">
+              className="block text-sm font-medium text-[#101625] mb-1">
               Description
             </label>
             <textarea
@@ -212,7 +212,7 @@ export const SubjectForm: React.FC<SubjectFormProps> = ({
               onChange={handleChange}
               rows={3}
               placeholder="Brief description of the subject..."
-              className="w-full px-3 py-2 border border-[#E4E1D9] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#E8A23D] focus:border-transparent resize-none"
+              className="w-full px-3 py-2 border border-[#E4E8F0] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#3D6BFF]/20 focus:border-[#3D6BFF] resize-none"
               disabled={loading}
             />
           </div>
@@ -220,14 +220,14 @@ export const SubjectForm: React.FC<SubjectFormProps> = ({
           <div>
             <label
               htmlFor="departmentId"
-              className="block text-sm font-medium text-[#101826] mb-1">
+              className="block text-sm font-medium text-[#101625] mb-1">
               Department
             </label>
             <select
               id="departmentId"
               value={formData.departmentId ?? ""}
               onChange={handleChange}
-              className="w-full px-3 py-2 border border-[#E4E1D9] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#E8A23D] focus:border-transparent bg-white"
+              className="w-full px-3 py-2 border border-[#E4E8F0] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#3D6BFF]/20 focus:border-[#3D6BFF] bg-white"
               disabled={loadingDepartments || loading}>
               <option value="">No Department</option>
               {loadingDepartments ?
@@ -239,7 +239,7 @@ export const SubjectForm: React.FC<SubjectFormProps> = ({
                 ))
               }
             </select>
-            <p className="text-xs text-[#5B6472] mt-1">
+            <p className="text-xs text-[#5A6478] mt-1">
               Select a department for this subject
             </p>
           </div>
@@ -248,14 +248,14 @@ export const SubjectForm: React.FC<SubjectFormProps> = ({
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 px-4 py-2 border border-[#E4E1D9] text-[#5B6472] rounded-lg hover:bg-[#FAFAF6] transition-colors"
+              className="flex-1 px-4 py-2 border border-[#E4E8F0] text-[#5A6478] rounded-lg hover:bg-[#F4F6FA] transition-colors"
               disabled={loading}>
               Cancel
             </button>
             <button
               type="submit"
               disabled={loading}
-              className="flex-1 px-4 py-2 bg-[#101826] text-white rounded-lg hover:bg-[#1a2438] disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center">
+              className="flex-1 px-4 py-2 bg-[#3D6BFF] text-white rounded-lg hover:bg-[#2A5AF0] disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center">
               {loading ?
                 <div className="inline-block animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></div>
               : <>

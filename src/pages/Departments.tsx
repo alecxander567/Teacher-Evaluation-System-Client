@@ -12,6 +12,7 @@ import DepartmentForm from "../components/departments/DepartmentForm";
 import type { DepartmentRequest } from "../types/department.types";
 import { useCreateDepartment } from "../hooks/useDepartment";
 import { DeleteConfirmationModal } from "../components/DeleteConfirmationModal";
+import { LoadingSpinner } from "../components/LoadingSpinner";
 import {
   FiAlertCircle,
   FiArrowLeft,
@@ -47,7 +48,7 @@ const Departments: React.FC = () => {
   });
 
   const { departments, loading, refetch } = useDepartments();
-  const { deleteDepartment } = useDeleteDepartment();
+  const { deleteDepartment, loading: deleting } = useDeleteDepartment();
   const { createDepartment, loading: creating } = useCreateDepartment();
   const { search, results, loading: searching } = useSearchDepartments();
 
@@ -134,22 +135,22 @@ const Departments: React.FC = () => {
 
   if (!user) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#FAFAF6]">
-        <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-[#E8A23D] border-t-transparent"></div>
+      <div className="min-h-screen bg-[#F4F6FA] flex items-center justify-center">
+        <LoadingSpinner fullScreen label="Loading..." />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-[#FAFAF6]">
+    <div className="min-h-screen bg-[#F4F6FA]">
       {/* Navbar */}
-      <nav className="bg-[#101826]">
+      <nav className="bg-gradient-to-b from-[#0A0E1A] to-[#121A2E]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16 items-center">
             <div className="flex items-center gap-2 min-w-0">
               <EvalMark className="h-7 w-7 flex-shrink-0" />
               <span
-                className="text-base sm:text-lg font-semibold text-[#FAFAF6] tracking-tight truncate"
+                className="text-base sm:text-lg font-semibold text-[#F4F6FA] tracking-tight truncate"
                 style={{
                   fontFamily: "'Space Grotesk', system-ui, sans-serif",
                 }}>
@@ -159,21 +160,21 @@ const Departments: React.FC = () => {
             </div>
             <div className="flex items-center gap-1 sm:gap-4 flex-shrink-0">
               <button className="p-2 rounded-full hover:bg-white/5 transition-colors relative">
-                <FiBell className="h-5 w-5 text-[#AEB6C2]" />
-                <span className="absolute top-1 right-1 h-2 w-2 bg-[#E8A23D] rounded-full"></span>
+                <FiBell className="h-5 w-5 text-[#8E97AE]" />
+                <span className="absolute top-1 right-1 h-2 w-2 bg-[#3D6BFF] rounded-full"></span>
               </button>
               <div className="flex items-center gap-1 sm:gap-3">
                 <div className="flex items-center gap-2">
-                  <div className="h-8 w-8 rounded-full bg-[#E8A23D] flex items-center justify-center flex-shrink-0">
-                    <FiUser className="h-4 w-4 text-[#101826]" />
+                  <div className="h-8 w-8 rounded-full bg-[#3D6BFF] flex items-center justify-center flex-shrink-0">
+                    <FiUser className="h-4 w-4 text-white" />
                   </div>
-                  <span className="hidden md:inline text-sm font-medium text-[#FAFAF6] whitespace-nowrap">
+                  <span className="hidden md:inline text-sm font-medium text-[#F4F6FA] whitespace-nowrap">
                     {user.firstName} {user.lastName}
                   </span>
                 </div>
                 <button
                   onClick={handleLogout}
-                  className="flex items-center px-2 sm:px-3 py-2 text-sm text-[#AEB6C2] hover:text-white hover:bg-white/5 rounded-lg transition-colors">
+                  className="flex items-center px-2 sm:px-3 py-2 text-sm text-[#8E97AE] hover:text-white hover:bg-white/5 rounded-lg transition-colors">
                   <FiLogOut className="h-4 w-4 sm:mr-2" />
                   <span className="hidden sm:inline">Logout</span>
                 </button>
@@ -188,7 +189,7 @@ const Departments: React.FC = () => {
         {/* Back to Dashboard */}
         <button
           onClick={() => navigate("/dashboard")}
-          className="flex items-center gap-2 text-sm text-[#5B6472] hover:text-[#101826] transition-colors mb-6">
+          className="flex items-center gap-2 text-sm text-[#5A6478] hover:text-[#101625] transition-colors mb-6">
           <FiArrowLeft className="h-4 w-4" />
           Back to Dashboard
         </button>
@@ -239,7 +240,7 @@ const Departments: React.FC = () => {
           title="Delete Department"
           itemName={departmentToDelete?.name}
           confirmText="Delete Department"
-          loading={false}
+          loading={deleting}
           message={`Are you sure you want to delete the department "${departmentToDelete?.name}"? This will not delete the teachers, but they will be unassigned from this department.`}
         />
       </div>

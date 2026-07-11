@@ -67,27 +67,27 @@ export const StatusUpdateModal: React.FC<StatusUpdateModalProps> = ({
         />
 
         <div className="relative bg-white rounded-xl shadow-xl max-w-md w-full">
-          <div className="flex items-center justify-between p-4 sm:p-6 border-b border-[#E4E1D9]">
+          <div className="flex items-center justify-between p-4 sm:p-6 border-b border-[#E4E8F0]">
             <h3
-              className="text-lg font-semibold text-[#101826]"
+              className="text-lg font-semibold text-[#101625]"
               style={{ fontFamily: "'Space Grotesk', system-ui, sans-serif" }}>
               Update Status
             </h3>
             <button
               onClick={onClose}
-              className="p-1 hover:bg-[#FAFAF6] rounded-lg transition-colors">
-              <FiX className="h-5 w-5 text-[#5B6472]" />
+              className="p-1 hover:bg-[#F4F6FA] rounded-lg transition-colors">
+              <FiX className="h-5 w-5 text-[#5A6478]" />
             </button>
           </div>
 
           <form onSubmit={handleSubmit} className="p-4 sm:p-6">
             <div className="space-y-4">
               <div>
-                <p className="text-sm text-[#5B6472] mb-2">
+                <p className="text-sm text-[#5A6478] mb-2">
                   Update status for:{" "}
-                  <strong className="text-[#101826]">{period.title}</strong>
+                  <strong className="text-[#101625]">{period.title}</strong>
                 </p>
-                <p className="text-xs text-[#5B6472] mb-4">
+                <p className="text-xs text-[#5A6478] mb-4">
                   Current status:{" "}
                   <span className="capitalize font-medium">
                     {period.status}
@@ -101,8 +101,8 @@ export const StatusUpdateModal: React.FC<StatusUpdateModalProps> = ({
                     key={option.value}
                     className={`block p-3 border rounded-lg cursor-pointer transition-colors ${
                       selectedStatus === option.value ?
-                        "border-[#E8A23D] bg-[#FBEEDC]"
-                      : "border-[#E4E1D9] hover:bg-[#FAFAF6]"
+                        "border-[#3D6BFF] bg-[#EBF0FE]"
+                      : "border-[#E4E8F0] hover:bg-[#F4F6FA]"
                     }`}>
                     <div className="flex items-start gap-3">
                       <input
@@ -111,13 +111,13 @@ export const StatusUpdateModal: React.FC<StatusUpdateModalProps> = ({
                         value={option.value}
                         checked={selectedStatus === option.value}
                         onChange={() => setSelectedStatus(option.value)}
-                        className="mt-0.5 h-4 w-4 text-[#E8A23D] border-[#E4E1D9] focus:ring-[#E8A23D]"
+                        className="mt-0.5 h-4 w-4 text-[#3D6BFF] border-[#E4E8F0] focus:ring-[#3D6BFF]"
                       />
                       <div>
-                        <p className="text-sm font-medium text-[#101826] capitalize">
+                        <p className="text-sm font-medium text-[#101625] capitalize">
                           {option.label}
                         </p>
-                        <p className="text-xs text-[#5B6472]">
+                        <p className="text-xs text-[#5A6478]">
                           {option.description}
                         </p>
                       </div>
@@ -140,17 +140,17 @@ export const StatusUpdateModal: React.FC<StatusUpdateModalProps> = ({
               )}
             </div>
 
-            <div className="flex justify-end gap-3 mt-6 pt-4 border-t border-[#E4E1D9]">
+            <div className="flex justify-end gap-3 mt-6 pt-4 border-t border-[#E4E8F0]">
               <button
                 type="button"
                 onClick={onClose}
-                className="px-4 py-2 text-sm font-medium text-[#5B6472] hover:text-[#101826] transition-colors">
+                className="px-4 py-2 text-sm font-medium text-[#5A6478] hover:text-[#101625] transition-colors">
                 Cancel
               </button>
               <button
                 type="submit"
                 disabled={loading || selectedStatus === period.status}
-                className="px-4 py-2 bg-[#101826] text-white rounded-lg hover:bg-[#1a2438] transition-colors text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2">
+                className="px-4 py-2 bg-[#101625] text-white rounded-lg hover:bg-[#0A0E1A] transition-colors text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2">
                 {loading ?
                   <>
                     <div className="inline-block animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></div>

@@ -1,5 +1,5 @@
 // src/pages/TeacherAssignments.tsx
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
 import {
@@ -13,10 +13,12 @@ import {
   FiUsers,
   FiBookOpen,
   FiX,
+  FiSearch,
 } from "react-icons/fi";
 import { EvalMark } from "../components/icons/EvalMark";
 import { AlertModal } from "../components/AlertModal";
 import { DeleteConfirmationModal } from "../components/DeleteConfirmationModal";
+import { LoadingSpinner } from "../components/LoadingSpinner";
 import { useTeacherAssignments } from "../hooks/useTeacherAssignments";
 import { useTeacher } from "../hooks/useTeacher";
 import { useSubjects } from "../hooks/useSubjects";
@@ -96,20 +98,20 @@ const AssignmentModal: React.FC<{
     <div className="fixed inset-0 z-50 overflow-y-auto">
       <div className="flex min-h-screen items-center justify-center p-4">
         <div className="fixed inset-0 bg-black/50" onClick={onClose}></div>
-        <div className="relative bg-white rounded-xl w-full max-w-md border border-[#E4E1D9] shadow-xl">
-          <div className="flex items-center justify-between p-6 border-b border-[#E4E1D9]">
-            <h2 className="text-xl font-semibold text-[#101826]">
+        <div className="relative bg-white rounded-xl w-full max-w-md border border-[#E4E8F0] shadow-xl">
+          <div className="flex items-center justify-between p-6 border-b border-[#E4E8F0]">
+            <h2 className="text-xl font-semibold text-[#101625]">
               {initialData ? "Edit Assignment" : "New Assignment"}
             </h2>
             <button
               onClick={onClose}
-              className="p-2 hover:bg-[#FAFAF6] rounded-lg">
-              <FiX className="h-5 w-5 text-[#5B6472]" />
+              className="p-2 hover:bg-[#F4F6FA] rounded-lg">
+              <FiX className="h-5 w-5 text-[#5A6478]" />
             </button>
           </div>
           <form onSubmit={handleSubmit} className="p-6 space-y-4">
             <div>
-              <label className="block text-sm font-medium text-[#101826] mb-1.5">
+              <label className="block text-sm font-medium text-[#101625] mb-1.5">
                 Teacher *
               </label>
               <select
@@ -117,7 +119,7 @@ const AssignmentModal: React.FC<{
                 value={formData.teacherId}
                 onChange={handleChange}
                 required
-                className="w-full px-4 py-2.5 border border-[#E4E1D9] rounded-lg focus:ring-2 focus:ring-[#E8A23D] outline-none">
+                className="w-full px-4 py-2.5 border border-[#E4E8F0] rounded-lg focus:ring-2 focus:ring-[#3D6BFF]/20 focus:border-[#3D6BFF] outline-none">
                 <option value={0}>Select Teacher</option>
                 {teachers.map((t) => (
                   <option key={t.id} value={t.id}>
@@ -127,7 +129,7 @@ const AssignmentModal: React.FC<{
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-[#101826] mb-1.5">
+              <label className="block text-sm font-medium text-[#101625] mb-1.5">
                 Subject *
               </label>
               <select
@@ -135,7 +137,7 @@ const AssignmentModal: React.FC<{
                 value={formData.subjectId}
                 onChange={handleChange}
                 required
-                className="w-full px-4 py-2.5 border border-[#E4E1D9] rounded-lg focus:ring-2 focus:ring-[#E8A23D] outline-none">
+                className="w-full px-4 py-2.5 border border-[#E4E8F0] rounded-lg focus:ring-2 focus:ring-[#3D6BFF]/20 focus:border-[#3D6BFF] outline-none">
                 <option value={0}>Select Subject</option>
                 {subjects.map((s) => (
                   <option key={s.id} value={s.id}>
@@ -145,7 +147,7 @@ const AssignmentModal: React.FC<{
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-[#101826] mb-1.5">
+              <label className="block text-sm font-medium text-[#101625] mb-1.5">
                 Academic Year *
               </label>
               <input
@@ -154,11 +156,11 @@ const AssignmentModal: React.FC<{
                 value={formData.academicYear}
                 onChange={handleChange}
                 required
-                className="w-full px-4 py-2.5 border border-[#E4E1D9] rounded-lg focus:ring-2 focus:ring-[#E8A23D] outline-none"
+                className="w-full px-4 py-2.5 border border-[#E4E8F0] rounded-lg focus:ring-2 focus:ring-[#3D6BFF]/20 focus:border-[#3D6BFF] outline-none"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-[#101826] mb-1.5">
+              <label className="block text-sm font-medium text-[#101625] mb-1.5">
                 Semester *
               </label>
               <select
@@ -166,23 +168,23 @@ const AssignmentModal: React.FC<{
                 value={formData.semester}
                 onChange={handleChange}
                 required
-                className="w-full px-4 py-2.5 border border-[#E4E1D9] rounded-lg focus:ring-2 focus:ring-[#E8A23D] outline-none">
+                className="w-full px-4 py-2.5 border border-[#E4E8F0] rounded-lg focus:ring-2 focus:ring-[#3D6BFF]/20 focus:border-[#3D6BFF] outline-none">
                 <option value="1st Semester">1st Semester</option>
                 <option value="2nd Semester">2nd Semester</option>
                 <option value="Summer">Summer</option>
               </select>
             </div>
-            <div className="flex justify-end gap-3 pt-4 border-t border-[#E4E1D9]">
+            <div className="flex justify-end gap-3 pt-4 border-t border-[#E4E8F0]">
               <button
                 type="button"
                 onClick={onClose}
-                className="px-4 py-2.5 text-sm text-[#5B6472] hover:text-[#101826]">
+                className="px-4 py-2.5 text-sm text-[#5A6478] hover:text-[#101625]">
                 Cancel
               </button>
               <button
                 type="submit"
                 disabled={loading}
-                className="px-6 py-2.5 bg-[#101826] text-white rounded-lg hover:bg-[#1a2438] disabled:opacity-50 text-sm font-medium">
+                className="px-6 py-2.5 bg-[#3D6BFF] text-white rounded-lg hover:bg-[#2A5AF0] disabled:opacity-50 text-sm font-medium">
                 {loading ?
                   "Saving..."
                 : initialData ?
@@ -226,6 +228,7 @@ const TeacherAssignments: React.FC = () => {
     id: number;
     name: string;
   } | null>(null);
+  const [searchTerm, setSearchTerm] = useState("");
   const [alert, setAlert] = useState<{
     isOpen: boolean;
     type: "success" | "error";
@@ -249,10 +252,22 @@ const TeacherAssignments: React.FC = () => {
     loadAllAssignments();
   }, [loadAllAssignments]);
 
+  // Client-side filter by teacher name or subject name
+  const filteredAssignments = useMemo(() => {
+    const term = searchTerm.trim().toLowerCase();
+    if (!term) return assignments;
+
+    return assignments.filter((assignment) => {
+      const teacherName = assignment.teacherName?.toLowerCase() || "";
+      const subjectName = assignment.subjectName?.toLowerCase() || "";
+      return teacherName.includes(term) || subjectName.includes(term);
+    });
+  }, [assignments, searchTerm]);
+
   if (!user) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#FAFAF6]">
-        <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-[#E8A23D] border-t-transparent"></div>
+      <div className="min-h-screen bg-[#F4F6FA] flex items-center justify-center">
+        <LoadingSpinner fullScreen label="Loading..." />
       </div>
     );
   }
@@ -325,27 +340,27 @@ const TeacherAssignments: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#FAFAF6]">
-      <nav className="bg-[#101826]">
+    <div className="min-h-screen bg-[#F4F6FA]">
+      <nav className="bg-gradient-to-b from-[#0A0E1A] to-[#121A2E]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16 items-center">
             <div className="flex items-center gap-2">
               <EvalMark className="h-7 w-7 flex-shrink-0" />
-              <span className="text-base sm:text-lg font-semibold text-[#FAFAF6] tracking-tight truncate">
+              <span className="text-base sm:text-lg font-semibold text-[#F4F6FA] tracking-tight truncate">
                 SPCT Evaluation System
               </span>
             </div>
             <div className="flex items-center gap-4">
               <button className="p-2 rounded-full hover:bg-white/5 relative">
-                <FiBell className="h-5 w-5 text-[#AEB6C2]" />
+                <FiBell className="h-5 w-5 text-[#8E97AE]" />
               </button>
               <div className="flex items-center gap-3">
-                <div className="h-8 w-8 rounded-full bg-[#E8A23D] flex items-center justify-center">
-                  <FiUser className="h-4 w-4 text-[#101826]" />
+                <div className="h-8 w-8 rounded-full bg-[#3D6BFF] flex items-center justify-center">
+                  <FiUser className="h-4 w-4 text-white" />
                 </div>
                 <button
                   onClick={logout}
-                  className="flex items-center px-3 py-2 text-sm text-[#AEB6C2] hover:text-white hover:bg-white/5 rounded-lg">
+                  className="flex items-center px-3 py-2 text-sm text-[#8E97AE] hover:text-white hover:bg-white/5 rounded-lg">
                   <FiLogOut className="h-4 w-4 sm:mr-2" />
                   <span className="hidden sm:inline">Logout</span>
                 </button>
@@ -358,56 +373,76 @@ const TeacherAssignments: React.FC = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <button
           onClick={() => navigate("/dashboard")}
-          className="flex items-center gap-2 text-sm text-[#5B6472] hover:text-[#101826] mb-6">
+          className="flex items-center gap-2 text-sm text-[#5A6478] hover:text-[#101625] mb-6">
           <FiArrowLeft className="h-4 w-4" />
           Back to Dashboard
         </button>
 
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
           <div>
-            <h1 className="text-2xl font-semibold text-[#101826]">
+            <h1 className="text-2xl font-semibold text-[#101625]">
               Teacher Assignments
             </h1>
-            <p className="text-sm text-[#5B6472] mt-1">
+            <p className="text-sm text-[#5A6478] mt-1">
               Manage teacher-subject assignments
             </p>
           </div>
           <button
             onClick={handleCreate}
-            className="flex items-center gap-2 px-4 py-2.5 bg-[#101826] text-white rounded-lg hover:bg-[#1a2438] text-sm font-medium">
+            className="flex items-center gap-2 px-4 py-2.5 bg-[#3D6BFF] text-white rounded-lg hover:bg-[#2A5AF0] text-sm font-medium">
             <FiPlus className="h-4 w-4" />
             New Assignment
           </button>
         </div>
 
-        {assignments.length === 0 ?
-          <div className="text-center py-12 bg-white rounded-xl border border-[#E4E1D9]">
-            <FiUsers className="h-12 w-12 text-[#5B6472] mx-auto mb-4" />
-            <h3 className="text-lg font-semibold text-[#101826] mb-2">
-              No Assignments
+        {/* Search Bar */}
+        <div className="mb-6">
+          <div className="relative">
+            <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#5A6478]" />
+            <input
+              type="text"
+              placeholder="Search by teacher name or subject name..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full pl-10 pr-4 py-2 border border-[#E4E8F0] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#3D6BFF]/20 focus:border-[#3D6BFF]"
+            />
+          </div>
+        </div>
+
+        {loading && assignments.length === 0 ?
+          <div className="flex items-center justify-center py-12 bg-white rounded-xl border border-[#E4E8F0]">
+            <LoadingSpinner label="Loading assignments..." />
+          </div>
+        : filteredAssignments.length === 0 ?
+          <div className="text-center py-12 bg-white rounded-xl border border-[#E4E8F0]">
+            <FiUsers className="h-12 w-12 text-[#5A6478] mx-auto mb-4" />
+            <h3 className="text-lg font-semibold text-[#101625] mb-2">
+              {searchTerm ? "No matching assignments" : "No Assignments"}
             </h3>
-            <p className="text-sm text-[#5B6472]">
-              Create your first teacher assignment to get started.
+            <p className="text-sm text-[#5A6478]">
+              {searchTerm ?
+                "Try adjusting your search"
+              : "Create your first teacher assignment to get started."}
             </p>
           </div>
         : <div className="grid gap-4">
-            {assignments.map((assignment) => (
+            {filteredAssignments.map((assignment) => (
               <div
                 key={assignment.id}
-                className="bg-white rounded-xl border border-[#E4E1D9] p-6 hover:border-[#E8A23D]/50 transition-all">
+                className="bg-white rounded-xl border border-[#E4E8F0] p-6 hover:border-[#3D6BFF]/50 transition-all">
                 <div className="flex items-start justify-between">
                   <div>
-                    <h3 className="text-lg font-semibold text-[#101826]">
+                    <h3 className="text-lg font-semibold text-[#101625]">
                       {assignment.teacherName ||
                         `Teacher #${assignment.teacherId}`}
                     </h3>
                     <div className="flex items-center gap-4 mt-2">
-                      <span className="text-sm text-[#5B6472] flex items-center gap-1">
+                      <span className="text-sm text-[#5A6478] flex items-center gap-1">
                         <FiBookOpen className="h-4 w-4" />
                         {assignment.subjectName ||
                           `Subject #${assignment.subjectId}`}
                       </span>
-                      <span className="text-sm text-[#5B6472]">
+                      <span className="text-sm text-[#5A6478]">
                         {assignment.academicYear} - {assignment.semester}
                       </span>
                     </div>
@@ -415,12 +450,12 @@ const TeacherAssignments: React.FC = () => {
                   <div className="flex items-center gap-2">
                     <button
                       onClick={() => handleEdit(assignment)}
-                      className="p-2 hover:bg-[#FAFAF6] rounded-lg text-[#5B6472] hover:text-[#101826]">
+                      className="p-2 hover:bg-[#F4F6FA] rounded-lg text-[#5A6478] hover:text-[#101625]">
                       <FiEdit2 className="h-4 w-4" />
                     </button>
                     <button
                       onClick={() => handleDeleteClick(assignment)}
-                      className="p-2 hover:bg-red-50 rounded-lg text-[#5B6472] hover:text-red-600">
+                      className="p-2 hover:bg-red-50 rounded-lg text-[#5A6478] hover:text-red-600">
                       <FiTrash2 className="h-4 w-4" />
                     </button>
                   </div>

@@ -101,12 +101,12 @@ export const TeacherForm: React.FC<TeacherFormProps> = ({
       />
       <div className="relative bg-white rounded-xl shadow-xl w-full max-w-md mx-4 p-6 max-h-[90vh] overflow-y-auto">
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-lg font-semibold text-[#101826]">
+          <h2 className="text-lg font-semibold text-[#101625]">
             {teacher ? "Edit Teacher" : "Add Teacher"}
           </h2>
           <button
             onClick={onClose}
-            className="p-1.5 rounded-lg hover:bg-[#FAFAF6] text-[#5B6472] hover:text-[#101826] transition-colors">
+            className="p-1.5 rounded-lg hover:bg-[#F4F6FA] text-[#5A6478] hover:text-[#101625] transition-colors">
             <FiX className="h-5 w-5" />
           </button>
         </div>
@@ -115,7 +115,7 @@ export const TeacherForm: React.FC<TeacherFormProps> = ({
           <div>
             <label
               htmlFor="firstName"
-              className="block text-sm font-medium text-[#101826] mb-1">
+              className="block text-sm font-medium text-[#101625] mb-1">
               First Name *
             </label>
             <input
@@ -124,14 +124,14 @@ export const TeacherForm: React.FC<TeacherFormProps> = ({
               value={formData.firstName}
               onChange={handleChange}
               required
-              className="w-full px-3 py-2 border border-[#E4E1D9] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#E8A23D] focus:border-transparent"
+              className="w-full px-3 py-2 border border-[#E4E8F0] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#3D6BFF]/20 focus:border-[#3D6BFF]"
             />
           </div>
 
           <div>
             <label
               htmlFor="lastName"
-              className="block text-sm font-medium text-[#101826] mb-1">
+              className="block text-sm font-medium text-[#101625] mb-1">
               Last Name *
             </label>
             <input
@@ -140,14 +140,14 @@ export const TeacherForm: React.FC<TeacherFormProps> = ({
               value={formData.lastName}
               onChange={handleChange}
               required
-              className="w-full px-3 py-2 border border-[#E4E1D9] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#E8A23D] focus:border-transparent"
+              className="w-full px-3 py-2 border border-[#E4E8F0] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#3D6BFF]/20 focus:border-[#3D6BFF]"
             />
           </div>
 
           <div>
             <label
               htmlFor="email"
-              className="block text-sm font-medium text-[#101826] mb-1">
+              className="block text-sm font-medium text-[#101625] mb-1">
               Email *
             </label>
             <input
@@ -156,14 +156,14 @@ export const TeacherForm: React.FC<TeacherFormProps> = ({
               value={formData.email}
               onChange={handleChange}
               required
-              className="w-full px-3 py-2 border border-[#E4E1D9] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#E8A23D] focus:border-transparent"
+              className="w-full px-3 py-2 border border-[#E4E8F0] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#3D6BFF]/20 focus:border-[#3D6BFF]"
             />
           </div>
 
           <div>
             <label
               htmlFor="position"
-              className="block text-sm font-medium text-[#101826] mb-1">
+              className="block text-sm font-medium text-[#101625] mb-1">
               Position
             </label>
             <input
@@ -171,21 +171,21 @@ export const TeacherForm: React.FC<TeacherFormProps> = ({
               type="text"
               value={formData.position}
               onChange={handleChange}
-              className="w-full px-3 py-2 border border-[#E4E1D9] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#E8A23D] focus:border-transparent"
+              className="w-full px-3 py-2 border border-[#E4E8F0] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#3D6BFF]/20 focus:border-[#3D6BFF]"
             />
           </div>
 
           <div>
             <label
               htmlFor="employmentType"
-              className="block text-sm font-medium text-[#101826] mb-1">
+              className="block text-sm font-medium text-[#101625] mb-1">
               Employment Type
             </label>
             <select
               id="employmentType"
               value={formData.employmentType ?? ""}
               onChange={handleChange}
-              className="w-full px-3 py-2 border border-[#E4E1D9] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#E8A23D] focus:border-transparent bg-white">
+              className="w-full px-3 py-2 border border-[#E4E8F0] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#3D6BFF]/20 focus:border-[#3D6BFF] bg-white">
               <option value="">Select employment type</option>
               <option value="FULL_TIME">Full Time</option>
               <option value="PART_TIME">Part Time</option>
@@ -196,14 +196,14 @@ export const TeacherForm: React.FC<TeacherFormProps> = ({
           <div>
             <label
               htmlFor="departmentId"
-              className="block text-sm font-medium text-[#101826] mb-1">
+              className="block text-sm font-medium text-[#101625] mb-1">
               Department
             </label>
             <select
               id="departmentId"
               value={formData.departmentId ?? ""}
               onChange={handleChange}
-              className="w-full px-3 py-2 border border-[#E4E1D9] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#E8A23D] focus:border-transparent bg-white">
+              className="w-full px-3 py-2 border border-[#E4E8F0] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#3D6BFF]/20 focus:border-[#3D6BFF] bg-white">
               <option value="">No Department</option>
               {loadingDepartments ?
                 <option disabled>Loading departments...</option>
@@ -214,7 +214,7 @@ export const TeacherForm: React.FC<TeacherFormProps> = ({
                 ))
               }
             </select>
-            <p className="text-xs text-[#5B6472] mt-1">
+            <p className="text-xs text-[#5A6478] mt-1">
               Select a department for this teacher
             </p>
           </div>
@@ -223,13 +223,13 @@ export const TeacherForm: React.FC<TeacherFormProps> = ({
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 px-4 py-2 border border-[#E4E1D9] text-[#5B6472] rounded-lg hover:bg-[#FAFAF6] transition-colors">
+              className="flex-1 px-4 py-2 border border-[#E4E8F0] text-[#5A6478] rounded-lg hover:bg-[#F4F6FA] transition-colors">
               Cancel
             </button>
             <button
               type="submit"
               disabled={loading}
-              className="flex-1 px-4 py-2 bg-[#101826] text-white rounded-lg hover:bg-[#1a2438] disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
+              className="flex-1 px-4 py-2 bg-[#3D6BFF] text-white rounded-lg hover:bg-[#2A5AF0] disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
               {loading ?
                 "Saving..."
               : teacher ?

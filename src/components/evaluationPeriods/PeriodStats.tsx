@@ -30,7 +30,7 @@ export const PeriodStats: React.FC<PeriodStatsProps> = ({
       label: "Total Periods",
       value: total,
       icon: FiCalendar,
-      color: "bg-[#101826]",
+      color: "bg-[#101625]",
       status: "all",
     },
     {
@@ -69,14 +69,14 @@ export const PeriodStats: React.FC<PeriodStatsProps> = ({
         <div
           key={index}
           onClick={() => onStatClick?.(stat.status)}
-          className={`bg-white rounded-xl border border-[#E4E1D9] p-5 sm:p-6 hover:border-[#E8A23D]/50 hover:shadow-sm transition-all ${
+          className={`bg-[#FBFCFE] rounded-xl border border-[#E4E8F0] p-5 sm:p-6 hover:border-[#3D6BFF]/50 hover:shadow-sm transition-all ${
             onStatClick ? "cursor-pointer" : ""
           }`}>
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-[#5B6472]">{stat.label}</p>
+              <p className="text-sm font-medium text-[#5A6478]">{stat.label}</p>
               <p
-                className="text-2xl font-semibold text-[#101826] mt-1"
+                className="text-2xl font-semibold text-[#101625] mt-1"
                 style={{
                   fontFamily: "'Space Grotesk', system-ui, sans-serif",
                 }}>

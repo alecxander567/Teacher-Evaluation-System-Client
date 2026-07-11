@@ -9,7 +9,8 @@ import {
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import Dashboard from "./pages/Dashboard";
-import Analytics from "./pages/Analytics"; // ADD THIS IMPORT
+import Analytics from "./pages/Analytics";
+import AdminSettings from "./pages/AdminSettings";
 import { Teachers } from "./pages/Teachers";
 import Departments from "./pages/Departments";
 import DepartmentCreate from "./pages/DepartmentCreate";
@@ -24,6 +25,7 @@ import EvaluationFormDetail from "./pages/EvaluationFormDetail";
 import TeacherAssignments from "./pages/TeacherAssignment";
 import { EvaluationSubmissionPage } from "./pages/EvaluationSubmissionPage";
 import { StudentEvaluationPage } from "./pages/StudentEvaluationPage";
+import HelpPage from "./pages/HelpPage";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 
 const App: React.FC = () => {
@@ -57,6 +59,16 @@ const App: React.FC = () => {
           element={
             <ProtectedRoute>
               <Analytics />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Admin Settings Route */}
+        <Route
+          path="/admin-settings"
+          element={
+            <ProtectedRoute>
+              <AdminSettings />
             </ProtectedRoute>
           }
         />
@@ -167,6 +179,16 @@ const App: React.FC = () => {
           element={
             <ProtectedRoute>
               <TeacherAssignments />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Help Route */}
+        <Route
+          path="/help"
+          element={
+            <ProtectedRoute>
+              <HelpPage />
             </ProtectedRoute>
           }
         />

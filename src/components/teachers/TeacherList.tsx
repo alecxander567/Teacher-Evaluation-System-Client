@@ -2,6 +2,7 @@
 import React from "react";
 import { FiPlus, FiSearch, FiUsers } from "react-icons/fi";
 import { TeacherCard } from "./TeacherCard";
+import { LoadingSpinner } from "../LoadingSpinner";
 import type { Teacher } from "../../types/teacher";
 
 interface TeacherListProps {
@@ -30,17 +31,17 @@ export const TeacherList: React.FC<TeacherListProps> = ({
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
         <div>
-          <h1 className="text-2xl font-semibold text-[#101826] flex items-center gap-2">
-            <FiUsers className="text-[#E8A23D]" />
+          <h1 className="text-2xl font-semibold text-[#101625] flex items-center gap-2">
+            <FiUsers className="text-[#3D6BFF]" />
             Teachers
           </h1>
-          <p className="text-sm text-[#5B6472] mt-1">
+          <p className="text-sm text-[#5A6478] mt-1">
             Manage your teachers and their department assignments
           </p>
         </div>
         <button
           onClick={onAdd}
-          className="flex items-center justify-center px-4 py-2 bg-[#101826] text-white text-sm font-medium rounded-lg hover:bg-[#1a2438] transition-colors">
+          className="flex items-center justify-center px-4 py-2 bg-[#3D6BFF] text-white text-sm font-medium rounded-lg hover:bg-[#2A5AF0] transition-colors">
           <FiPlus className="h-4 w-4 mr-2" />
           Add Teacher
         </button>
@@ -49,13 +50,13 @@ export const TeacherList: React.FC<TeacherListProps> = ({
       {/* Search */}
       <div className="mb-6">
         <div className="relative">
-          <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#5B6472]" />
+          <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#5A6478]" />
           <input
             type="text"
             placeholder="Search teachers by name..."
             value={searchTerm}
             onChange={(e) => onSearch(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 border border-[#E4E1D9] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#E8A23D] focus:border-transparent"
+            className="w-full pl-10 pr-4 py-2 border border-[#E4E8F0] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#3D6BFF]/20 focus:border-[#3D6BFF]"
           />
         </div>
       </div>
@@ -63,17 +64,17 @@ export const TeacherList: React.FC<TeacherListProps> = ({
       {/* Content */}
       {loading ?
         <div className="flex items-center justify-center py-12">
-          <div className="inline-block animate-spin rounded-full h-8 w-8 border-4 border-[#E8A23D] border-t-transparent"></div>
+          <LoadingSpinner label="Loading teachers..." />
         </div>
       : teachers.length === 0 ?
         <div className="text-center py-12">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-[#FBEEDC] mb-4">
-            <FiUsers className="h-8 w-8 text-[#B8791F]" />
+          <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-[#EAF0FF] mb-4">
+            <FiUsers className="h-8 w-8 text-[#3D6BFF]" />
           </div>
-          <h3 className="text-lg font-medium text-[#101826] mb-1">
+          <h3 className="text-lg font-medium text-[#101625] mb-1">
             No teachers found
           </h3>
-          <p className="text-sm text-[#5B6472]">
+          <p className="text-sm text-[#5A6478]">
             {searchTerm ?
               "Try adjusting your search"
             : "Start by adding a new teacher"}

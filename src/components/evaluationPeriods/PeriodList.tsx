@@ -100,18 +100,18 @@ export const PeriodList: React.FC<PeriodListProps> = ({
   };
 
   return (
-    <div className="bg-white rounded-xl border border-[#E4E1D9] overflow-hidden">
+    <div className="bg-[#FBFCFE] rounded-xl border border-[#E4E8F0] overflow-hidden">
       {/* Header */}
-      <div className="p-4 sm:p-6 border-b border-[#E4E1D9]">
+      <div className="p-4 sm:p-6 border-b border-[#E4E8F0]">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <h2
-            className="text-xl font-semibold text-[#101826]"
+            className="text-xl font-semibold text-[#101625]"
             style={{ fontFamily: "'Space Grotesk', system-ui, sans-serif" }}>
             Evaluation Periods
           </h2>
           <button
             onClick={onAdd}
-            className="flex items-center px-4 py-2 bg-[#101826] text-white rounded-lg hover:bg-[#1a2438] transition-colors text-sm font-medium">
+            className="flex items-center px-4 py-2 bg-[#101625] text-white rounded-lg hover:bg-[#0A0E1A] transition-colors text-sm font-medium">
             <FiPlus className="h-4 w-4 mr-2" />
             New Period
           </button>
@@ -120,13 +120,13 @@ export const PeriodList: React.FC<PeriodListProps> = ({
         {/* Search and Filter */}
         <div className="flex flex-col sm:flex-row gap-4 mt-4">
           <div className="flex-1 relative">
-            <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#5B6472]" />
+            <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#5A6478]" />
             <input
               type="text"
               placeholder="Search periods..."
               value={searchTerm}
               onChange={(e) => onSearch(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 border border-[#E4E1D9] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#E8A23D] focus:border-transparent bg-[#FAFAF6] text-sm"
+              className="w-full pl-10 pr-4 py-2 border border-[#E4E8F0] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#3D6BFF] focus:border-transparent bg-[#F4F6FA] text-sm"
             />
           </div>
           <div className="flex gap-2 overflow-x-auto pb-1">
@@ -136,8 +136,8 @@ export const PeriodList: React.FC<PeriodListProps> = ({
                 onClick={() => onFilterByStatus?.(status)}
                 className={`px-3 py-1.5 rounded-lg text-sm font-medium whitespace-nowrap transition-colors ${
                   selectedStatus === status ?
-                    "bg-[#101826] text-white"
-                  : "bg-[#FAFAF6] text-[#5B6472] hover:bg-[#E4E1D9]"
+                    "bg-[#101625] text-white"
+                  : "bg-[#F4F6FA] text-[#5A6478] hover:bg-[#E4E8F0]"
                 }`}>
                 {status.charAt(0).toUpperCase() + status.slice(1)}
               </button>
@@ -149,37 +149,37 @@ export const PeriodList: React.FC<PeriodListProps> = ({
       {/* Periods Table */}
       <div className="overflow-x-auto">
         <table className="w-full">
-          <thead className="bg-[#FAFAF6] border-b border-[#E4E1D9]">
+          <thead className="bg-[#F4F6FA] border-b border-[#E4E8F0]">
             <tr>
-              <th className="px-4 sm:px-6 py-3 text-left text-xs font-medium text-[#5B6472] uppercase tracking-wider">
+              <th className="px-4 sm:px-6 py-3 text-left text-xs font-medium text-[#5A6478] uppercase tracking-wider">
                 Title
               </th>
-              <th className="px-4 sm:px-6 py-3 text-left text-xs font-medium text-[#5B6472] uppercase tracking-wider hidden sm:table-cell">
+              <th className="px-4 sm:px-6 py-3 text-left text-xs font-medium text-[#5A6478] uppercase tracking-wider hidden sm:table-cell">
                 Academic Year
               </th>
-              <th className="px-4 sm:px-6 py-3 text-left text-xs font-medium text-[#5B6472] uppercase tracking-wider hidden md:table-cell">
+              <th className="px-4 sm:px-6 py-3 text-left text-xs font-medium text-[#5A6478] uppercase tracking-wider hidden md:table-cell">
                 Semester
               </th>
-              <th className="px-4 sm:px-6 py-3 text-left text-xs font-medium text-[#5B6472] uppercase tracking-wider hidden lg:table-cell">
+              <th className="px-4 sm:px-6 py-3 text-left text-xs font-medium text-[#5A6478] uppercase tracking-wider hidden lg:table-cell">
                 Start Date
               </th>
-              <th className="px-4 sm:px-6 py-3 text-left text-xs font-medium text-[#5B6472] uppercase tracking-wider hidden lg:table-cell">
+              <th className="px-4 sm:px-6 py-3 text-left text-xs font-medium text-[#5A6478] uppercase tracking-wider hidden lg:table-cell">
                 End Date
               </th>
-              <th className="px-4 sm:px-6 py-3 text-left text-xs font-medium text-[#5B6472] uppercase tracking-wider">
+              <th className="px-4 sm:px-6 py-3 text-left text-xs font-medium text-[#5A6478] uppercase tracking-wider">
                 Status
               </th>
-              <th className="px-4 sm:px-6 py-3 text-right text-xs font-medium text-[#5B6472] uppercase tracking-wider">
+              <th className="px-4 sm:px-6 py-3 text-right text-xs font-medium text-[#5A6478] uppercase tracking-wider">
                 Actions
               </th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-[#E4E1D9]">
+          <tbody className="divide-y divide-[#E4E8F0]">
             {loading ?
               <tr>
                 <td colSpan={7} className="px-4 sm:px-6 py-12 text-center">
-                  <div className="inline-block animate-spin rounded-full h-8 w-8 border-4 border-[#E8A23D] border-t-transparent"></div>
-                  <p className="mt-2 text-sm text-[#5B6472]">
+                  <div className="inline-block animate-spin rounded-full h-8 w-8 border-4 border-[#3D6BFF] border-t-transparent"></div>
+                  <p className="mt-2 text-sm text-[#5A6478]">
                     Loading periods...
                   </p>
                 </td>
@@ -187,12 +187,12 @@ export const PeriodList: React.FC<PeriodListProps> = ({
             : periods.length === 0 ?
               <tr>
                 <td colSpan={7} className="px-4 sm:px-6 py-12 text-center">
-                  <div className="text-[#5B6472]">
-                    <FiCalendar className="h-12 w-12 mx-auto text-[#E4E1D9]" />
+                  <div className="text-[#5A6478]">
+                    <FiCalendar className="h-12 w-12 mx-auto text-[#E4E8F0]" />
                     <p className="mt-2 text-sm">No evaluation periods found</p>
                     <button
                       onClick={onAdd}
-                      className="mt-4 text-[#E8A23D] hover:text-[#B8791F] text-sm font-medium">
+                      className="mt-4 text-[#3D6BFF] hover:text-[#101625] text-sm font-medium">
                       Create your first period
                     </button>
                   </div>
@@ -206,10 +206,10 @@ export const PeriodList: React.FC<PeriodListProps> = ({
                 return (
                   <tr
                     key={period.id}
-                    className="hover:bg-[#FAFAF6] transition-colors">
+                    className="hover:bg-[#F4F6FA] transition-colors">
                     <td className="px-4 sm:px-6 py-4">
                       <div className="flex items-center gap-2">
-                        <span className="text-sm font-medium text-[#101826]">
+                        <span className="text-sm font-medium text-[#101625]">
                           {period.title}
                         </span>
                         {isActive && (
@@ -230,22 +230,22 @@ export const PeriodList: React.FC<PeriodListProps> = ({
                       </div>
                     </td>
                     <td className="px-4 sm:px-6 py-4 hidden sm:table-cell">
-                      <span className="text-sm text-[#5B6472]">
+                      <span className="text-sm text-[#5A6478]">
                         {period.academicYear}
                       </span>
                     </td>
                     <td className="px-4 sm:px-6 py-4 hidden md:table-cell">
-                      <span className="text-sm text-[#5B6472]">
+                      <span className="text-sm text-[#5A6478]">
                         {period.semester}
                       </span>
                     </td>
                     <td className="px-4 sm:px-6 py-4 hidden lg:table-cell">
-                      <span className="text-sm text-[#5B6472]">
+                      <span className="text-sm text-[#5A6478]">
                         {formatDate(period.startDate)}
                       </span>
                     </td>
                     <td className="px-4 sm:px-6 py-4 hidden lg:table-cell">
-                      <span className="text-sm text-[#5B6472]">
+                      <span className="text-sm text-[#5A6478]">
                         {formatDate(period.endDate)}
                       </span>
                     </td>
@@ -268,20 +268,20 @@ export const PeriodList: React.FC<PeriodListProps> = ({
                             onClick={() => onStatusUpdate(period)}
                             className="p-1.5 hover:bg-blue-50 rounded-lg transition-colors"
                             title="Update status">
-                            <FiRefreshCw className="h-4 w-4 text-[#5B6472] hover:text-blue-600" />
+                            <FiRefreshCw className="h-4 w-4 text-[#5A6478] hover:text-blue-600" />
                           </button>
                         )}
                         <button
                           onClick={() => onEdit(period)}
-                          className="p-1.5 hover:bg-[#FAFAF6] rounded-lg transition-colors"
+                          className="p-1.5 hover:bg-[#F4F6FA] rounded-lg transition-colors"
                           title="Edit period">
-                          <FiEdit2 className="h-4 w-4 text-[#5B6472] hover:text-[#101826]" />
+                          <FiEdit2 className="h-4 w-4 text-[#5A6478] hover:text-[#101625]" />
                         </button>
                         <button
                           onClick={() => onDelete(period.id)}
                           className="p-1.5 hover:bg-red-50 rounded-lg transition-colors"
                           title="Delete period">
-                          <FiTrash2 className="h-4 w-4 text-[#5B6472] hover:text-red-600" />
+                          <FiTrash2 className="h-4 w-4 text-[#5A6478] hover:text-red-600" />
                         </button>
                       </div>
                     </td>
@@ -294,8 +294,8 @@ export const PeriodList: React.FC<PeriodListProps> = ({
       </div>
 
       {/* Footer with count */}
-      <div className="px-4 sm:px-6 py-3 border-t border-[#E4E1D9] bg-[#FAFAF6]">
-        <p className="text-sm text-[#5B6472]">
+      <div className="px-4 sm:px-6 py-3 border-t border-[#E4E8F0] bg-[#F4F6FA]">
+        <p className="text-sm text-[#5A6478]">
           Showing {periods.length} period{periods.length !== 1 ? "s" : ""}
         </p>
       </div>

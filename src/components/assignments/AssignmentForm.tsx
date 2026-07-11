@@ -157,12 +157,12 @@ export const AssignmentForm: React.FC<AssignmentFormProps> = ({
       />
       <div className="relative bg-white rounded-xl shadow-xl w-full max-w-md mx-4 p-6 max-h-[90vh] overflow-y-auto">
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-lg font-semibold text-[#101826]">
+          <h2 className="text-lg font-semibold text-[#101625]">
             {assignment ? "Edit Assignment" : "New Assignment"}
           </h2>
           <button
             onClick={onClose}
-            className="p-1.5 rounded-lg hover:bg-[#FAFAF6] text-[#5B6472] hover:text-[#101826] transition-colors">
+            className="p-1.5 rounded-lg hover:bg-[#F4F6FA] text-[#5A6478] hover:text-[#101625] transition-colors">
             <FiX className="h-5 w-5" />
           </button>
         </div>
@@ -177,7 +177,7 @@ export const AssignmentForm: React.FC<AssignmentFormProps> = ({
           <div>
             <label
               htmlFor="teacherId"
-              className="block text-sm font-medium text-[#101826] mb-1">
+              className="block text-sm font-medium text-[#101625] mb-1">
               Teacher *
             </label>
             <select
@@ -186,9 +186,9 @@ export const AssignmentForm: React.FC<AssignmentFormProps> = ({
               onChange={handleChange}
               className={`w-full px-3 py-2 border ${
                 validationErrors.teacherId ? "border-red-300" : (
-                  "border-[#E4E1D9]"
+                  "border-[#E4E8F0]"
                 )
-              } rounded-lg focus:outline-none focus:ring-2 focus:ring-[#E8A23D] focus:border-transparent bg-white`}
+              } rounded-lg focus:outline-none focus:ring-2 focus:ring-[#3D6BFF]/20 focus:border-[#3D6BFF] bg-white`}
               disabled={loadingData || loading}>
               <option value="">Select a teacher...</option>
               {loadingData ?
@@ -210,7 +210,7 @@ export const AssignmentForm: React.FC<AssignmentFormProps> = ({
           <div>
             <label
               htmlFor="subjectId"
-              className="block text-sm font-medium text-[#101826] mb-1">
+              className="block text-sm font-medium text-[#101625] mb-1">
               Subject *
             </label>
             <select
@@ -219,9 +219,9 @@ export const AssignmentForm: React.FC<AssignmentFormProps> = ({
               onChange={handleChange}
               className={`w-full px-3 py-2 border ${
                 validationErrors.subjectId ? "border-red-300" : (
-                  "border-[#E4E1D9]"
+                  "border-[#E4E8F0]"
                 )
-              } rounded-lg focus:outline-none focus:ring-2 focus:ring-[#E8A23D] focus:border-transparent bg-white`}
+              } rounded-lg focus:outline-none focus:ring-2 focus:ring-[#3D6BFF]/20 focus:border-[#3D6BFF] bg-white`}
               disabled={loadingData || loading}>
               <option value="">Select a subject...</option>
               {loadingData ?
@@ -243,7 +243,7 @@ export const AssignmentForm: React.FC<AssignmentFormProps> = ({
           <div>
             <label
               htmlFor="academicYear"
-              className="block text-sm font-medium text-[#101826] mb-1">
+              className="block text-sm font-medium text-[#101625] mb-1">
               Academic Year *
             </label>
             <input
@@ -254,9 +254,9 @@ export const AssignmentForm: React.FC<AssignmentFormProps> = ({
               placeholder="e.g., 2024-2025"
               className={`w-full px-3 py-2 border ${
                 validationErrors.academicYear ? "border-red-300" : (
-                  "border-[#E4E1D9]"
+                  "border-[#E4E8F0]"
                 )
-              } rounded-lg focus:outline-none focus:ring-2 focus:ring-[#E8A23D] focus:border-transparent`}
+              } rounded-lg focus:outline-none focus:ring-2 focus:ring-[#3D6BFF]/20 focus:border-[#3D6BFF]`}
               disabled={loading}
             />
             {validationErrors.academicYear && (
@@ -269,7 +269,7 @@ export const AssignmentForm: React.FC<AssignmentFormProps> = ({
           <div>
             <label
               htmlFor="semester"
-              className="block text-sm font-medium text-[#101826] mb-1">
+              className="block text-sm font-medium text-[#101625] mb-1">
               Semester *
             </label>
             <select
@@ -278,9 +278,9 @@ export const AssignmentForm: React.FC<AssignmentFormProps> = ({
               onChange={handleChange}
               className={`w-full px-3 py-2 border ${
                 validationErrors.semester ? "border-red-300" : (
-                  "border-[#E4E1D9]"
+                  "border-[#E4E8F0]"
                 )
-              } rounded-lg focus:outline-none focus:ring-2 focus:ring-[#E8A23D] focus:border-transparent bg-white`}
+              } rounded-lg focus:outline-none focus:ring-2 focus:ring-[#3D6BFF]/20 focus:border-[#3D6BFF] bg-white`}
               disabled={loading}>
               <option value="">Select semester...</option>
               <option value="First Semester">First Semester</option>
@@ -298,14 +298,14 @@ export const AssignmentForm: React.FC<AssignmentFormProps> = ({
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 px-4 py-2 border border-[#E4E1D9] text-[#5B6472] rounded-lg hover:bg-[#FAFAF6] transition-colors"
+              className="flex-1 px-4 py-2 border border-[#E4E8F0] text-[#5A6478] rounded-lg hover:bg-[#F4F6FA] transition-colors"
               disabled={loading}>
               Cancel
             </button>
             <button
               type="submit"
               disabled={loading}
-              className="flex-1 px-4 py-2 bg-[#101826] text-white rounded-lg hover:bg-[#1a2438] disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center">
+              className="flex-1 px-4 py-2 bg-[#3D6BFF] text-white rounded-lg hover:bg-[#2A5AF0] disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center">
               {loading ?
                 <div className="inline-block animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></div>
               : <>
