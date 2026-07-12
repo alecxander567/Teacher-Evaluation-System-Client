@@ -507,7 +507,7 @@ export const StudentEvaluationPage: React.FC = () => {
           </div>
         </div>
 
-        {/* Evaluation Form Modal */}
+        {/* Evaluation Form Modal - FIXED: Added teacherName prop */}
         {formDetail && currentProgress?.teacherAssignmentId && (
           <EvaluationSubmissionForm
             isOpen={isFormOpen}
@@ -524,6 +524,7 @@ export const StudentEvaluationPage: React.FC = () => {
             form={formDetail}
             categories={formDetail.categories || []}
             teacherAssignmentId={currentProgress.teacherAssignmentId}
+            teacherName={currentProgress.teacherName || "Unknown Teacher"} // ← ADDED THIS
             studentEmail={session.studentEmail}
             loading={submitting}
           />
