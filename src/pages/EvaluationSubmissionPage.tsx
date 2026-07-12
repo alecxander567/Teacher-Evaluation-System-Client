@@ -175,6 +175,9 @@ export const EvaluationSubmissionPage: React.FC = () => {
     }
   };
 
+  // Get the current teacher
+  const currentTeacher = queue[currentIndex];
+
   if (pageState === "loading") {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[#FAFAF6]">
@@ -219,8 +222,6 @@ export const EvaluationSubmissionPage: React.FC = () => {
       </div>
     );
   }
-
-  const currentTeacher = queue[currentIndex];
 
   return (
     <div className="min-h-screen bg-[#FAFAF6] flex items-center justify-center px-4 py-8">
@@ -301,6 +302,7 @@ export const EvaluationSubmissionPage: React.FC = () => {
           form={formDetail}
           categories={formDetail.categories}
           teacherAssignmentId={currentTeacher.teacherAssignmentId}
+          teacherName={currentTeacher.fullName || "Unknown Teacher"}
           evaluationLinkId={linkId}
           studentEmail={studentEmail}
           loading={submitting}
