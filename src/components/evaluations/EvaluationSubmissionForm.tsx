@@ -13,6 +13,7 @@ interface EvaluationSubmissionFormProps {
   form: EvaluationForm | null;
   categories: EvaluationCategory[];
   teacherAssignmentId: number;
+  teacherName: string;
   evaluationLinkId?: number;
   studentEmail: string;
   loading?: boolean;
@@ -27,6 +28,7 @@ export const EvaluationSubmissionForm: React.FC<
   form,
   categories = [],
   teacherAssignmentId,
+  teacherName,
   evaluationLinkId,
   studentEmail,
   loading = false,
@@ -139,6 +141,9 @@ export const EvaluationSubmissionForm: React.FC<
                 }}>
                 {form?.title || "Evaluation Form"}
               </h2>
+              <p className="text-sm font-medium text-[#3D6BFF] mt-0.5">
+                Evaluating: {teacherName}
+              </p>
               <div className="flex items-center gap-3 mt-1">
                 <p className="text-sm text-[#5A6478]">
                   <span className="font-medium text-[#101625]">
@@ -149,8 +154,9 @@ export const EvaluationSubmissionForm: React.FC<
                 <div className="h-4 w-px bg-[#E4E8F0]"></div>
                 <p className="text-sm text-[#5A6478]">
                   <span className="font-medium text-[#101625]">
-                    {Math.round((answeredQuestions / totalQuestions) * 100) ||
-                      0}
+                    {totalQuestions > 0 ?
+                      Math.round((answeredQuestions / totalQuestions) * 100)
+                    : 0}
                     %
                   </span>{" "}
                   complete
@@ -170,7 +176,7 @@ export const EvaluationSubmissionForm: React.FC<
               <div
                 className="h-full bg-gradient-to-r from-[#3D6BFF] to-[#6E8CFF] rounded-full transition-all duration-300"
                 style={{
-                  width: `${(answeredQuestions / totalQuestions) * 100 || 0}%`,
+                  width: `${totalQuestions > 0 ? (answeredQuestions / totalQuestions) * 100 : 0}%`,
                 }}
               />
             </div>
