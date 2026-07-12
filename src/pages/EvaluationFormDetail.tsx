@@ -1,16 +1,8 @@
 // src/pages/EvaluationFormDetail.tsx
 import React, { useState, useEffect, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { useAuth } from "../hooks/useAuth";
-import {
-  FiArrowLeft,
-  FiLogOut,
-  FiBell,
-  FiUser,
-  FiCalendar,
-  FiFileText,
-} from "react-icons/fi";
-import { EvalMark } from "../components/icons/EvalMark";
+import { FiArrowLeft, FiCalendar, FiFileText } from "react-icons/fi";
+import { Navbar } from "../components/Navbar";
 import { CategoryBuilder } from "../components/forms/CategoryBuilder";
 import { AlertModal } from "../components/AlertModal";
 import { LoadingSpinner } from "../components/LoadingSpinner";
@@ -23,7 +15,6 @@ import type { EvaluationFormDetail as EvaluationFormDetailType } from "../types/
 const EvaluationFormDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { logout } = useAuth();
   const { getFormDetails } = useEvaluationForms();
   const {
     categories,
@@ -187,10 +178,6 @@ const EvaluationFormDetail: React.FC = () => {
     }
   };
 
-  const handleLogout = () => {
-    logout();
-  };
-
   if (!user || loading) {
     return <LoadingSpinner fullScreen />;
   }
@@ -215,46 +202,7 @@ const EvaluationFormDetail: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-[#F4F6FA]">
-      {/* Navbar */}
-      <nav className="bg-gradient-to-b from-[#0A0E1A] to-[#121A2E]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between h-16 items-center">
-            <div className="flex items-center gap-2 min-w-0">
-              <EvalMark className="h-7 w-7 flex-shrink-0" />
-              <span
-                className="text-base sm:text-lg font-semibold text-[#F4F6FA] tracking-tight truncate"
-                style={{
-                  fontFamily: "'Space Grotesk', system-ui, sans-serif",
-                }}>
-                <span className="hidden sm:inline">SPCT Evaluation System</span>
-                <span className="sm:hidden">SPCT</span>
-              </span>
-            </div>
-            <div className="flex items-center gap-1 sm:gap-4 flex-shrink-0">
-              <button className="p-2 rounded-full hover:bg-white/5 transition-colors relative">
-                <FiBell className="h-5 w-5 text-[#8E97AE]" />
-                <span className="absolute top-1 right-1 h-2 w-2 bg-[#3D6BFF] rounded-full"></span>
-              </button>
-              <div className="flex items-center gap-1 sm:gap-3">
-                <div className="flex items-center gap-2">
-                  <div className="h-8 w-8 rounded-full bg-[#3D6BFF] flex items-center justify-center flex-shrink-0">
-                    <FiUser className="h-4 w-4 text-[#0A0E1A]" />
-                  </div>
-                  <span className="hidden md:inline text-sm font-medium text-[#F4F6FA] whitespace-nowrap">
-                    {user.firstName} {user.lastName}
-                  </span>
-                </div>
-                <button
-                  onClick={handleLogout}
-                  className="flex items-center px-2 sm:px-3 py-2 text-sm text-[#8E97AE] hover:text-white hover:bg-white/5 rounded-lg transition-colors">
-                  <FiLogOut className="h-4 w-4 sm:mr-2" />
-                  <span className="hidden sm:inline">Logout</span>
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </nav>
+      <Navbar />
 
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">

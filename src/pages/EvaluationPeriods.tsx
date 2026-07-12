@@ -1,7 +1,6 @@
 // src/pages/EvaluationPeriods.tsx
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../hooks/useAuth";
 import { useEvaluationPeriod } from "../hooks/useEvaluationPeriod";
 import { PeriodList } from "../components/evaluationPeriods/PeriodList";
 import { PeriodForm } from "../components/evaluationPeriods/PeriodForm";
@@ -9,15 +8,8 @@ import { StatusUpdateModal } from "../components/evaluationPeriods/StatusUpdateM
 import { PeriodStats } from "../components/evaluationPeriods/PeriodStats";
 import { DeleteConfirmationModal } from "../components/DeleteConfirmationModal";
 import { AlertModal } from "../components/AlertModal";
-import {
-  FiArrowLeft,
-  FiLogOut,
-  FiBell,
-  FiUser,
-  FiSettings,
-  FiChevronDown,
-} from "react-icons/fi";
-import { EvalMark } from "../components/icons/EvalMark";
+import { FiArrowLeft } from "react-icons/fi";
+import { Navbar } from "../components/Navbar";
 import type {
   EvaluationPeriod,
   EvaluationPeriodRequest,
@@ -25,7 +17,6 @@ import type {
 
 export const EvaluationPeriods: React.FC = () => {
   const navigate = useNavigate();
-  const { logout } = useAuth();
 
   const [user] = useState<{
     firstName: string;
@@ -48,7 +39,6 @@ export const EvaluationPeriods: React.FC = () => {
     title: string;
     message: string;
   } | null>(null);
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   // Delete confirmation state
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
@@ -91,19 +81,6 @@ export const EvaluationPeriods: React.FC = () => {
     fetchPeriods();
     fetchStats();
   }, [fetchPeriods, fetchStats]);
-
-  // Close dropdown when clicking outside
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      const target = event.target as HTMLElement;
-      if (!target.closest(".profile-dropdown")) {
-        setIsDropdownOpen(false);
-      }
-    };
-
-    document.addEventListener("click", handleClickOutside);
-    return () => document.removeEventListener("click", handleClickOutside);
-  }, []);
 
   const handleSearch = (term: string) => {
     setSearchTerm(term);
@@ -226,16 +203,6 @@ export const EvaluationPeriods: React.FC = () => {
     }
   };
 
-  const handleLogout = () => {
-    logout();
-    setIsDropdownOpen(false);
-  };
-
-  const handleSettings = () => {
-    navigate("/admin-settings");
-    setIsDropdownOpen(false);
-  };
-
   if (!user) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[#F4F6FA]">
@@ -246,78 +213,7 @@ export const EvaluationPeriods: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-[#F4F6FA]">
-      {/* Navbar */}
-      <nav className="bg-gradient-to-b from-[#0A0E1A] to-[#121A2E]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between h-16 items-center">
-            <div className="flex items-center gap-2 min-w-0">
-              <EvalMark className="h-7 w-7 flex-shrink-0" />
-              <span
-                className="text-base sm:text-lg font-semibold text-[#F4F6FA] tracking-tight truncate"
-                style={{
-                  fontFamily: "'Space Grotesk', system-ui, sans-serif",
-                }}>
-                <span className="hidden sm:inline">SPCT Evaluation System</span>
-                <span className="sm:hidden">SPCT</span>
-              </span>
-            </div>
-            <div className="flex items-center gap-1 sm:gap-4 flex-shrink-0">
-              <button className="p-2 rounded-full hover:bg-white/5 transition-colors relative">
-                <FiBell className="h-5 w-5 text-[#8E97AE]" />
-                <span className="absolute top-1 right-1 h-2 w-2 bg-[#3D6BFF] rounded-full"></span>
-              </button>
-
-              {/* Profile Dropdown */}
-              <div className="relative profile-dropdown">
-                <button
-                  onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                  className="flex items-center gap-2 px-2 py-1.5 rounded-lg hover:bg-white/5 transition-colors">
-                  <div className="h-8 w-8 rounded-full bg-[#3D6BFF] flex items-center justify-center flex-shrink-0">
-                    <FiUser className="h-4 w-4 text-[#0A0E1A]" />
-                  </div>
-                  <span className="hidden md:inline text-sm font-medium text-[#F4F6FA] whitespace-nowrap">
-                    {user.firstName} {user.lastName}
-                  </span>
-                  <FiChevronDown
-                    className={`h-4 w-4 text-[#8E97AE] transition-transform duration-200 ${isDropdownOpen ? "rotate-180" : ""}`}
-                  />
-                </button>
-
-                {/* Dropdown Menu */}
-                {isDropdownOpen && (
-                  <div className="absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-lg border border-[#E4E8F0] py-1 z-50">
-                    <div className="px-4 py-3 border-b border-[#E4E8F0]">
-                      <p className="text-sm font-medium text-[#101625]">
-                        {user.firstName} {user.lastName}
-                      </p>
-                      <p className="text-xs text-[#5A6478] truncate">
-                        {user.email}
-                      </p>
-                      <span className="inline-block mt-1 px-2 py-0.5 bg-[#EBF0FE] text-[#3D6BFF] text-xs rounded-full">
-                        {user.role}
-                      </span>
-                    </div>
-
-                    <button
-                      onClick={handleSettings}
-                      className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-[#101625] hover:bg-[#F4F6FA] transition-colors">
-                      <FiSettings className="h-4 w-4 text-[#5A6478]" />
-                      Settings
-                    </button>
-
-                    <button
-                      onClick={handleLogout}
-                      className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-red-600 hover:bg-[#FBEEF0] transition-colors border-t border-[#E4E8F0]">
-                      <FiLogOut className="h-4 w-4" />
-                      Logout
-                    </button>
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
-        </div>
-      </nav>
+      <Navbar />
 
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">

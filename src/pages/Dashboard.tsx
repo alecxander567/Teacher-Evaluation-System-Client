@@ -1,13 +1,8 @@
 // src/pages/Dashboard.tsx
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../hooks/useAuth";
 import {
-  FiUser,
-  FiLogOut,
   FiUsers,
-  FiSettings,
-  FiBell,
   FiTrendingUp,
   FiFileText,
   FiUserPlus,
@@ -18,10 +13,10 @@ import {
   FiStar,
   FiClipboard,
   FiCheckCircle,
-  FiChevronDown,
-  FiHelpCircle,
   FiAlertCircle,
+  FiUser,
 } from "react-icons/fi";
+import { Navbar } from "../components/Navbar";
 import { EvalMark } from "../components/icons/EvalMark";
 import KPICard from "../components/dashboard/KPICard";
 import { LoadingSpinner } from "../components/LoadingSpinner";
@@ -40,16 +35,22 @@ interface DashboardSummary {
   total_teachers_evaluated: number;
 }
 
+const API_BASE_URL = import.meta.env.VITE_ANALYTICS_API_BASE_URL;
+
+if (!API_BASE_URL) {
+  throw new Error(
+    "VITE_ANALYTICS_API_BASE_URL is not set. Add it to your .env file (see .env.example).",
+  );
+}
+
 const Dashboard: React.FC = () => {
   const navigate = useNavigate();
-  const { logout } = useAuth();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [kpiData, setKpiData] = useState<DashboardSummary | null>(null);
   const [teachers, setTeachers] = useState<TeacherResponse[]>([]);
   const [departments, setDepartments] = useState<Department[]>([]);
   const [evaluationForms, setEvaluationForms] = useState<EvaluationForm[]>([]);
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<
     "forms" | "teachers" | "departments"
   >("forms");
@@ -85,17 +86,17 @@ const Dashboard: React.FC = () => {
         setError(null);
         setDataErrors({});
 
+        const errors: typeof dataErrors = {};
+        let gotAnyData = false;
+
         // Fetch KPI data
         try {
-          const response = await fetch(
-            "https://loud-terms-pick.loca.lt/api/dashboard-summary",
-            {
-              headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-              },
+          const response = await fetch(`${API_BASE_URL}/dashboard-summary`, {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
             },
-          );
+          });
 
           if (!response.ok) {
             throw new Error(`Failed to fetch KPI data: ${response.status}`);
@@ -103,59 +104,47 @@ const Dashboard: React.FC = () => {
 
           const data: DashboardSummary = await response.json();
           setKpiData(data);
+          gotAnyData = true;
         } catch (err) {
           console.error("Failed to fetch KPI data:", err);
-          setDataErrors((prev) => ({
-            ...prev,
-            kpi: "Failed to load evaluation overview data",
-          }));
+          errors.kpi = "Failed to load evaluation overview data";
         }
 
         // Fetch teachers
         try {
           const teachersData = await teacherApi.getAll();
           setTeachers(teachersData || []);
+          if (teachersData?.length) gotAnyData = true;
         } catch (err) {
           console.error("Failed to fetch teachers:", err);
-          setDataErrors((prev) => ({
-            ...prev,
-            teachers: "Failed to load teachers data",
-          }));
+          errors.teachers = "Failed to load teachers data";
         }
 
         // Fetch departments
         try {
           const departmentsData = await departmentApi.getAll();
           setDepartments(departmentsData || []);
+          if (departmentsData?.length) gotAnyData = true;
         } catch (err) {
           console.error("Failed to fetch departments:", err);
-          setDataErrors((prev) => ({
-            ...prev,
-            departments: "Failed to load departments data",
-          }));
+          errors.departments = "Failed to load departments data";
         }
 
         // Fetch evaluation forms
         try {
           const formsData = await evaluationFormApi.getAllForms();
           setEvaluationForms(formsData || []);
+          if (formsData?.length) gotAnyData = true;
         } catch (err) {
           console.error("Failed to fetch evaluation forms:", err);
-          setDataErrors((prev) => ({
-            ...prev,
-            forms: "Failed to load evaluation forms data",
-          }));
+          errors.forms = "Failed to load evaluation forms data";
         }
 
+        setDataErrors(errors);
+
         // Check if all data failed
-        const hasErrors = Object.values(dataErrors).some((err) => err);
-        if (
-          !kpiData &&
-          !teachers.length &&
-          !departments.length &&
-          !evaluationForms.length &&
-          hasErrors
-        ) {
+        const hasErrors = Object.keys(errors).length > 0;
+        if (!gotAnyData && hasErrors) {
           setError("Unable to load dashboard data. Please try again later.");
         }
       } catch (err) {
@@ -167,29 +156,6 @@ const Dashboard: React.FC = () => {
     };
 
     fetchDashboardData();
-  }, []);
-
-  const handleLogout = () => {
-    logout();
-    setIsDropdownOpen(false);
-  };
-
-  const handleSettings = () => {
-    navigate("/admin-settings");
-    setIsDropdownOpen(false);
-  };
-
-  // Close dropdown when clicking outside
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      const target = event.target as HTMLElement;
-      if (!target.closest(".profile-dropdown")) {
-        setIsDropdownOpen(false);
-      }
-    };
-
-    document.addEventListener("click", handleClickOutside);
-    return () => document.removeEventListener("click", handleClickOutside);
   }, []);
 
   // Parse completion rate (remove % sign and convert to number)
@@ -218,86 +184,7 @@ const Dashboard: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-[#F4F6FA]">
-      {/* Navbar */}
-      <nav className="bg-gradient-to-b from-[#0A0E1A] to-[#121A2E] sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between h-16 items-center">
-            <div className="flex items-center gap-2 min-w-0">
-              <EvalMark className="h-7 w-7 flex-shrink-0" />
-              <span
-                className="text-base sm:text-lg font-semibold text-[#F4F6FA] tracking-tight truncate"
-                style={{
-                  fontFamily: "'Space Grotesk', system-ui, sans-serif",
-                }}>
-                <span className="hidden sm:inline">SPCT Evaluation System</span>
-                <span className="sm:hidden">SPCT</span>
-              </span>
-            </div>
-            <div className="flex items-center gap-1 sm:gap-4 flex-shrink-0">
-              <button className="p-2 rounded-full hover:bg-white/5 transition-colors relative">
-                <FiBell className="h-5 w-5 text-[#8E97AE]" />
-                <span className="absolute top-1 right-1 h-2 w-2 bg-[#3D6BFF] rounded-full"></span>
-              </button>
-
-              {/* Help Link */}
-              <button
-                onClick={() => navigate("/help")}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm text-[#8E97AE] hover:text-white hover:bg-white/5 transition-colors">
-                <FiHelpCircle className="h-4 w-4" />
-                <span className="hidden sm:inline">Help</span>
-              </button>
-
-              {/* Profile Dropdown */}
-              <div className="relative profile-dropdown">
-                <button
-                  onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                  className="flex items-center gap-2 px-2 py-1.5 rounded-lg hover:bg-white/5 transition-colors">
-                  <div className="h-8 w-8 rounded-full bg-[#3D6BFF] flex items-center justify-center flex-shrink-0">
-                    <FiUser className="h-4 w-4 text-[#0A0E1A]" />
-                  </div>
-                  <span className="hidden md:inline text-sm font-medium text-[#F4F6FA] whitespace-nowrap">
-                    {user.firstName} {user.lastName}
-                  </span>
-                  <FiChevronDown
-                    className={`h-4 w-4 text-[#8E97AE] transition-transform duration-200 ${isDropdownOpen ? "rotate-180" : ""}`}
-                  />
-                </button>
-
-                {/* Dropdown Menu */}
-                {isDropdownOpen && (
-                  <div className="absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-lg border border-[#E4E8F0] py-1 z-50">
-                    <div className="px-4 py-3 border-b border-[#E4E8F0]">
-                      <p className="text-sm font-medium text-[#101625]">
-                        {user.firstName} {user.lastName}
-                      </p>
-                      <p className="text-xs text-[#5A6478] truncate">
-                        {user.email}
-                      </p>
-                      <span className="inline-block mt-1 px-2 py-0.5 bg-[#EBF0FE] text-[#3D6BFF] text-xs rounded-full">
-                        {user.role}
-                      </span>
-                    </div>
-
-                    <button
-                      onClick={handleSettings}
-                      className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-[#101625] hover:bg-[#F4F6FA] transition-colors">
-                      <FiSettings className="h-4 w-4 text-[#5A6478]" />
-                      Settings
-                    </button>
-
-                    <button
-                      onClick={handleLogout}
-                      className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-red-600 hover:bg-[#FBEEF0] transition-colors border-t border-[#E4E8F0]">
-                      <FiLogOut className="h-4 w-4" />
-                      Logout
-                    </button>
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
-        </div>
-      </nav>
+      <Navbar />
 
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">

@@ -9,7 +9,13 @@ import type {
   TeacherRequiringImprovement,
 } from "../types/analytics";
 
-const API_BASE_URL = "https://loud-terms-pick.loca.lt/api";
+const API_BASE_URL = import.meta.env.VITE_ANALYTICS_API_BASE_URL;
+
+if (!API_BASE_URL) {
+  throw new Error(
+    "VITE_ANALYTICS_API_BASE_URL is not set. Add it to your .env file (see .env.example).",
+  );
+}
 
 const getAuthHeaders = () => ({
   "Content-Type": "application/json",

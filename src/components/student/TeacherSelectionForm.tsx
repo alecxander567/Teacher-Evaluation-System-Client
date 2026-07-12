@@ -6,7 +6,9 @@ import {
   FiUser,
   FiBookOpen,
   FiInfo,
+  FiUsers,
 } from "react-icons/fi";
+import { LoadingSpinner } from "../LoadingSpinner";
 import type { DepartmentTeacherGroup } from "../../types/studentEvaluation.types";
 
 interface TeacherSelectionFormProps {
@@ -107,7 +109,7 @@ export const TeacherSelectionForm: React.FC<TeacherSelectionFormProps> = ({
   if (loading) {
     return (
       <div className="flex justify-center py-12">
-        <div className="inline-block animate-spin rounded-full h-8 w-8 border-4 border-[#E8A23D] border-t-transparent"></div>
+        <LoadingSpinner label="Loading teachers..." />
       </div>
     );
   }
@@ -115,14 +117,16 @@ export const TeacherSelectionForm: React.FC<TeacherSelectionFormProps> = ({
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       {/* Header Info */}
-      <div className="bg-[#FBEEDC] rounded-lg p-4 border border-[#E8A23D]/30">
+      <div className="bg-[#EBF0FE] rounded-xl border border-[#3D6BFF]/20 p-5">
         <div className="flex items-start gap-3">
-          <FiInfo className="h-5 w-5 text-[#B8791F] flex-shrink-0 mt-0.5" />
+          <div className="h-10 w-10 rounded-lg bg-[#3D6BFF]/10 flex items-center justify-center flex-shrink-0">
+            <FiInfo className="h-5 w-5 text-[#3D6BFF]" />
+          </div>
           <div>
-            <p className="text-sm text-[#101826] font-medium">
+            <p className="text-sm font-semibold text-[#101625]">
               Select Teachers to Evaluate
             </p>
-            <p className="text-sm text-[#5B6472] mt-1">
+            <p className="text-sm text-[#5A6478] mt-1">
               You can select multiple teachers to evaluate. Each teacher will be
               evaluated one at a time.
               {totalTeachers > 0 &&
@@ -134,8 +138,8 @@ export const TeacherSelectionForm: React.FC<TeacherSelectionFormProps> = ({
 
       {/* Student Email */}
       <div>
-        <label className="block text-sm font-medium text-[#101826] mb-1.5">
-          Your Email *
+        <label className="block text-sm font-medium text-[#101625] mb-1.5">
+          Your Email <span className="text-[#E53935]">*</span>
         </label>
         <input
           type="email"
@@ -146,15 +150,15 @@ export const TeacherSelectionForm: React.FC<TeacherSelectionFormProps> = ({
           }}
           required
           placeholder="you@student.edu"
-          className="w-full px-4 py-2.5 border border-[#E4E1D9] rounded-lg focus:ring-2 focus:ring-[#E8A23D] focus:border-[#E8A23D] outline-none transition-colors bg-white text-[#101826]"
+          className="w-full px-4 py-2.5 border border-[#E4E8F0] rounded-lg focus:ring-2 focus:ring-[#3D6BFF]/20 focus:border-[#3D6BFF] outline-none transition-colors bg-[#FBFCFE] text-[#101625] placeholder-[#8E97AE]"
         />
         {(emailError || error) && (
-          <p className="mt-1 text-sm text-red-600 flex items-center gap-1">
-            <FiAlertCircle className="h-4 w-4" />
+          <p className="mt-1 text-sm text-[#E53935] flex items-center gap-1">
+            <FiAlertCircle className="h-4 w-4 flex-shrink-0" />
             {emailError || error}
           </p>
         )}
-        <p className="mt-1 text-xs text-[#5B6472]">
+        <p className="mt-1 text-xs text-[#5A6478]">
           This email will be used to identify your evaluations
         </p>
       </div>
@@ -162,26 +166,38 @@ export const TeacherSelectionForm: React.FC<TeacherSelectionFormProps> = ({
       {/* Teachers List */}
       <div>
         <div className="flex items-center justify-between mb-3">
-          <p className="text-sm text-[#5B6472]">
-            Select teachers to evaluate ({selectedTeachers.size} selected)
+          <p className="text-sm text-[#5A6478]">
+            <span className="font-medium text-[#101625]">
+              {selectedTeachers.size}
+            </span>{" "}
+            teacher{selectedTeachers.size > 1 ? "s" : ""} selected
           </p>
+          {teacherGroups.length > 0 && (
+            <span className="text-xs text-[#5A6478]">
+              {totalTeachers} total available
+            </span>
+          )}
         </div>
 
         {teacherGroups.length === 0 ?
-          <div className="text-center py-12 bg-[#FAFAF6] rounded-lg border border-[#E4E1D9]">
-            <p className="text-sm text-[#5B6472]">
-              No teachers available for evaluation.
+          <div className="text-center py-12 bg-[#FBFCFE] rounded-xl border border-[#E4E8F0]">
+            <FiUsers className="h-12 w-12 text-[#8E97AE] mx-auto mb-3" />
+            <p className="text-sm font-medium text-[#101625]">
+              No teachers available
+            </p>
+            <p className="text-sm text-[#5A6478] mt-1">
+              No teachers are currently available for evaluation.
             </p>
           </div>
-        : <div className="space-y-6">
+        : <div className="space-y-4">
             {teacherGroups.map((group) => (
               <div
                 key={group.departmentId}
-                className="border border-[#E4E1D9] rounded-lg overflow-hidden">
-                <div className="bg-[#FAFAF6] px-4 py-3 border-b border-[#E4E1D9] flex items-center justify-between">
-                  <h3 className="text-sm font-medium text-[#101826]">
+                className="border border-[#E4E8F0] rounded-xl overflow-hidden bg-[#FBFCFE]">
+                <div className="bg-[#F4F6FA] px-5 py-3 border-b border-[#E4E8F0] flex items-center justify-between">
+                  <h3 className="text-sm font-semibold text-[#101625]">
                     {group.departmentName}
-                    <span className="ml-2 text-xs text-[#5B6472] font-normal">
+                    <span className="ml-2 text-xs text-[#5A6478] font-normal">
                       ({group.teachers.length} teacher
                       {group.teachers.length > 1 ? "s" : ""})
                     </span>
@@ -189,7 +205,7 @@ export const TeacherSelectionForm: React.FC<TeacherSelectionFormProps> = ({
                   <button
                     type="button"
                     onClick={() => handleSelectAll(group.teachers)}
-                    className="text-xs text-[#B8791F] hover:text-[#101826] transition-colors font-medium">
+                    className="text-xs font-medium text-[#3D6BFF] hover:text-[#101625] transition-colors">
                     {(
                       group.teachers.every((t) =>
                         selectedTeachers.has(t.teacherAssignmentId),
@@ -199,7 +215,7 @@ export const TeacherSelectionForm: React.FC<TeacherSelectionFormProps> = ({
                     : "Select All"}
                   </button>
                 </div>
-                <div className="divide-y divide-[#E4E1D9]">
+                <div className="divide-y divide-[#E4E8F0]">
                   {group.teachers.map((teacher) => {
                     const isSelected = selectedTeachers.has(
                       teacher.teacherAssignmentId,
@@ -207,8 +223,10 @@ export const TeacherSelectionForm: React.FC<TeacherSelectionFormProps> = ({
                     return (
                       <div
                         key={teacher.teacherAssignmentId}
-                        className={`px-4 py-3 flex items-start gap-4 cursor-pointer transition-colors ${
-                          isSelected ? "bg-[#FBEEDC]" : "hover:bg-[#FAFAF6]"
+                        className={`px-5 py-3.5 flex items-start gap-4 cursor-pointer transition-colors ${
+                          isSelected ?
+                            "bg-[#EBF0FE] hover:bg-[#E4E8F0]"
+                          : "hover:bg-[#F4F6FA]"
                         }`}
                         onClick={() =>
                           handleToggleTeacher(teacher.teacherAssignmentId)
@@ -217,8 +235,8 @@ export const TeacherSelectionForm: React.FC<TeacherSelectionFormProps> = ({
                           <div
                             className={`w-5 h-5 rounded border-2 flex items-center justify-center transition-colors ${
                               isSelected ?
-                                "bg-[#101826] border-[#101826]"
-                              : "border-[#5B6472]"
+                                "bg-[#3D6BFF] border-[#3D6BFF]"
+                              : "border-[#5A6478]"
                             }`}>
                             {isSelected && (
                               <FiCheck className="h-3.5 w-3.5 text-white" />
@@ -227,25 +245,25 @@ export const TeacherSelectionForm: React.FC<TeacherSelectionFormProps> = ({
                         </div>
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-2 flex-wrap">
-                            <span className="text-sm font-medium text-[#101826]">
+                            <span className="text-sm font-medium text-[#101625]">
                               {teacher.fullName}
                             </span>
-                            <span className="text-xs px-2 py-0.5 rounded-full bg-[#E4E1D9] text-[#5B6472]">
+                            <span className="text-xs px-2 py-0.5 rounded-full bg-[#EBF0FE] text-[#3D6BFF]">
                               {teacher.employmentType}
                             </span>
                             {teacher.position && (
-                              <span className="text-xs px-2 py-0.5 rounded-full bg-[#E8F0FE] text-[#1A4F8A]">
+                              <span className="text-xs px-2 py-0.5 rounded-full bg-[#F4F6FA] text-[#5A6478]">
                                 {teacher.position}
                               </span>
                             )}
                           </div>
-                          <div className="flex items-center gap-3 mt-1 text-xs text-[#5B6472] flex-wrap">
+                          <div className="flex items-center gap-4 mt-1 text-xs text-[#5A6478] flex-wrap">
                             <span className="flex items-center gap-1">
-                              <FiBookOpen className="h-3 w-3" />
+                              <FiBookOpen className="h-3 w-3 flex-shrink-0" />
                               {teacher.subjectName || "No subject assigned"}
                             </span>
                             <span className="flex items-center gap-1">
-                              <FiUser className="h-3 w-3" />
+                              <FiUser className="h-3 w-3 flex-shrink-0" />
                               {teacher.email}
                             </span>
                           </div>
@@ -261,15 +279,17 @@ export const TeacherSelectionForm: React.FC<TeacherSelectionFormProps> = ({
       </div>
 
       {/* Submit Button */}
-      <div className="flex items-center justify-end gap-4 pt-4 border-t border-[#E4E1D9]">
-        <p className="text-sm text-[#5B6472]">
-          {selectedTeachers.size} teacher{selectedTeachers.size > 1 ? "s" : ""}{" "}
-          selected
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 border-t border-[#E4E8F0]">
+        <p className="text-sm text-[#5A6478] order-2 sm:order-1">
+          <span className="font-medium text-[#101625]">
+            {selectedTeachers.size}
+          </span>{" "}
+          teacher{selectedTeachers.size > 1 ? "s" : ""} selected for evaluation
         </p>
         <button
           type="submit"
           disabled={isSubmitting || selectedTeachers.size === 0}
-          className="flex items-center gap-2 px-6 py-2.5 bg-[#101826] text-white rounded-lg hover:bg-[#1a2438] transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm font-medium">
+          className="flex items-center gap-2 px-6 py-2.5 bg-[#3D6BFF] text-white rounded-lg hover:bg-[#2A5AF0] transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm font-medium order-1 sm:order-2 w-full sm:w-auto justify-center">
           {isSubmitting ?
             <>
               <span className="inline-block animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></span>

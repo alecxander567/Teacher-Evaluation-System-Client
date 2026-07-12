@@ -1,6 +1,6 @@
 // src/components/evaluations/EvaluationSubmissionForm.tsx
 import React, { useState } from "react";
-import { FiSave, FiX, FiAlertCircle } from "react-icons/fi";
+import { FiSave, FiX, FiAlertCircle, FiStar } from "react-icons/fi";
 import type { EvaluationForm } from "../../types/evaluationForm";
 import type { EvaluationCategory } from "../../types/evaluationCategory.types";
 import type { EvaluationSubmissionRequest } from "../../types/evaluationSubmission.types";
@@ -128,40 +128,66 @@ export const EvaluationSubmissionForm: React.FC<
       <div className="flex min-h-screen items-center justify-center p-4">
         <div className="fixed inset-0 bg-black/50" onClick={onClose}></div>
 
-        <div className="relative bg-white rounded-xl w-full max-w-4xl border border-[#E4E1D9] shadow-xl max-h-[90vh] overflow-y-auto">
+        <div className="relative bg-[#FBFCFE] rounded-xl w-full max-w-4xl border border-[#E4E8F0] shadow-xl max-h-[90vh] overflow-y-auto">
           {/* Header */}
-          <div className="flex items-center justify-between p-6 border-b border-[#E4E1D9] sticky top-0 bg-white z-10">
+          <div className="flex items-center justify-between p-6 border-b border-[#E4E8F0] sticky top-0 bg-[#FBFCFE] z-10">
             <div>
               <h2
-                className="text-xl font-semibold text-[#101826]"
+                className="text-xl font-semibold text-[#101625]"
                 style={{
                   fontFamily: "'Space Grotesk', system-ui, sans-serif",
                 }}>
                 {form?.title || "Evaluation Form"}
               </h2>
-              <p className="text-sm text-[#5B6472] mt-1">
-                {answeredQuestions} of {totalQuestions} questions answered
-              </p>
+              <div className="flex items-center gap-3 mt-1">
+                <p className="text-sm text-[#5A6478]">
+                  <span className="font-medium text-[#101625]">
+                    {answeredQuestions}
+                  </span>{" "}
+                  of {totalQuestions} questions answered
+                </p>
+                <div className="h-4 w-px bg-[#E4E8F0]"></div>
+                <p className="text-sm text-[#5A6478]">
+                  <span className="font-medium text-[#101625]">
+                    {Math.round((answeredQuestions / totalQuestions) * 100) ||
+                      0}
+                    %
+                  </span>{" "}
+                  complete
+                </p>
+              </div>
             </div>
             <button
               onClick={onClose}
-              className="p-2 hover:bg-[#FAFAF6] rounded-lg transition-colors">
-              <FiX className="h-5 w-5 text-[#5B6472]" />
+              className="p-2 hover:bg-[#F4F6FA] rounded-lg transition-colors">
+              <FiX className="h-5 w-5 text-[#5A6478]" />
             </button>
+          </div>
+
+          {/* Progress Bar */}
+          <div className="px-6 pt-4">
+            <div className="w-full h-1.5 bg-[#F4F6FA] rounded-full overflow-hidden">
+              <div
+                className="h-full bg-gradient-to-r from-[#3D6BFF] to-[#6E8CFF] rounded-full transition-all duration-300"
+                style={{
+                  width: `${(answeredQuestions / totalQuestions) * 100 || 0}%`,
+                }}
+              />
+            </div>
           </div>
 
           {/* Body */}
           <form onSubmit={handleSubmit} className="p-6">
             {error && (
-              <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg flex items-start gap-3">
-                <FiAlertCircle className="h-5 w-5 text-red-500 flex-shrink-0 mt-0.5" />
-                <p className="text-sm text-red-700">{error}</p>
+              <div className="mb-6 p-4 bg-[#FBEEF0] border border-[#F0CBD1] rounded-lg flex items-start gap-3">
+                <FiAlertCircle className="h-5 w-5 text-[#E53935] flex-shrink-0 mt-0.5" />
+                <p className="text-sm text-[#9A3A50]">{error}</p>
               </div>
             )}
 
             {!categories || categories.length === 0 ?
               <div className="text-center py-12">
-                <p className="text-[#5B6472]">
+                <p className="text-[#5A6478]">
                   No questions available for this evaluation.
                 </p>
               </div>
@@ -173,26 +199,32 @@ export const EvaluationSubmissionForm: React.FC<
 
                   return (
                     <div key={category.id}>
-                      <h3 className="text-lg font-medium text-[#101826] mb-4">
+                      <h3 className="text-lg font-semibold text-[#101625] mb-4">
                         {category.name}
                         {category.description && (
-                          <p className="text-sm font-normal text-[#5B6472] mt-1">
+                          <p className="text-sm font-normal text-[#5A6478] mt-1">
                             {category.description}
                           </p>
                         )}
                       </h3>
 
-                      <div className="space-y-4">
+                      <div className="space-y-3">
                         {category.questions.map((question) => (
                           <div
                             key={question.id}
-                            className="bg-[#FAFAF6] rounded-lg p-4 border border-[#E4E1D9]">
-                            <div className="flex items-start justify-between gap-4">
+                            className={`bg-[#FBFCFE] rounded-lg p-4 border transition-all ${
+                              responses[question.id] > 0 ?
+                                "border-[#3D6BFF] shadow-sm"
+                              : "border-[#E4E8F0] hover:border-[#3D6BFF]/30"
+                            }`}>
+                            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                               <div className="flex-1">
-                                <p className="text-sm text-[#101826]">
+                                <p className="text-sm text-[#101625]">
                                   {question.question}
                                   {question.isRequired && (
-                                    <span className="text-red-500 ml-1">*</span>
+                                    <span className="text-[#E53935] ml-1">
+                                      *
+                                    </span>
                                   )}
                                 </p>
                               </div>
@@ -206,10 +238,15 @@ export const EvaluationSubmissionForm: React.FC<
                                     }
                                     className={`w-10 h-10 rounded-lg text-sm font-medium transition-all ${
                                       responses[question.id] === rating ?
-                                        "bg-[#101826] text-white"
-                                      : "bg-white border border-[#E4E1D9] text-[#5B6472] hover:border-[#E8A23D] hover:text-[#101826]"
+                                        "bg-[#3D6BFF] text-white shadow-sm"
+                                      : "bg-white border border-[#E4E8F0] text-[#5A6478] hover:border-[#3D6BFF] hover:text-[#3D6BFF]"
                                     }`}>
-                                    {rating}
+                                    <div className="flex flex-col items-center">
+                                      <span>{rating}</span>
+                                      {responses[question.id] === rating && (
+                                        <FiStar className="h-2 w-2" />
+                                      )}
+                                    </div>
                                   </button>
                                 ))}
                               </div>
@@ -223,48 +260,64 @@ export const EvaluationSubmissionForm: React.FC<
 
                 {/* Overall Comment */}
                 <div>
-                  <label className="block text-sm font-medium text-[#101826] mb-2">
-                    Overall Comment (Optional)
+                  <label className="block text-sm font-medium text-[#101625] mb-2">
+                    Overall Comment{" "}
+                    <span className="text-[#5A6478] font-normal">
+                      (Optional)
+                    </span>
                   </label>
                   <textarea
                     value={overallComment}
                     onChange={(e) => setOverallComment(e.target.value)}
                     rows={4}
                     placeholder="Share any additional feedback or comments..."
-                    className="w-full px-4 py-3 border border-[#E4E1D9] rounded-lg focus:ring-2 focus:ring-[#E8A23D] focus:border-[#E8A23D] outline-none transition-colors bg-white text-[#101826] resize-none"
+                    className="w-full px-4 py-3 border border-[#E4E8F0] rounded-lg focus:ring-2 focus:ring-[#3D6BFF]/20 focus:border-[#3D6BFF] outline-none transition-colors bg-[#FBFCFE] text-[#101625] placeholder-[#8E97AE] resize-none"
                   />
                 </div>
               </div>
             }
 
             {/* Footer */}
-            <div className="flex justify-end gap-3 mt-8 pt-6 border-t border-[#E4E1D9]">
-              <button
-                type="button"
-                onClick={onClose}
-                className="px-4 py-2.5 text-sm font-medium text-[#5B6472] hover:text-[#101826] transition-colors">
-                Cancel
-              </button>
-              <button
-                type="submit"
-                disabled={
-                  isSubmitting ||
-                  loading ||
-                  !categories ||
-                  categories.length === 0
-                }
-                className="flex items-center gap-2 px-6 py-2.5 bg-[#101826] text-white rounded-lg hover:bg-[#1a2438] transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm font-medium">
-                {isSubmitting || loading ?
-                  <>
-                    <span className="inline-block animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></span>
-                    Submitting...
-                  </>
-                : <>
-                    <FiSave className="h-4 w-4" />
-                    Submit Evaluation
-                  </>
-                }
-              </button>
+            <div className="flex flex-col sm:flex-row justify-between items-center gap-4 mt-8 pt-6 border-t border-[#E4E8F0]">
+              <p className="text-sm text-[#5A6478] order-2 sm:order-1">
+                <span className="font-medium text-[#101625]">
+                  {answeredQuestions}
+                </span>{" "}
+                of {totalQuestions} questions answered
+                {answeredQuestions < totalQuestions && (
+                  <span className="text-[#E53935] ml-1">
+                    ({totalQuestions - answeredQuestions} remaining)
+                  </span>
+                )}
+              </p>
+              <div className="flex items-center gap-3 order-1 sm:order-2 w-full sm:w-auto">
+                <button
+                  type="button"
+                  onClick={onClose}
+                  className="px-4 py-2.5 text-sm font-medium text-[#5A6478] hover:text-[#101625] transition-colors">
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={
+                    isSubmitting ||
+                    loading ||
+                    !categories ||
+                    categories.length === 0
+                  }
+                  className="flex items-center gap-2 px-6 py-2.5 bg-[#3D6BFF] text-white rounded-lg hover:bg-[#2A5AF0] transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm font-medium">
+                  {isSubmitting || loading ?
+                    <>
+                      <span className="inline-block animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></span>
+                      Submitting...
+                    </>
+                  : <>
+                      <FiSave className="h-4 w-4" />
+                      Submit Evaluation
+                    </>
+                  }
+                </button>
+              </div>
             </div>
           </form>
         </div>

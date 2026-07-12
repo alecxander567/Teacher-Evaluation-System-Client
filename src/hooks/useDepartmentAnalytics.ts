@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import { DepartmentAnalyticsService } from "../services/departmentAnalyticsService";
 
-interface DepartmentTrendData {
+export interface DepartmentTrendData {
   academic_year: string;
   avg_rating: number;
   department_name: string;
@@ -10,27 +10,19 @@ interface DepartmentTrendData {
   semester: string;
 }
 
-interface DepartmentScoreData {
+export interface DepartmentScoreData {
   department_id: number;
   department_name: string;
   avg_rating: number;
 }
 
-interface DepartmentTeacherCountData {
+export interface DepartmentTeacherCountData {
   department_id: number;
   department_name: string;
   evaluated_teacher_count: number;
 }
 
-interface UseDepartmentAnalyticsReturn {
-  departmentTrendData: DepartmentTrendData[];
-  departmentScores: DepartmentScoreData[];
-  departmentTeacherCounts: DepartmentTeacherCountData[];
-  loading: boolean;
-  error: string | null;
-}
-
-export function useDepartmentAnalytics(): UseDepartmentAnalyticsReturn {
+export function useDepartmentAnalytics() {
   const [departmentTrendData, setDepartmentTrendData] = useState<
     DepartmentTrendData[]
   >([]);
@@ -59,11 +51,11 @@ export function useDepartmentAnalytics(): UseDepartmentAnalyticsReturn {
         setDepartmentScores(scoresData);
         setDepartmentTeacherCounts(countsData);
       } catch (err) {
-        setError(
+        const errorMessage =
           err instanceof Error ?
             err.message
-          : "Failed to fetch department analytics",
-        );
+          : "Failed to fetch department analytics";
+        setError(errorMessage);
         console.error("Error fetching department analytics:", err);
       } finally {
         setLoading(false);

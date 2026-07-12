@@ -1,13 +1,9 @@
 // src/pages/TeacherAssignments.tsx
 import React, { useState, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../hooks/useAuth";
 import {
   FiPlus,
   FiArrowLeft,
-  FiLogOut,
-  FiBell,
-  FiUser,
   FiTrash2,
   FiEdit2,
   FiUsers,
@@ -15,7 +11,7 @@ import {
   FiX,
   FiSearch,
 } from "react-icons/fi";
-import { EvalMark } from "../components/icons/EvalMark";
+import { Navbar } from "../components/Navbar";
 import { AlertModal } from "../components/AlertModal";
 import { DeleteConfirmationModal } from "../components/DeleteConfirmationModal";
 import { LoadingSpinner } from "../components/LoadingSpinner";
@@ -202,7 +198,6 @@ const AssignmentModal: React.FC<{
 // Export the component as default
 const TeacherAssignments: React.FC = () => {
   const navigate = useNavigate();
-  const { logout } = useAuth();
   const {
     assignments,
     loading,
@@ -341,34 +336,7 @@ const TeacherAssignments: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-[#F4F6FA]">
-      <nav className="bg-gradient-to-b from-[#0A0E1A] to-[#121A2E]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between h-16 items-center">
-            <div className="flex items-center gap-2">
-              <EvalMark className="h-7 w-7 flex-shrink-0" />
-              <span className="text-base sm:text-lg font-semibold text-[#F4F6FA] tracking-tight truncate">
-                SPCT Evaluation System
-              </span>
-            </div>
-            <div className="flex items-center gap-4">
-              <button className="p-2 rounded-full hover:bg-white/5 relative">
-                <FiBell className="h-5 w-5 text-[#8E97AE]" />
-              </button>
-              <div className="flex items-center gap-3">
-                <div className="h-8 w-8 rounded-full bg-[#3D6BFF] flex items-center justify-center">
-                  <FiUser className="h-4 w-4 text-white" />
-                </div>
-                <button
-                  onClick={logout}
-                  className="flex items-center px-3 py-2 text-sm text-[#8E97AE] hover:text-white hover:bg-white/5 rounded-lg">
-                  <FiLogOut className="h-4 w-4 sm:mr-2" />
-                  <span className="hidden sm:inline">Logout</span>
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </nav>
+      <Navbar />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <button

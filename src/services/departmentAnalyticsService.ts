@@ -1,8 +1,6 @@
 // src/services/departmentAnalyticsService.ts
-const API_BASE_URL =
-  import.meta.env.VITE_API_URL || "https://loud-terms-pick.loca.lt/api";
 
-interface DepartmentTrendData {
+export interface DepartmentTrendData {
   academic_year: string;
   avg_rating: number;
   department_name: string;
@@ -10,145 +8,66 @@ interface DepartmentTrendData {
   semester: string;
 }
 
-interface DepartmentScoreData {
+export interface DepartmentScoreData {
   department_id: number;
   department_name: string;
   avg_rating: number;
 }
 
-interface DepartmentTeacherCountData {
+export interface DepartmentTeacherCountData {
   department_id: number;
   department_name: string;
   evaluated_teacher_count: number;
 }
 
-export class DepartmentAnalyticsService {
-  private static getHeaders(): HeadersInit {
-    const token = localStorage.getItem("accessToken");
-    return {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    };
-  }
+const API_BASE_URL = import.meta.env.VITE_ANALYTICS_API_BASE_URL;
 
-  static async getDepartmentTrend(): Promise<DepartmentTrendData[]> {
-    try {
-      const response = await fetch(
-        `${API_BASE_URL}/analytics/department-trend`,
-        {
-          method: "GET",
-          headers: this.getHeaders(),
-        },
-      );
-
-      if (!response.ok) {
-        throw new Error(
-          `Failed to fetch department trend data: ${response.status}`,
-        );
-      }
-
-      return await response.json();
-    } catch (error) {
-      console.error("Error fetching department trend:", error);
-      // Return mock data for now
-      return [
-        {
-          academic_year: "2026-2027",
-          avg_rating: 3.67,
-          department_name: "Computing Department",
-          period: "test evaluation",
-          semester: "First Semester",
-        },
-        {
-          academic_year: "2026-2027",
-          avg_rating: 3.0,
-          department_name: "Education Department",
-          period: "ewrwer",
-          semester: "First Semester",
-        },
-        {
-          academic_year: "2026-2027",
-          avg_rating: 3.73,
-          department_name: "Education Department",
-          period: "test evaluation",
-          semester: "First Semester",
-        },
-      ];
-    }
-  }
-
-  static async getDepartmentScores(): Promise<DepartmentScoreData[]> {
-    try {
-      const response = await fetch(
-        `${API_BASE_URL}/analytics/department-scores`,
-        {
-          method: "GET",
-          headers: this.getHeaders(),
-        },
-      );
-
-      if (!response.ok) {
-        throw new Error(
-          `Failed to fetch department scores: ${response.status}`,
-        );
-      }
-
-      return await response.json();
-    } catch (error) {
-      console.error("Error fetching department scores:", error);
-      // Return mock data for now
-      return [
-        {
-          avg_rating: 3.67,
-          department_id: 2,
-          department_name: "Education Department",
-        },
-        {
-          avg_rating: 3.67,
-          department_id: 1,
-          department_name: "Computing Department",
-        },
-      ];
-    }
-  }
-
-  static async getDepartmentTeacherCounts(): Promise<
-    DepartmentTeacherCountData[]
-  > {
-    try {
-      const response = await fetch(
-        `${API_BASE_URL}/analytics/department-teacher-counts`,
-        {
-          method: "GET",
-          headers: this.getHeaders(),
-        },
-      );
-
-      if (!response.ok) {
-        throw new Error(
-          `Failed to fetch department teacher counts: ${response.status}`,
-        );
-      }
-
-      return await response.json();
-    } catch (error) {
-      console.error("Error fetching department teacher counts:", error);
-      // Return mock data for now
-      return [
-        {
-          department_id: 2,
-          department_name: "Education Department",
-          evaluated_teacher_count: 2,
-        },
-        {
-          department_id: 1,
-          department_name: "Computing Department",
-          evaluated_teacher_count: 1,
-        },
-      ];
-    }
-  }
+if (!API_BASE_URL) {
+  throw new Error(
+    "VITE_ANALYTICS_API_BASE_URL is not set. Add it to your .env file (see .env.example).",
+  );
 }
 
-// Export an instance for convenience
-export const departmentAnalyticsService = DepartmentAnalyticsService;
+const authHeaders = () => ({
+  "Content-Type": "application/json",
+  Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+});
+
+export const DepartmentAnalyticsService = {
+  getDepartmentTrend: async (): Promise<DepartmentTrendData[]> => {
+    const response = await fetch(
+      `${API_BASE_URL}/department-performance-trend`,
+      { headers: authHeaders() },
+    );
+    if (!response.ok) {
+      throw new Error(`Failed to fetch department trend: ${response.status}`);
+    }
+    return response.json();
+  },
+
+  getDepartmentScores: async (): Promise<DepartmentScoreData[]> => {
+    const response = await fetch(
+      `${API_BASE_URL}/department-average-evaluation`,
+      { headers: authHeaders() },
+    );
+    if (!response.ok) {
+      throw new Error(`Failed to fetch department scores: ${response.status}`);
+    }
+    return response.json();
+  },
+
+  getDepartmentTeacherCounts: async (): Promise<
+    DepartmentTeacherCountData[]
+  > => {
+    const response = await fetch(
+      `${API_BASE_URL}/evaluated-teachers-per-department`,
+      { headers: authHeaders() },
+    );
+    if (!response.ok) {
+      throw new Error(
+        `Failed to fetch department teacher counts: ${response.status}`,
+      );
+    }
+    return response.json();
+  },
+};

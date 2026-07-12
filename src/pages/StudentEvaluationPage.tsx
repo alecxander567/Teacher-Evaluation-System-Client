@@ -1,13 +1,19 @@
 // src/pages/StudentEvaluationPage.tsx
 import React, { useState, useEffect, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { FiArrowLeft, FiCheckCircle, FiAlertCircle } from "react-icons/fi";
+import {
+  FiArrowLeft,
+  FiCheckCircle,
+  FiAlertCircle,
+  FiClock,
+} from "react-icons/fi";
 import { studentEvaluationApi } from "../api/studentEvaluationApi";
 import { evaluationLinkApi } from "../api/evaluationLinkApi";
 import { TeacherSelectionForm } from "../components/student/TeacherSelectionForm";
 import { EvaluationProgress } from "../components/student/EvaluationProgress";
 import { EvaluationSubmissionForm } from "../components/evaluations/EvaluationSubmissionForm";
 import { AlertModal } from "../components/AlertModal";
+import { LoadingSpinner } from "../components/LoadingSpinner";
 import { useEvaluationForms } from "../hooks/useEvaluationForms";
 import type {
   DepartmentTeacherGroup,
@@ -320,17 +326,17 @@ export const StudentEvaluationPage: React.FC = () => {
   if (pageState === "error") {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[#F4F6FA] px-4">
-        <div className="text-center max-w-sm">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-red-50 mb-4 mx-auto">
-            <FiAlertCircle className="h-8 w-8 text-red-500" />
+        <div className="text-center max-w-sm bg-[#FBFCFE] rounded-xl border border-[#E4E8F0] p-8 shadow-sm">
+          <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-[#FBEEF0] mb-4">
+            <FiAlertCircle className="h-8 w-8 text-[#E53935]" />
           </div>
           <h1 className="text-lg font-semibold text-[#101625] mb-2">
             Something Went Wrong
           </h1>
-          <p className="text-sm text-[#5A6478] mb-4">{error}</p>
+          <p className="text-sm text-[#5A6478] mb-6">{error}</p>
           <button
             onClick={() => window.location.reload()}
-            className="px-4 py-2 bg-[#101625] text-white rounded-lg hover:bg-[#0A0E1A] transition-colors text-sm">
+            className="px-6 py-2.5 bg-[#3D6BFF] text-white rounded-lg hover:bg-[#2A5AF0] transition-colors text-sm font-medium">
             Try Again
           </button>
         </div>
@@ -342,9 +348,9 @@ export const StudentEvaluationPage: React.FC = () => {
   if (pageState === "completed") {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[#F4F6FA] px-4">
-        <div className="text-center max-w-sm">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-[#F3F8F1] mb-4 mx-auto">
-            <FiCheckCircle className="h-8 w-8 text-[#4C9A4C]" />
+        <div className="text-center max-w-sm bg-[#FBFCFE] rounded-xl border border-[#E4E8F0] p-8 shadow-sm">
+          <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-[#E8F5E9] mb-4">
+            <FiCheckCircle className="h-8 w-8 text-[#4CAF50]" />
           </div>
           <h1 className="text-xl font-semibold text-[#101625] mb-2">
             Thank You!
@@ -362,7 +368,7 @@ export const StudentEvaluationPage: React.FC = () => {
   if (pageState === "loading") {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[#F4F6FA]">
-        <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-[#3D6BFF] border-t-transparent"></div>
+        <LoadingSpinner label="Loading evaluation..." />
       </div>
     );
   }
@@ -379,15 +385,21 @@ export const StudentEvaluationPage: React.FC = () => {
             Back
           </button>
 
-          <div className="bg-[#FBFCFE] rounded-xl border border-[#E4E8F0] shadow-sm p-6">
-            <h1 className="text-xl font-semibold text-[#101625] mb-1">
-              {formDetail?.title || "Teacher Evaluation"}
-            </h1>
-            {formDetail?.description && (
-              <p className="text-sm text-[#5A6478] mb-6">
-                {formDetail.description}
-              </p>
-            )}
+          <div className="bg-[#FBFCFE] rounded-xl border border-[#E4E8F0] shadow-sm p-6 sm:p-8">
+            <div className="mb-6">
+              <h1
+                className="text-2xl font-semibold text-[#101625]"
+                style={{
+                  fontFamily: "'Space Grotesk', system-ui, sans-serif",
+                }}>
+                {formDetail?.title || "Teacher Evaluation"}
+              </h1>
+              {formDetail?.description && (
+                <p className="text-sm text-[#5A6478] mt-1">
+                  {formDetail.description}
+                </p>
+              )}
+            </div>
 
             <TeacherSelectionForm
               teacherGroups={teacherGroups}
@@ -407,7 +419,7 @@ export const StudentEvaluationPage: React.FC = () => {
   if (pageState === "evaluating" && session && currentProgress && formDetail) {
     return (
       <div className="min-h-screen bg-[#F4F6FA] py-8 px-4">
-        <div className="max-w-4xl mx-auto">
+        <div className="max-w-6xl mx-auto">
           {/* Back button */}
           <button
             onClick={() => {
@@ -431,36 +443,55 @@ export const StudentEvaluationPage: React.FC = () => {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             {/* Main content */}
             <div className="lg:col-span-2">
-              <div className="bg-[#FBFCFE] rounded-xl border border-[#E4E8F0] shadow-sm p-6">
-                <h1 className="text-xl font-semibold text-[#101625] mb-1">
-                  {formDetail?.title || "Evaluation Form"}
-                </h1>
-                <p className="text-sm text-[#5A6478] mb-4">
-                  Evaluating: {currentProgress?.teacherName} -{" "}
-                  {currentProgress?.subjectName}
-                </p>
-
-                {/* Progress indicator */}
-                <div className="flex items-center gap-3 mb-6 p-3 bg-[#F4F6FA] rounded-lg">
-                  <div className="flex-1">
-                    <div className="h-2 bg-[#E4E8F0] rounded-full overflow-hidden">
-                      <div
-                        className="h-full bg-[#3D6BFF] rounded-full transition-all duration-300"
-                        style={{
-                          width: `${(session.completedCount / session.totalTeachers) * 100}%`,
-                        }}
-                      />
-                    </div>
+              <div className="bg-[#FBFCFE] rounded-xl border border-[#E4E8F0] shadow-sm p-6 sm:p-8">
+                <div className="flex items-start justify-between mb-4">
+                  <div>
+                    <h1
+                      className="text-xl font-semibold text-[#101625]"
+                      style={{
+                        fontFamily: "'Space Grotesk', system-ui, sans-serif",
+                      }}>
+                      {formDetail?.title || "Evaluation Form"}
+                    </h1>
+                    <p className="text-sm text-[#5A6478] mt-1">
+                      Evaluating:{" "}
+                      <span className="font-medium text-[#101625]">
+                        {currentProgress?.teacherName}
+                      </span>
+                    </p>
                   </div>
-                  <span className="text-xs text-[#5A6478] whitespace-nowrap">
+                  <div className="flex items-center gap-2 text-xs px-3 py-1.5 bg-[#EBF0FE] rounded-full text-[#3D6BFF] font-medium">
+                    <FiClock className="h-3.5 w-3.5" />
                     {session.completedCount} of {session.totalTeachers}{" "}
                     completed
-                  </span>
+                  </div>
+                </div>
+
+                {/* Progress indicator */}
+                <div className="mb-6 p-4 bg-[#F4F6FA] rounded-lg">
+                  <div className="flex items-center gap-3">
+                    <div className="flex-1">
+                      <div className="h-2 bg-[#E4E8F0] rounded-full overflow-hidden">
+                        <div
+                          className="h-full bg-gradient-to-r from-[#3D6BFF] to-[#6E8CFF] rounded-full transition-all duration-300"
+                          style={{
+                            width: `${(session.completedCount / session.totalTeachers) * 100}%`,
+                          }}
+                        />
+                      </div>
+                    </div>
+                    <span className="text-xs font-medium text-[#101625] whitespace-nowrap">
+                      {Math.round(
+                        (session.completedCount / session.totalTeachers) * 100,
+                      )}
+                      %
+                    </span>
+                  </div>
                 </div>
 
                 <button
                   onClick={() => setIsFormOpen(true)}
-                  className="w-full px-6 py-3 bg-[#101625] text-white rounded-lg hover:bg-[#0A0E1A] transition-colors text-sm font-medium">
+                  className="w-full px-6 py-3 bg-[#3D6BFF] text-white rounded-lg hover:bg-[#2A5AF0] transition-colors text-sm font-medium">
                   Start Evaluation for {currentProgress?.teacherName}
                 </button>
               </div>
