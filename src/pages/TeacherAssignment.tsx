@@ -327,6 +327,7 @@ const TeacherAssignments: React.FC = () => {
             "Teacher assignment was updated successfully."
           : "Teacher assignment was created successfully.",
       });
+      await loadAllAssignments(); // <-- refetch so teacherName/subjectName are populated
     } else if (error) {
       setAlert({
         isOpen: true,
