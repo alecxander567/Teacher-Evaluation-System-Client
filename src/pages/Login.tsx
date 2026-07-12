@@ -191,14 +191,6 @@ const Login: React.FC = () => {
               </button>
             </div>
 
-            <div className="flex items-center justify-end">
-              <Link
-                to="/forgot-password"
-                className="text-sm text-[#5A6478] hover:text-[#3D6BFF] transition-colors">
-                Forgot password?
-              </Link>
-            </div>
-
             <AuthButton
               type="submit"
               icon={FiArrowRight}
