@@ -18,6 +18,7 @@ import { LoadingSpinner } from "../components/LoadingSpinner";
 import { useTeacherAssignments } from "../hooks/useTeacherAssignments";
 import { useTeacher } from "../hooks/useTeacher";
 import { useSubjects } from "../hooks/useSubjects";
+import { SEMESTERS } from "../constants/academicTerms";
 import type {
   TeacherAssignment,
   TeacherAssignmentRequest,
@@ -38,7 +39,7 @@ const AssignmentModal: React.FC<{
     teacherId: 0,
     subjectId: 0,
     academicYear: new Date().getFullYear().toString(),
-    semester: "1st Semester",
+    semester: SEMESTERS[0],
   });
 
   // Fetch reference data whenever the modal opens
@@ -66,7 +67,7 @@ const AssignmentModal: React.FC<{
             teacherId: 0,
             subjectId: 0,
             academicYear: new Date().getFullYear().toString(),
-            semester: "1st Semester",
+            semester: SEMESTERS[0],
           },
       );
     }
@@ -165,9 +166,11 @@ const AssignmentModal: React.FC<{
                 onChange={handleChange}
                 required
                 className="w-full px-4 py-2.5 border border-[#E4E8F0] rounded-lg focus:ring-2 focus:ring-[#3D6BFF]/20 focus:border-[#3D6BFF] outline-none">
-                <option value="1st Semester">1st Semester</option>
-                <option value="2nd Semester">2nd Semester</option>
-                <option value="Summer">Summer</option>
+                {SEMESTERS.map((s) => (
+                  <option key={s} value={s}>
+                    {s}
+                  </option>
+                ))}
               </select>
             </div>
             <div className="flex justify-end gap-3 pt-4 border-t border-[#E4E8F0]">

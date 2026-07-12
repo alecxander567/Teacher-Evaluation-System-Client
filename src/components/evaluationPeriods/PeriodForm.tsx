@@ -5,6 +5,7 @@ import type {
   EvaluationPeriod,
   EvaluationPeriodRequest,
 } from "../../types/evaluationPeriod.types";
+import { SEMESTERS } from "../../constants/academicTerms";
 
 interface PeriodFormProps {
   isOpen: boolean;
@@ -14,12 +15,10 @@ interface PeriodFormProps {
   loading: boolean;
 }
 
-const semesterOptions = ["First Semester", "Second Semester", "Summer"];
-
 const emptyFormData: EvaluationPeriodRequest = {
   title: "",
   academicYear: "",
-  semester: semesterOptions[0],
+  semester: SEMESTERS[0],
   startDate: "",
   endDate: "",
   status: "draft",
@@ -46,9 +45,6 @@ export const PeriodForm: React.FC<PeriodFormProps> = ({
   );
   const [errors, setErrors] = useState<Record<string, string>>({});
 
-  // Tracks which `period` the current formData was derived from, so we can
-  // detect when the prop changes and re-derive formData *during render*
-  // instead of syncing it via a useEffect (which causes an extra render).
   const [prevPeriod, setPrevPeriod] = useState<EvaluationPeriod | null>(period);
 
   if (period !== prevPeriod) {
@@ -101,7 +97,6 @@ export const PeriodForm: React.FC<PeriodFormProps> = ({
   ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
-    // Clear error for this field
     if (errors[name]) {
       setErrors((prev) => ({ ...prev, [name]: "" }));
     }
@@ -112,15 +107,12 @@ export const PeriodForm: React.FC<PeriodFormProps> = ({
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto">
       <div className="flex items-center justify-center min-h-screen px-4">
-        {/* Backdrop */}
         <div
           className="fixed inset-0 bg-black/50 backdrop-blur-sm"
           onClick={onClose}
         />
 
-        {/* Modal */}
         <div className="relative bg-white rounded-xl shadow-xl max-w-2xl w-full">
-          {/* Header */}
           <div className="flex items-center justify-between p-4 sm:p-6 border-b border-[#E4E8F0]">
             <h3
               className="text-lg font-semibold text-[#101625]"
@@ -136,10 +128,8 @@ export const PeriodForm: React.FC<PeriodFormProps> = ({
             </button>
           </div>
 
-          {/* Form */}
           <form onSubmit={handleSubmit} className="p-4 sm:p-6">
             <div className="space-y-4">
-              {/* Title */}
               <div>
                 <label className="block text-sm font-medium text-[#101625] mb-1">
                   Title *
@@ -162,7 +152,6 @@ export const PeriodForm: React.FC<PeriodFormProps> = ({
                 )}
               </div>
 
-              {/* Academic Year and Semester */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-[#101625] mb-1">
@@ -196,7 +185,7 @@ export const PeriodForm: React.FC<PeriodFormProps> = ({
                     value={formData.semester}
                     onChange={handleChange}
                     className="w-full px-3 py-2 border border-[#E4E8F0] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#3D6BFF] focus:border-transparent bg-white">
-                    {semesterOptions.map((sem) => (
+                    {SEMESTERS.map((sem) => (
                       <option key={sem} value={sem}>
                         {sem}
                       </option>
@@ -205,7 +194,6 @@ export const PeriodForm: React.FC<PeriodFormProps> = ({
                 </div>
               </div>
 
-              {/* Start and End Dates */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-[#101625] mb-1">
@@ -249,7 +237,6 @@ export const PeriodForm: React.FC<PeriodFormProps> = ({
                 </div>
               </div>
 
-              {/* Status */}
               <div>
                 <label className="block text-sm font-medium text-[#101625] mb-1">
                   Status
@@ -272,7 +259,6 @@ export const PeriodForm: React.FC<PeriodFormProps> = ({
               </div>
             </div>
 
-            {/* Actions */}
             <div className="flex justify-end gap-3 mt-6 pt-4 border-t border-[#E4E8F0]">
               <button
                 type="button"

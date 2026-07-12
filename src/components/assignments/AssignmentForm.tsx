@@ -9,6 +9,7 @@ import type { Teacher } from "../../types/teacher";
 import type { Subject } from "../../types/subject.types";
 import { teacherApi } from "../../api/teacherApi";
 import { subjectApi } from "../../api/subjectApi";
+import { SEMESTERS } from "../../constants/academicTerms";
 
 interface AssignmentFormProps {
   isOpen: boolean;
@@ -283,9 +284,11 @@ export const AssignmentForm: React.FC<AssignmentFormProps> = ({
               } rounded-lg focus:outline-none focus:ring-2 focus:ring-[#3D6BFF]/20 focus:border-[#3D6BFF] bg-white`}
               disabled={loading}>
               <option value="">Select semester...</option>
-              <option value="First Semester">First Semester</option>
-              <option value="Second Semester">Second Semester</option>
-              <option value="Summer">Summer</option>
+              {SEMESTERS.map((s) => (
+                <option key={s} value={s}>
+                  {s}
+                </option>
+              ))}
             </select>
             {validationErrors.semester && (
               <p className="text-red-600 text-sm mt-1">
