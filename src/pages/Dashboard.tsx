@@ -9,7 +9,6 @@ import {
   FiBookOpen,
   FiLink,
   FiClock,
-  FiUserCheck,
   FiStar,
   FiClipboard,
   FiCheckCircle,
@@ -496,12 +495,7 @@ const Dashboard: React.FC = () => {
                 <FiUserPlus className="h-5 w-5 mr-3 text-[#3D6BFF] group-hover:text-[#6E8CFF] flex-shrink-0" />
                 <span className="truncate">Manage Teachers</span>
               </button>
-              <button
-                onClick={() => navigate("/teacher-assignments")}
-                className="w-full flex items-center px-4 py-3 text-sm text-[#101625] bg-[#F4F6FA] hover:bg-[#121A2E] hover:text-white rounded-lg transition-colors group">
-                <FiUserCheck className="h-5 w-5 mr-3 text-[#3D6BFF] group-hover:text-[#6E8CFF] flex-shrink-0" />
-                <span className="truncate">Manage Teacher Assignments</span>
-              </button>
+             
               <button
                 onClick={() => navigate("/departments")}
                 className="w-full flex items-center px-4 py-3 text-sm text-[#101625] bg-[#F4F6FA] hover:bg-[#121A2E] hover:text-white rounded-lg transition-colors group">
